@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- file xml del bottone pause che verrà aggiunto al linear layout della MapsActivity -->
+
+    <Button android:id="@+id/pause_button"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:text="@string/pause_button"
+        android:layout_height="50dp"
+        android:layout_width="140dp"
+        android:layout_margin="7dp"
+        android:textColor="@color/white"
+        android:background="@color/orange"
+        android:onClick="pauseButtonPressed"/>
+

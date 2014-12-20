@@ -9,5 +9,6 @@
     <string name="pause_button">Pause</string>
     <string name="stop_button">Stop</string>
     <string name="resume_button">Resume</string>
+    <string name="title_activity_summary">SummaryActivity</string>
 
 </resources>

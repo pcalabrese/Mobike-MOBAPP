@@ -20,9 +20,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends ActionBarActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private LinearLayout mainLayout, buttonLayout;
+    private LinearLayout buttonLayout;
     private Button start, pause, stop, resume;
-    private enum State {BEGIN, RUNNING, PAUSED, STOPPED};
+    private enum State {BEGIN, RUNNING, PAUSED, STOPPED}
     private State state;
     private static final String TAG = "MapsActivity";
 
@@ -31,7 +31,6 @@ public class MapsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
-        mainLayout = (LinearLayout) findViewById(R.id.main_layout);
         buttonLayout = (LinearLayout) findViewById(R.id.button_layout);
         start = (Button) findViewById(R.id.start_button);
         state = State.BEGIN;
@@ -106,7 +105,7 @@ public class MapsActivity extends ActionBarActivity {
     }
 
     // Listener per i bottoni start, pause, resume e stop
-
+//prova
     public void startButtonPressed(View view) {
         if (view.getId() == R.id.start_button) {
             start.setVisibility(View.GONE);

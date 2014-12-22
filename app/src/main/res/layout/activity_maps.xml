@@ -13,7 +13,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="7"
         android:id="@+id/map"
         tools:context="com.mobike.mobike.MapsActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
@@ -29,9 +29,10 @@
 
         <Button android:id="@+id/start_button"
             android:text="@string/start_button"
-            android:layout_height="50dp"
-            android:layout_width="140dp"
-            android:layout_margin="7dp"
+            android:layout_height="match_parent"
+            android:layout_width="150dp"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
             android:textColor="@color/white"
             android:background="@color/green"
             android:onClick="startButtonPressed"/>

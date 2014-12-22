@@ -152,6 +152,8 @@ public class MapsActivity extends ActionBarActivity {
             buttonLayout.addView(start);
             //        stopService(new Intent(this, TrackingService.class));
             state = State.STOPPED;
+            Intent intent = new Intent(this, SummaryActivity.class);
+            startActivity(intent);
         }
     }
 }

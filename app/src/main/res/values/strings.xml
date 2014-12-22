@@ -9,6 +9,8 @@
     <string name="pause_button">Pause</string>
     <string name="stop_button">Stop</string>
     <string name="resume_button">Resume</string>
-    <string name="title_activity_summary">SummaryActivity</string>
+    <string name="title_activity_summary">Route Summary</string>
+    <string name="cancel">Cancel</string>
+    <string name="accept">Accept</string>
 
 </resources>

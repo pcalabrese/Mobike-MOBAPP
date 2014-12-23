@@ -10,7 +10,7 @@
     <string name="stop_button">Stop</string>
     <string name="resume_button">Resume</string>
     <string name="title_activity_summary">Route Summary</string>
-    <string name="cancel">Cancel</string>
-    <string name="accept">Accept</string>
+    <string name="delete">Delete</string>
+    <string name="save">Save</string>
 
 </resources>

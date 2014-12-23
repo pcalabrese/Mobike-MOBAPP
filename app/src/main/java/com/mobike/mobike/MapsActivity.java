@@ -1,6 +1,10 @@
 package com.mobike.mobike;
 
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -25,6 +29,11 @@ public class MapsActivity extends ActionBarActivity {
     private enum State {BEGIN, RUNNING, PAUSED, STOPPED}
     private State state;
     private static final String TAG = "MapsActivity";
+    private LocationManager mylocman;
+    private LocationListener myloclist;
+    private static final int minSeconds = 10;   //queste due variabili servono a definire il minimo intervallo
+    private static final int minMeters = 10;    // di tempo e metri tra un update della posizione e un altro
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +43,10 @@ public class MapsActivity extends ActionBarActivity {
         buttonLayout = (LinearLayout) findViewById(R.id.button_layout);
         start = (Button) findViewById(R.id.start_button);
         state = State.BEGIN;
+        // inizializzo l'oggetto che gestisce la comunicazione dell'app con il LocationService
+        mylocman = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        // inizializzo il listener della posizione
+        myloclist = new MyLocListener(this);
     }
 
     @Override
@@ -115,6 +128,9 @@ public class MapsActivity extends ActionBarActivity {
             buttonLayout.addView(stop);
             //        startService(new Intent(this, TrackingService.class));
             state = State.RUNNING;
+            // l'oggetto mylocman inizia ad "aspettare" updates sulla posizione dal listener myloclist
+            // qui vengono usate le variabili seconds e meters precedentemente stabilite
+            mylocman.requestLocationUpdates(LocationManager.GPS_PROVIDER,minSeconds,minMeters,myloclist);
         }
     }
 
@@ -127,6 +143,8 @@ public class MapsActivity extends ActionBarActivity {
             buttonLayout.addView(resume);
             buttonLayout.addView(stop);
             state = State.PAUSED;
+            // smetto di aspettare updates sulla posizione dal listener myloclist
+            mylocman.removeUpdates(myloclist);
         }
     }
 
@@ -139,6 +157,8 @@ public class MapsActivity extends ActionBarActivity {
             buttonLayout.addView(pause);
             buttonLayout.addView(stop);
             state = State.RUNNING;
+            // riprendo ad aspettare update
+            mylocman.requestLocationUpdates(LocationManager.GPS_PROVIDER,minSeconds,minMeters,myloclist);
         }
     }
 
@@ -151,8 +171,49 @@ public class MapsActivity extends ActionBarActivity {
             buttonLayout.addView(start);
             //        stopService(new Intent(this, TrackingService.class));
             state = State.STOPPED;
+            // smetto (definitivamente) di aspettare updates
+            mylocman.removeUpdates(myloclist);
+
             Intent intent = new Intent(this, SummaryActivity.class);
             startActivity(intent);
+			
+
         }
+    }
+}
+// questa classe interna definisce il listener della posizione
+
+class MyLocListener implements LocationListener {
+    Context context;
+
+    public MyLocListener(Context context)
+    {
+        this.context = context;
+    }
+
+    // questo metodo viene invocato ogniqualvolta il listener rileva un cambiamento di posizione
+    public void onLocationChanged(Location loc)
+    {
+        double lat=loc.getLatitude()/* + ""*/;
+        double lng=loc.getLongitude()/*+""*/;
+        double alt = 0.0;// devo ancora trovare un modo, i limiti di google creano dei problemi
+        updateDatabase(lat, lng, alt);
+    }
+    public void onProviderDisabled(String provider) {
+        // TODO Auto-generated method stub
+    }
+    public void onProviderEnabled (String provider) {
+        // TODO Auto-generated method stub
+    }
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        // TODO Auto-generated method stub
+    }
+    // questo metodo viene invocato da onLocationChanged e inserisce una nuova riga nel db delle posizioni
+    public void updateDatabase(double lat, double lng, double alt)
+    {
+        GPSDatabase myDatabase = new GPSDatabase(context);
+        myDatabase.open();
+        myDatabase.insertRow(lat, lng, alt);
+        myDatabase.close();
     }
 }

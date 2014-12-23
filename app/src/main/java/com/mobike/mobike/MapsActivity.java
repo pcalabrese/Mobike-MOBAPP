@@ -180,6 +180,12 @@ public class MapsActivity extends ActionBarActivity {
 
         }
     }
+
+    //metodo che viene chiamato quando il percorso viene cancellato, cioè quando si ritorna dalla SummaryActivity
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // cancellazione del percorso attuale e reset dell'activity
+        //activity pronta a registrare un nuovo percorso
+    }
 }
 // questa classe interna definisce il listener della posizione
 

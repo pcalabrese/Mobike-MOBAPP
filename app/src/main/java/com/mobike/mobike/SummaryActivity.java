@@ -67,11 +67,12 @@ public class SummaryActivity extends ActionBarActivity {
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
     }
 
-    public void cancelRoute(View view) {
+    public void deleteRoute(View view) {
         // elimina il tracciato e ritorna all'activity principale
+        finish();
     }
 
-    public void acceptRoute(View view) {
+    public void saveRoute(View view) {
         // Parte l'upload del percorso
         // Avvia l'activity per la condivisione del tracciato sui social networks
 

@@ -49,20 +49,20 @@
         <Button android:id="@+id/cancel_route_button"
             android:text="@string/delete"
             android:layout_height="wrap_content"
-            android:layout_width="150dp"
+            android:layout_width="140dp"
             android:layout_margin="20dp"
             android:textColor="@color/white"
             android:background="@color/red"
-            android:onClick="cancelRoute"/>
+            android:onClick="deleteRoute"/>
 
         <Button android:id="@+id/accept_route_button"
             android:text="@string/save"
             android:layout_height="wrap_content"
-            android:layout_width="150dp"
+            android:layout_width="140dp"
             android:layout_margin="20dp"
             android:textColor="@color/white"
             android:background="@color/green"
-            android:onClick="acceptRoute"/>
+            android:onClick="saveRoute"/>
 
     </LinearLayout>
 

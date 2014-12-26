@@ -1,39 +1,56 @@
 package com.mobike.mobike;
 
-import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.location.Criteria;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
-// Activity principale con la mappa e i bottoni per controllare la registrazione del percorso
+import java.util.ArrayList;
+import java.util.List;
 
-public class MapsActivity extends ActionBarActivity {
+/**
+ * This Activity implements the route recording controls.
+ */
+
+public class MapsActivity extends ActionBarActivity implements NewLocationsListener {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LinearLayout buttonLayout;
     private Button start, pause, stop, resume;
-    private enum State {BEGIN, RUNNING, PAUSED, STOPPED}
-    private State state;
+    private enum State {BEGIN, RUNNING, PAUSED, STOPPED} // All the possible states
+    private State state;        // The current state
     private static final String TAG = "MapsActivity";
-    private LocationManager mylocman;
-    private LocationListener myloclist;
-    private static final int minSeconds = 10;   //queste due variabili servono a definire il minimo intervallo
-    private static final int minMeters = 10;    // di tempo e metri tra un update della posizione e un altro
+    protected static final float CAMERA_ZOOM_VALUE = 15;    // The value of the map zoom. It must
+                                                        // be between 2 (min zoom) and 21 (max)
+    private GPSTracker gps;     // The Service and LocationListener object, that manages
+                                   // the route recording
 
+    private Polyline route;     // The currently recording route to be drawn in the map
+    private List<LatLng> points;    // the points of the route
+
+    /**
+     * This method is called when the activity is created.
+     * It initializes the layout, the map the route to be drawn on the map and the state.
+     *
+     * @param savedInstanceState
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +60,8 @@ public class MapsActivity extends ActionBarActivity {
         buttonLayout = (LinearLayout) findViewById(R.id.button_layout);
         start = (Button) findViewById(R.id.start_button);
         state = State.BEGIN;
-        // inizializzo l'oggetto che gestisce la comunicazione dell'app con il LocationService
-        mylocman = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-        // inizializzo il listener della posizione
-        myloclist = new MyLocListener(this);
+        route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
+        points = new ArrayList<LatLng>();
     }
 
     @Override
@@ -55,7 +70,11 @@ public class MapsActivity extends ActionBarActivity {
         setUpMapIfNeeded();
     }
 
-    // Metodo che crea le voci nel menu a tendina
+    /**
+     * This method creates the items of the options menu.
+     * @param menu
+     * @return
+     */
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -108,17 +127,67 @@ public class MapsActivity extends ActionBarActivity {
     }
 
     /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p/>
+     * This method sets the map up, displaying the user's position and zooming on it.
+     *
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        // Enabling MyLocation Layer of Google Map
+        mMap.setMyLocationEnabled(true);
+
+        // Getting LocationManager object from System Service LOCATION_SERVICE
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        // Creating a criteria object to retrieve provider
+        Criteria criteria = new Criteria();
+
+        // Getting the name of the best provider
+        String provider = locationManager.getBestProvider(criteria, true);
+
+        // Getting Current Location
+        Location location = locationManager.getLastKnownLocation(provider);
+
+        if(location!=null) {
+            // Getting latitude of the current location
+            double latitude = location.getLatitude();
+
+            // Getting longitude of the current location
+            double longitude = location.getLongitude();
+
+            // Creating a LatLng object for the current location
+            LatLng latLng = new LatLng(latitude, longitude);
+            // Creating blue marker showing the current location
+            mMap.addMarker(new MarkerOptions().position(latLng).title("Start"));
+            // zooming to the current location
+            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, CAMERA_ZOOM_VALUE); //zoom value between 2(min zoom)-21(max zoom)
+            mMap.animateCamera(update);
+        }
     }
 
-    // Listener per i bottoni start, pause, resume e stop
-//prova
+    /**
+     * This method is invoked by onChangedLocation() in GPSTracker service class.
+     * It adds the new location to the route on the map.
+     *
+     * @param location the last updated location (see GPSTracker class)
+     */
+    public void onNewLocation(Location location) {
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, CAMERA_ZOOM_VALUE); //zoom value between 2(min zoom)-21(max zoom)
+        mMap.animateCamera(update);
+        points.add(latLng);
+        route.setPoints(points);
+    }
+
+
+    /**
+     * This method is invoked when the "Start" button is pressed.
+     * It changes the button in the lower part of the screen
+     * and creates the GPSTracker object, which constructor takes as arguments
+     * the context and the MapsActivity object (because it implements NewLocationsListener).
+     * Once created, the GPSTracker object makes the route recording start.
+     *
+     * @param view
+     */
     public void startButtonPressed(View view) {
         if (view.getId() == R.id.start_button) {
             start.setVisibility(View.GONE);
@@ -128,12 +197,17 @@ public class MapsActivity extends ActionBarActivity {
             buttonLayout.addView(stop);
             //        startService(new Intent(this, TrackingService.class));
             state = State.RUNNING;
-            // l'oggetto mylocman inizia ad "aspettare" updates sulla posizione dal listener myloclist
-            // qui vengono usate le variabili seconds e meters precedentemente stabilite
-            mylocman.requestLocationUpdates(LocationManager.GPS_PROVIDER,minSeconds,minMeters,myloclist);
+
+            gps = new GPSTracker(this, this);
         }
     }
 
+    /**
+     * This method is invoked when the "Pause" button is pressed.
+     * The layout of the lower part of the screen changes and the route recording stops.
+     *
+     * @param view
+     */
     public void pauseButtonPressed(View view) {
         if (view.getId() == R.id.pause_button) {
             pause.setVisibility(View.GONE);
@@ -143,11 +217,15 @@ public class MapsActivity extends ActionBarActivity {
             buttonLayout.addView(resume);
             buttonLayout.addView(stop);
             state = State.PAUSED;
-            // smetto di aspettare updates sulla posizione dal listener myloclist
-            mylocman.removeUpdates(myloclist);
+            gps.stopUsingGPS();
         }
     }
 
+    /**
+     * This method is invoked when the "Resume" button is pressed.
+     * The layout of the lower part of the screen changes and the route recording starts again.
+     * @param view
+     */
     public void resumeButtonPressed(View view) {
         if (view.getId() == R.id.resume_button) {
             resume.setVisibility(View.GONE);
@@ -157,11 +235,16 @@ public class MapsActivity extends ActionBarActivity {
             buttonLayout.addView(pause);
             buttonLayout.addView(stop);
             state = State.RUNNING;
-            // riprendo ad aspettare update
-            mylocman.requestLocationUpdates(LocationManager.GPS_PROVIDER,minSeconds,minMeters,myloclist);
+            gps.startUsingGPS();
         }
     }
 
+    /**
+     * This method is invoked when the "Stop" button is pressed.
+     * The route recording is definetely stopped and the SummaryActivity starts.
+     *
+     * @param view
+     */
     public void stopButtonPressed(View view) {
         if (view.getId() == R.id.stop_button) {
             if (resume != null) resume.setVisibility(View.GONE);
@@ -169,10 +252,13 @@ public class MapsActivity extends ActionBarActivity {
             stop.setVisibility(View.GONE);
             start = (Button) getLayoutInflater().inflate(R.layout.start_button, buttonLayout, false);
             buttonLayout.addView(start);
-            //        stopService(new Intent(this, TrackingService.class));
-            state = State.STOPPED;
-            // smetto (definitivamente) di aspettare updates
-            mylocman.removeUpdates(myloclist);
+
+            if(state == State.RUNNING) {
+                state = State.STOPPED;
+                gps.stopUsingGPS();
+            }
+            else { state = State.STOPPED;}
+
 
             Intent intent = new Intent(this, SummaryActivity.class);
             startActivity(intent);
@@ -187,39 +273,11 @@ public class MapsActivity extends ActionBarActivity {
         //activity pronta a registrare un nuovo percorso
     }
 }
-// questa classe interna definisce il listener della posizione
 
-class MyLocListener implements LocationListener {
-    Context context;
-
-    public MyLocListener(Context context)
-    {
-        this.context = context;
-    }
-
-    // questo metodo viene invocato ogniqualvolta il listener rileva un cambiamento di posizione
-    public void onLocationChanged(Location loc)
-    {
-        double lat=loc.getLatitude()/* + ""*/;
-        double lng=loc.getLongitude()/*+""*/;
-        double alt = 0.0;// devo ancora trovare un modo, i limiti di google creano dei problemi
-        updateDatabase(lat, lng, alt);
-    }
-    public void onProviderDisabled(String provider) {
-        // TODO Auto-generated method stub
-    }
-    public void onProviderEnabled (String provider) {
-        // TODO Auto-generated method stub
-    }
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-        // TODO Auto-generated method stub
-    }
-    // questo metodo viene invocato da onLocationChanged e inserisce una nuova riga nel db delle posizioni
-    public void updateDatabase(double lat, double lng, double alt)
-    {
-        GPSDatabase myDatabase = new GPSDatabase(context);
-        myDatabase.open();
-        myDatabase.insertRow(lat, lng, alt);
-        myDatabase.close();
-    }
+/**
+ * This interface is useful to access newly updated location without using intents from
+ * GPSTracker service.
+ */
+interface NewLocationsListener {
+    public void onNewLocation(Location location);
 }

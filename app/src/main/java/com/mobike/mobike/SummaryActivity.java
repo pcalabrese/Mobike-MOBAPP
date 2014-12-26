@@ -1,26 +1,46 @@
 package com.mobike.mobike;
 
+import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
-// Quest'activity deve prendere il percorso e visualizzarlo nella mappa
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * This activity displays the route that has just been recorded and gives
+ * the user the choice to save or delete it.
+ */
 
 public class SummaryActivity extends ActionBarActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private Polyline route; // the recorded route
+    private List<LatLng> points; // the points of the route
+
+    /**
+     * This method is called when the activity is created; it checks if the map is set up
+     * and then adds all the recorded location to the route, for it to be displayed on the map.
+     * @param savedInstanceState
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
         setUpMapIfNeeded();
+        route.setPoints(points);
     }
 
     @Override
@@ -58,17 +78,28 @@ public class SummaryActivity extends ActionBarActivity {
     }
 
     /**
-     * This is where we can add markers or lines, add listeners or move the camera. In this case, we
-     * just add a marker near Africa.
-     * <p/>
+     * This method gets all the recorded location from the database,
+     * initializes the route and centers the map at the middle of the route.
+     *
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+        GPSDatabase db = new GPSDatabase(this);
+        points = db.getAllLocations();
+        route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size()/2),
+                MapsActivity.CAMERA_ZOOM_VALUE - 3);
+        mMap.animateCamera(update);
+
     }
 
+    /**
+     * This method is called when the user choose to delete the recorded route.
+     * @param view
+     */
     public void deleteRoute(View view) {
-        // elimina il tracciato e ritorna all'activity principale
+        GPSDatabase db = new GPSDatabase(this);
+        db.deleteTable();
         finish();
     }
 

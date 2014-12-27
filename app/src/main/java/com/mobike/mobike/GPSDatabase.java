@@ -33,9 +33,9 @@ public class GPSDatabase
     public final int DBVERSION=1;
 
     // The raw code to initialize the database and the (only) table it will use.
-    public final String CREATERDB="create table location(orderId integer primary key, " +
-            "latitude varchar not null, longitude varchar not null, altitude varchar, " +
-            "instant datetime default current_timestamp);";
+    public final String CREATERDB="CREATE TABLE "+ TABLENAME+"("+ FIELD_ID +" INTEGER PRIMARY KEY, " +
+            FIELD_LAT+" VARCHAR NOT NULL, "+ FIELD_LNG+" VARCHAR NOT NULL, "+FIELD_ALT +" VARCHAR, " +
+            FIELD_TIME+" DATETIME DEFAULT CURRENT_TIMESTAMP);";
 
 
     /**
@@ -63,10 +63,6 @@ public class GPSDatabase
             super(context,DBNAME,null,DBVERSION);
         }
 
-        /*
-            Questo metodo viene invocato una volta sola, cioe' quando
-            non esiste un db con nome DBNAME, ed esegue il codice "raw" contenuto in CREATERDB
-         */
 
         /** This method is invoked only once, when it does not exists a database DBNAME.
          * It executes the raw SQLite code in CREATERDB.
@@ -87,8 +83,8 @@ public class GPSDatabase
     /**
      * This method adds a new row to the database.
      * @param lat the latitude of the new location
-     * @param lng the llongitude of the new locatio
-     * @param alt the allatitude of the new locatio
+     * @param lng the longitude of the new locatio
+     * @param alt the latitude of the new locatio
      * @return
      */
     public long insertRow(double lat, double lng, double alt)
@@ -99,10 +95,10 @@ public class GPSDatabase
         value.put(FIELD_LAT, lat + "");
         value.put(FIELD_LNG, lng + "");
         value.put(FIELD_ALT, alt + "");
-        db.insert(TABLENAME,null,value);
+        //db.insert(TABLENAME,null,value);
         try
         {
-            return db.insert(DatabaseStrings.TABLENAME, null, value);
+            return db.insert(TABLENAME, null, value);
         }
         catch (SQLiteException sqle)
         {
@@ -110,6 +106,36 @@ public class GPSDatabase
         }
         return 0;
     }
+
+    /**
+     * This method is perfectly identical to the previous one. It was added because insertRow did
+     * successfully create the database table. I don't know why this one does...
+     * @param lat
+     * @param lng
+     * @param alt
+     * @return
+     */
+    public long insertFirstRow(double lat, double lng, double alt)
+    {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues value=new ContentValues();
+        value.put(FIELD_LAT, lat + "");
+        value.put(FIELD_LNG, lng + "");
+        value.put(FIELD_ALT, alt + "");
+        //db.insert(TABLENAME,null,value);
+        try
+        {
+            return db.insert(TABLENAME, null, value);
+        }
+        catch (SQLiteException sqle)
+        {
+            // not yet implemented
+        }
+        return 0;
+    }
+
+
 
     /**
      * This method performs a query for all the rows in the table TABLENAME.

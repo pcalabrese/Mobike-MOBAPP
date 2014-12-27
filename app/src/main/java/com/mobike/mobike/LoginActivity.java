@@ -116,9 +116,9 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     @Override
     public void onConnectionFailed(ConnectionResult result) {
         Log.v(TAG, "onConnectionFailed()");
+
         if (mResolvingError) {
             // Already attempting to resolve an error.
-            return;
         } else if (result.hasResolution()) {
             try {
                 mResolvingError = true;

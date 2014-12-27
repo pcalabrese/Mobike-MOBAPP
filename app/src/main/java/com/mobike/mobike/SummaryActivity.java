@@ -100,6 +100,8 @@ public class SummaryActivity extends ActionBarActivity {
     public void deleteRoute(View view) {
         GPSDatabase db = new GPSDatabase(this);
         db.deleteTable();
+        // go to the mapsActivity and delete the route on the map (points = newArrayList<LatLng>;
+                                                                // route,setPoints(points);
         finish();
     }
 

@@ -27,9 +27,9 @@ public class GPSTracker extends Service implements LocationListener {
     //flag for GPS status
     boolean isGPSEnabled = false;
 
-    private static final long MIN_DISTANCE_BW_UPDATES_METERS = 10;
+    private static final long MIN_DISTANCE_BW_UPDATES_METERS = 0;
 
-    private static final long MIN_TIME_BW_UPDATES_MS = 1000 * 10; // Minimum time between updates in milliseconds
+    private static final long MIN_TIME_BW_UPDATES_MS = 1000 * 0; // Minimum time between updates in milliseconds
 
     protected LocationManager locationManager;  // The object that manages the communication with
                                                 // the system's location service.
@@ -46,6 +46,11 @@ public class GPSTracker extends Service implements LocationListener {
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (isGPSEnabled) {
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+            double altitude = location.getAltitude();
+            updateDatabase(latitude, longitude, altitude, true); //true <--> inserting first row
             startUsingGPS();
         }
         else showSettingsAlert();
@@ -122,7 +127,7 @@ public class GPSTracker extends Service implements LocationListener {
         double lat = location.getLatitude();
         double lng = location.getLongitude();
         double alt = location.getAltitude(); // this is 0.0 if the altitude is not available.
-        updateDatabase(lat, lng, alt);
+        updateDatabase(lat, lng, alt, false);
     }
 
     @Override
@@ -142,12 +147,16 @@ public class GPSTracker extends Service implements LocationListener {
      * @param lat The latitude
      * @param lng The longitude
      * @param alt The altitude
+     * @param firstRow this boolean is true if we are inserting the first location of the route.
      */
-    public void updateDatabase(double lat, double lng, double alt)
+    public void updateDatabase(double lat, double lng, double alt, boolean firstRow)
     {
         GPSDatabase myDatabase = new GPSDatabase(context);
         myDatabase.open();
-        myDatabase.insertRow(lat, lng, alt);
+        if(firstRow){
+            myDatabase.insertFirstRow(lat, lng, alt);
+        }
+        else {myDatabase.insertRow(lat, lng, alt);}
         myDatabase.close();
     }
 

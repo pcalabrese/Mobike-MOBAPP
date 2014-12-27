@@ -27,9 +27,9 @@ public class GPSTracker extends Service implements LocationListener {
     //flag for GPS status
     boolean isGPSEnabled = false;
 
-    private static final long MIN_DISTANCE_BW_UPDATES_METERS = 0;
+    private static final long MIN_DISTANCE_BW_UPDATES_METERS = 5;
 
-    private static final long MIN_TIME_BW_UPDATES_MS = 1000 * 0; // Minimum time between updates in milliseconds
+    private static final long MIN_TIME_BW_UPDATES_MS = 1000 * 5; // Minimum time between updates in milliseconds
 
     protected LocationManager locationManager;  // The object that manages the communication with
                                                 // the system's location service.
@@ -46,7 +46,7 @@ public class GPSTracker extends Service implements LocationListener {
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if (isGPSEnabled) {
-            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            Location location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
             double latitude = location.getLatitude();
             double longitude = location.getLongitude();
             double altitude = location.getAltitude();

@@ -7,6 +7,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -145,7 +146,7 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
         String provider = locationManager.getBestProvider(criteria, true);
 
         // Getting Current Location
-        Location location = locationManager.getLastKnownLocation(provider);
+        Location location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
         if(location!=null) {
             // Getting latitude of the current location
@@ -271,6 +272,8 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // cancellazione del percorso attuale e reset dell'activity
         //activity pronta a registrare un nuovo percorso
+
+        Log.v(TAG, "onActivityResult()");
     }
 }
 

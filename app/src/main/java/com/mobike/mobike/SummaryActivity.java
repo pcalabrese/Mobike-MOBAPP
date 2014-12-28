@@ -1,9 +1,11 @@
 package com.mobike.mobike;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -25,6 +27,8 @@ import java.util.List;
 
 public class SummaryActivity extends ActionBarActivity {
 
+    private static final int SHARE_REQUEST = 1;
+    private static final String TAG = "SummaryActivity";
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline route; // the recorded route
     private List<LatLng> points; // the points of the route
@@ -107,7 +111,16 @@ public class SummaryActivity extends ActionBarActivity {
 
     public void saveRoute(View view) {
         // Parte l'upload del percorso
-        // Avvia l'activity per la condivisione del tracciato sui social networks
 
+        // Avvia l'activity per la condivisione del tracciato sui social networks
+        Intent intent = new Intent(this, ShareActivity.class);
+        startActivityForResult(intent, SHARE_REQUEST);
+    }
+
+    // Method called when ShareActivity finishes, returns to MapsActivity
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.v(TAG, "onActivityResult()");
+        deleteRoute(null);
     }
 }

@@ -2,7 +2,7 @@ package com.mobike.mobike;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.location.Criteria;
+//import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -52,7 +52,7 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
      * This method is called when the activity is created.
      * It initializes the layout, the map the route to be drawn on the map and the state.
      *
-     * @param savedInstanceState
+     * @param savedInstanceState I don't know
      */
 
     @Override
@@ -64,7 +64,7 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
         start = (Button) findViewById(R.id.start_button);
         state = State.BEGIN;
         route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
-        points = new ArrayList<LatLng>();
+        points = new ArrayList<>();
     }
 
     @Override
@@ -86,8 +86,8 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
 
     /**
      * This method creates the items of the options menu.
-     * @param menu
-     * @return
+     * @param menu the options menu
+     * @return true
      */
 
     @Override
@@ -153,10 +153,10 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
         // Creating a criteria object to retrieve provider
-        Criteria criteria = new Criteria();
+        //Criteria criteria = new Criteria();
 
         // Getting the name of the best provider
-        String provider = locationManager.getBestProvider(criteria, true);
+        //String provider = locationManager.getBestProvider(criteria, true);
 
         // Getting Current Location
         Location location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
@@ -171,7 +171,7 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
             // Creating a LatLng object for the current location
             LatLng latLng = new LatLng(latitude, longitude);
             // Creating blue marker showing the current location
-            mMap.addMarker(new MarkerOptions().position(latLng).title("Start"));
+            //mMap.addMarker(new MarkerOptions().position(latLng).title("Start"));
             // zooming to the current location
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, CAMERA_ZOOM_VALUE); //zoom value between 2(min zoom)-21(max zoom)
             mMap.animateCamera(update);
@@ -200,7 +200,7 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
      * the context and the MapsActivity object (because it implements NewLocationsListener).
      * Once created, the GPSTracker object makes the route recording start.
      *
-     * @param view
+     * @param view the view
      */
     public void startButtonPressed(View view) {
         if (view.getId() == R.id.start_button) {
@@ -220,7 +220,7 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
      * This method is invoked when the "Pause" button is pressed.
      * The layout of the lower part of the screen changes and the route recording stops.
      *
-     * @param view
+     * @param view the view
      */
     public void pauseButtonPressed(View view) {
         if (view.getId() == R.id.pause_button) {
@@ -238,7 +238,7 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
     /**
      * This method is invoked when the "Resume" button is pressed.
      * The layout of the lower part of the screen changes and the route recording starts again.
-     * @param view
+     * @param view the view
      */
     public void resumeButtonPressed(View view) {
         if (view.getId() == R.id.resume_button) {
@@ -257,7 +257,7 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
      * This method is invoked when the "Stop" button is pressed.
      * The route recording is definetely stopped and the SummaryActivity starts.
      *
-     * @param view
+     * @param view the view
      */
     public void stopButtonPressed(View view) {
         if (view.getId() == R.id.stop_button) {
@@ -281,10 +281,15 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
         }
     }
 
-    //metodo che viene chiamato quando il percorso viene cancellato, cioè quando si ritorna dalla SummaryActivity
+    /**
+     *this method is called whenever the app comes back to MapsActivity from SummaryActivity
+     * @param requestCode boh
+     * @param resultCode dunno
+     * @param data nada
+     */
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        // cancellazione del percorso attuale e reset dell'activity
-        //activity pronta a registrare un nuovo percorso
+        points = new ArrayList<>();
+        route.setPoints(points);
 
         Log.v(TAG, "onActivityResult()");
     }

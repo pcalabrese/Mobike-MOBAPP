@@ -16,4 +16,5 @@ public class DatabaseStrings {
     public static final String FIELD_LNG = "longitude";
     public static final String FIELD_TIME = "instant";
     public static final String FIELD_ALT = "altitude";
+    public static final String FIELD_DIST = "distance";
 }

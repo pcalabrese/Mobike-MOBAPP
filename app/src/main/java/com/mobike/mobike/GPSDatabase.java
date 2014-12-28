@@ -35,7 +35,7 @@ public class GPSDatabase
     // The raw code to initialize the database and the (only) table it will use.
     public final String CREATERDB="CREATE TABLE "+ TABLENAME+"("+ FIELD_ID +" INTEGER PRIMARY KEY, " +
             FIELD_LAT+" VARCHAR NOT NULL, "+ FIELD_LNG+" VARCHAR NOT NULL, "+FIELD_ALT +" VARCHAR, " +
-            FIELD_TIME+" DATETIME DEFAULT CURRENT_TIMESTAMP);";
+            FIELD_TIME+" DATETIME DEFAULT CURRENT_TIMESTAMP, " + FIELD_DIST + " REAL);";
 
 
     /**
@@ -57,7 +57,7 @@ public class GPSDatabase
         /**
          * This constructor method create the object that will make possible to perform operation
          * on the database DBNAME.
-         * @param context
+         * @param context the context of the app
          */
         public DbHelper(Context context){
             super(context,DBNAME,null,DBVERSION);
@@ -66,7 +66,7 @@ public class GPSDatabase
 
         /** This method is invoked only once, when it does not exists a database DBNAME.
          * It executes the raw SQLite code in CREATERDB.
-         * @param db
+         * @param db the db to create
          */
         @Override
         public void onCreate(SQLiteDatabase db) {
@@ -76,7 +76,7 @@ public class GPSDatabase
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            // NOT TODO Auto-generated method stub
+            // to implement (maybe)
         }
     }
 
@@ -85,9 +85,9 @@ public class GPSDatabase
      * @param lat the latitude of the new location
      * @param lng the longitude of the new locatio
      * @param alt the latitude of the new locatio
-     * @return
+     * @return a random long
      */
-    public long insertRow(double lat, double lng, double alt)
+    public long insertRow(double lat, double lng, double alt, float dist)
     {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -95,25 +95,28 @@ public class GPSDatabase
         value.put(FIELD_LAT, lat + "");
         value.put(FIELD_LNG, lng + "");
         value.put(FIELD_ALT, alt + "");
-        //db.insert(TABLENAME,null,value);
+        value.put(FIELD_DIST, dist + "");
         try
         {
-            return db.insert(TABLENAME, null, value);
+            long l = db.insert(TABLENAME, null, value);
+            db.close();
+            return l;
         }
         catch (SQLiteException sqle)
         {
             // not yet implemented
         }
+        db.close();
         return 0;
     }
 
     /**
      * This method is perfectly identical to the previous one. It was added because insertRow did
      * successfully create the database table. I don't know why this one does...
-     * @param lat
-     * @param lng
-     * @param alt
-     * @return
+     * @param lat the latitude of the first location
+     * @param lng the longitude of the first location
+     * @param alt the altitude of the first location
+     * @return a random long
      */
     public long insertFirstRow(double lat, double lng, double alt)
     {
@@ -123,14 +126,16 @@ public class GPSDatabase
         value.put(FIELD_LAT, lat + "");
         value.put(FIELD_LNG, lng + "");
         value.put(FIELD_ALT, alt + "");
-        //db.insert(TABLENAME,null,value);
+        value.put(FIELD_DIST, 0 + "");
         try
         {
-            return db.insert(TABLENAME, null, value);
+            long l = db.insert(TABLENAME, null, value);
+            db.close();
+            return l;
         }
         catch (SQLiteException sqle)
         {
-            // not yet implemented
+            db.close();
         }
         return 0;
     }
@@ -144,8 +149,10 @@ public class GPSDatabase
     private Cursor getAllRows(){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        return db.query(TABLENAME,
-                new String[]{FIELD_ID,FIELD_LAT,FIELD_LNG,FIELD_ALT, FIELD_TIME}, null,null, null, null, null);
+        Cursor cursor = db.query(TABLENAME,
+                new String[]{FIELD_ID,FIELD_LAT,FIELD_LNG,FIELD_ALT, FIELD_TIME, FIELD_DIST}, null,null, null, null, null);
+        db.close();
+        return cursor;
     }
 
     /**
@@ -154,6 +161,7 @@ public class GPSDatabase
     public void deleteTable(){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.execSQL("DELETE FROM " + TABLENAME);
+        db.close();
     }
 
     /**
@@ -165,7 +173,6 @@ public class GPSDatabase
         cursor.moveToFirst();
 
         JSONArray resultSet = new JSONArray();
-        JSONObject returnObj = new JSONObject();
         int totalColumn;
 
         while (!cursor.isAfterLast()){
@@ -216,7 +223,7 @@ public class GPSDatabase
         Cursor cursor = db.query(TABLENAME,
                 new String[]{FIELD_LAT, FIELD_LNG}, null, null, null, null, null);
 
-        ArrayList<LatLng> returnLst = new ArrayList<LatLng>();
+        ArrayList<LatLng> returnLst = new ArrayList<>();
 
         cursor.moveToFirst();
 
@@ -234,8 +241,30 @@ public class GPSDatabase
         }
 
         cursor.close();
+        db.close();
         return returnLst;
     }
+
+    /**
+     * This method gives the total lenght of the route, that is the distance of the
+     * last point from the first one.
+     * @return the total length of the path.
+     */
+    public float getTotalLength() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(TABLENAME, new String[]{FIELD_DIST}, null, null, null, null, null);
+        db.close();
+        cursor.moveToFirst();
+        float totLen=0;
+        while(!cursor.isAfterLast()) {
+            totLen = Float.parseFloat(cursor.getString(0));
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        return totLen;
+    }
+
 
 
     /**

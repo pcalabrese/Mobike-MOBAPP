@@ -89,17 +89,27 @@ public class SummaryActivity extends ActionBarActivity {
      */
     private void setUpMap() {
         GPSDatabase db = new GPSDatabase(this);
+        // Taking all the points of the route
         points = db.getAllLocations();
+        //saving the first and the last ones
+        LatLng start = points.get(0);
+        LatLng end = points.get(points.size() -1);
+        // Adding the empty route to the map
         route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
+        // Zooming on the route
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size()/2),
-                MapsActivity.CAMERA_ZOOM_VALUE - 3);
+                MapsActivity.CAMERA_ZOOM_VALUE - 5);
         mMap.animateCamera(update);
+        // Adding the start and end markers
+        mMap.addMarker(new MarkerOptions().position(start).title("Start"));
+        mMap.addMarker(new MarkerOptions().position(end).title("End"));
+
 
     }
 
     /**
      * This method is called when the user choose to delete the recorded route.
-     * @param view
+     * @param view the view
      */
     public void deleteRoute(View view) {
         GPSDatabase db = new GPSDatabase(this);

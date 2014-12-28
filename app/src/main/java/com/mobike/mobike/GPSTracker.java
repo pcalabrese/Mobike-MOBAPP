@@ -33,11 +33,13 @@ public class GPSTracker extends Service implements LocationListener {
 
     protected LocationManager locationManager;  // The object that manages the communication with
                                                 // the system's location service.
+    private Location previousLocation;
+    private float totalDistance;
 
     /**
      * This constructor creates the object and starts the route recording.
      * If the GPS is not enabled, it shows an alert.
-     * @param context
+     * @param context the app context
      * @param listener The MapsActivity
      */
     public GPSTracker(Context context, NewLocationsListener listener) {
@@ -45,19 +47,20 @@ public class GPSTracker extends Service implements LocationListener {
         this.mListener = listener;
         locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
         isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        totalDistance = 0;
+        previousLocation = null;
         if (isGPSEnabled) {
-            Location location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-            double latitude = location.getLatitude();
-            double longitude = location.getLongitude();
-            double altitude = location.getAltitude();
-            updateDatabase(latitude, longitude, altitude, true); //true <--> inserting first row
             startUsingGPS();
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                updateDatabase(location, true); //true <--> inserting first row
+            }
         }
         else showSettingsAlert();
     }
 
     /**
-     *
+     * I had to add this useless constructor because it gave error without...
      */
     public GPSTracker()
     {
@@ -124,10 +127,7 @@ public class GPSTracker extends Service implements LocationListener {
     public void onLocationChanged(Location location) {
         mListener.onNewLocation(location); // this method call adds the new location to the map
 
-        double lat = location.getLatitude();
-        double lng = location.getLongitude();
-        double alt = location.getAltitude(); // this is 0.0 if the altitude is not available.
-        updateDatabase(lat, lng, alt, false);
+        updateDatabase(location, false);
     }
 
     @Override
@@ -144,19 +144,24 @@ public class GPSTracker extends Service implements LocationListener {
 
     /**
      *  This method adds a new row to the Database.
-     * @param lat The latitude
-     * @param lng The longitude
-     * @param alt The altitude
+     * @param location the updated location
      * @param firstRow this boolean is true if we are inserting the first location of the route.
      */
-    public void updateDatabase(double lat, double lng, double alt, boolean firstRow)
+    public void updateDatabase(Location location, boolean firstRow)
     {
         GPSDatabase myDatabase = new GPSDatabase(context);
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+        double alt = location.getAltitude();
         myDatabase.open();
         if(firstRow){
             myDatabase.insertFirstRow(lat, lng, alt);
         }
-        else {myDatabase.insertRow(lat, lng, alt);}
+        else {
+            totalDistance = totalDistance + previousLocation.distanceTo(location);
+            myDatabase.insertRow(lat, lng, alt, totalDistance);
+        }
+        previousLocation = location;
         myDatabase.close();
     }
 

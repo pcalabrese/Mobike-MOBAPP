@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -68,7 +69,16 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
     @Override
     protected void onResume() {
         super.onResume();
+        // Keep the screen always on for this activity
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setUpMapIfNeeded();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Return to the default settings, the screen can go off for inactivity
+        getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     /**

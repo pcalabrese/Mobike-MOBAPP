@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
@@ -32,6 +33,7 @@ import java.util.List;
 
 public class MapsActivity extends ActionBarActivity implements NewLocationsListener {
 
+    private static final int SUMMARY_REQUEST = 1;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LinearLayout buttonLayout;
     private Button start, pause, stop, resume;
@@ -68,7 +70,18 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
     @Override
     protected void onResume() {
         super.onResume();
+
+        // Keep the screen always on for this activity
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setUpMapIfNeeded();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // Return to the default settings, the screen can go off for inactivity
+        getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     /**
@@ -262,7 +275,7 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
 
 
             Intent intent = new Intent(this, SummaryActivity.class);
-            startActivity(intent);
+            startActivityForResult(intent, SUMMARY_REQUEST);
 			
 
         }

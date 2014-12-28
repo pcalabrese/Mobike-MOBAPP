@@ -1,0 +1,31 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.mobike.mobike.ShareActivity">
+
+    <!-- i bottoni facebook e google+ sono indicativi, sono da sostituire -->
+
+    <Button android:text="google+"
+        android:id="@+id/google_plus_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_centerInParent="true"/>
+
+    <Button android:text="facebook"
+        android:id="@+id/facebook_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_above="@id/google_plus_button"
+        android:layout_centerHorizontal="true"/>
+
+    <Button android:text="@string/record_new_route"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_alignParentBottom="true"
+        android:onClick="recordNewRoute"/>
+
+</RelativeLayout>

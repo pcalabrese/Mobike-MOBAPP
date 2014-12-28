@@ -12,5 +12,7 @@
     <string name="title_activity_summary">Route Summary</string>
     <string name="delete">Delete</string>
     <string name="save">Save</string>
+    <string name="title_activity_share">Share</string>
+    <string name="record_new_route">Record new route</string>
 
 </resources>

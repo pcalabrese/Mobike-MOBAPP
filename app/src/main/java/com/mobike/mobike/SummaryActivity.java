@@ -1,12 +1,18 @@
 package com.mobike.mobike;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -17,6 +23,10 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +39,10 @@ public class SummaryActivity extends ActionBarActivity {
 
     private static final int SHARE_REQUEST = 1;
     private static final String TAG = "SummaryActivity";
+    private static final String UploadURL = "";
+    private static final String DEFAULT_ACCOUNT_NAME = "no account";
+    private  EditText routeNameText, routeDescriptionText;
+    private String routeName, routeDescription, email;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline route; // the recorded route
     private List<LatLng> points; // the points of the route
@@ -45,6 +59,8 @@ public class SummaryActivity extends ActionBarActivity {
         setContentView(R.layout.activity_summary);
         setUpMapIfNeeded();
         route.setPoints(points);
+        routeNameText = (EditText) findViewById(R.id.route_name_text);
+        routeDescriptionText = (EditText) findViewById(R.id.route_description_text);
     }
 
     @Override
@@ -121,10 +137,24 @@ public class SummaryActivity extends ActionBarActivity {
 
     public void saveRoute(View view) {
         // Parte l'upload del percorso
+        if (routeNameText.getText() != null) {
+            routeName = routeNameText.getText().toString();
+            routeDescription = routeDescriptionText.getText().toString();
+            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+            email = sharedPref.getString(LoginActivity.ACCOUNT_NAME, DEFAULT_ACCOUNT_NAME);
+            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected()) {
+                new UploadRouteTask().execute(UploadURL);
+            } else {
+                // Manda messaggio di errore "No network connection available"
+                return;
+            }
 
-        // Avvia l'activity per la condivisione del tracciato sui social networks
-        Intent intent = new Intent(this, ShareActivity.class);
-        startActivityForResult(intent, SHARE_REQUEST);
+            // Avvia l'activity per la condivisione del tracciato sui social networks
+            Intent intent = new Intent(this, ShareActivity.class);
+            startActivityForResult(intent, SHARE_REQUEST);
+        }
     }
 
     // Method called when ShareActivity finishes, returns to MapsActivity
@@ -132,5 +162,53 @@ public class SummaryActivity extends ActionBarActivity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.v(TAG, "onActivityResult()");
         deleteRoute(null);
+    }
+
+
+    // AsyncTask that performs the upload of the route
+    private class UploadRouteTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            try {
+                return uploadRoute(urls[0]);
+            } catch (IOException e) {
+                return "Unable to upload the route. URL may be invalid.";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+        }
+
+        private String uploadRoute(String url) throws IOException {
+            HttpURLConnection urlConnection = null;
+            try {
+                URL u = new URL(url);
+                urlConnection = (HttpURLConnection) u.openConnection();
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.setReadTimeout(10000 /* milliseconds */);
+                urlConnection.setConnectTimeout(15000 /* milliseconds */);
+                urlConnection.setDoOutput(true);
+                urlConnection.setChunkedStreamingMode(0);
+                urlConnection.connect();
+                OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
+            //    out.write(exportRouteInJSON(email, routeName, routeDescription));
+                out.close();
+                int httpResult = urlConnection.getResponseCode();
+                if (httpResult == HttpURLConnection.HTTP_OK) {
+                    // scrive un messaggio di conferma dell'avvenuto upload
+                }
+                else {
+                    // scrive un messaggio di errore con codice httpResult
+                    Log.v(TAG, " httpResult = " + httpResult);
+                }
+            } finally {
+                if (urlConnection != null)
+                    urlConnection.disconnect();
+            }
+            return "";
+        }
     }
 }

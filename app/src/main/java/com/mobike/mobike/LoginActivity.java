@@ -2,9 +2,11 @@ package com.mobike.mobike;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -27,6 +29,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     private static final String STATE_RESOLVING_ERROR = "resolving_error";
     private static final String DIALOG_ERROR = "dialog_error";
     private static final String TAG = "LoginActivity";
+    public static final String ACCOUNT_NAME = "com.mobike.mobike.account_name";
 
     private View signInButton;
 
@@ -140,6 +143,13 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         // Abbiamo risolto ogni errore di connessione.
         accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
         Log.v(TAG, "onConnected(), accountName =" + accountName);
+
+        // Salvo l'account name nelle shared preferences
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(ACCOUNT_NAME, accountName);
+        editor.commit();
+
         Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
     }

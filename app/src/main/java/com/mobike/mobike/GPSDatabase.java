@@ -12,9 +12,13 @@ import android.util.Log;
 import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.mobike.mobike.DatabaseStrings.*;
 /**
@@ -35,12 +39,12 @@ public class GPSDatabase
     // The raw code to initialize the database and the (only) table it will use.
     public final String CREATERDB="CREATE TABLE "+ TABLENAME+"("+ FIELD_ID +" INTEGER PRIMARY KEY, " +
             FIELD_LAT+" VARCHAR NOT NULL, "+ FIELD_LNG+" VARCHAR NOT NULL, "+FIELD_ALT +" VARCHAR, " +
-            FIELD_TIME+" DATETIME DEFAULT CURRENT_TIMESTAMP, " + FIELD_DIST + " REAL);";
+            FIELD_TIME+" INTEGER, " + FIELD_DIST + " REAL);";
 
 
     /**
      * The constructor, that creates the DBHelper object.
-     * @param context
+     * @param context the context
      */
     public GPSDatabase(Context context){
         this.context = context;
@@ -83,8 +87,8 @@ public class GPSDatabase
     /**
      * This method adds a new row to the database.
      * @param lat the latitude of the new location
-     * @param lng the longitude of the new locatio
-     * @param alt the latitude of the new locatio
+     * @param lng the longitude of the new location
+     * @param alt the latitude of the new location
      * @return a random long
      */
     public long insertRow(double lat, double lng, double alt, float dist)
@@ -96,6 +100,7 @@ public class GPSDatabase
         value.put(FIELD_LNG, lng + "");
         value.put(FIELD_ALT, alt + "");
         value.put(FIELD_DIST, dist + "");
+        value.put(FIELD_TIME, System.currentTimeMillis());
         try
         {
             long l = db.insert(TABLENAME, null, value);
@@ -109,38 +114,6 @@ public class GPSDatabase
         db.close();
         return 0;
     }
-
-    /**
-     * This method is perfectly identical to the previous one. It was added because insertRow did
-     * successfully create the database table. I don't know why this one does...
-     * @param lat the latitude of the first location
-     * @param lng the longitude of the first location
-     * @param alt the altitude of the first location
-     * @return a random long
-     */
-    public long insertFirstRow(double lat, double lng, double alt)
-    {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues value=new ContentValues();
-        value.put(FIELD_LAT, lat + "");
-        value.put(FIELD_LNG, lng + "");
-        value.put(FIELD_ALT, alt + "");
-        value.put(FIELD_DIST, 0 + "");
-        try
-        {
-            long l = db.insert(TABLENAME, null, value);
-            db.close();
-            return l;
-        }
-        catch (SQLiteException sqle)
-        {
-            db.close();
-        }
-        return 0;
-    }
-
-
 
     /**
      * This method performs a query for all the rows in the table TABLENAME.
@@ -166,9 +139,9 @@ public class GPSDatabase
 
     /**
      * This method creates a JSON that contains all the data in the database.
-     * @return JSONArray
+     * @return JSONArray the jsonArray object representing the table
      */
-    public JSONArray getTableInJSON(){
+    private JSONArray getTableInJSON(){
         Cursor cursor = getAllRows();
         cursor.moveToFirst();
 
@@ -180,33 +153,24 @@ public class GPSDatabase
 
             JSONObject rowObject = new JSONObject();
 
-            for( int i=0 ;  i< totalColumn ; i++ )
-            {
-                if( cursor.getColumnName(i) != null )
-                {
-                    try
-                    {
-                        if( cursor.getString(i) != null )
-                        {
+            for( int i=0 ;  i< totalColumn ; i++ ){
+                if( cursor.getColumnName(i) != null ){
+                    try{
+                        if( cursor.getString(i) != null ){
                             rowObject.put(cursor.getColumnName(i) ,  cursor.getString(i) );
                         }
-                        else
-                        {
-                            rowObject.put( cursor.getColumnName(i) ,  "" );
+                        else{
+                            rowObject.put( cursor.getColumnName(i) ,  JSONObject.NULL );
                         }
                     }
-                    catch( Exception e )
-                    {
+                    catch( Exception e ){
                         Log.d("TAG_NAME", e.getMessage());
                     }
                 }
-
             }
-
             resultSet.put(rowObject);
             cursor.moveToNext();
         }
-
         cursor.close();
         Log.d("TAG_NAME", resultSet.toString() );
         return resultSet;
@@ -254,18 +218,121 @@ public class GPSDatabase
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(TABLENAME, new String[]{FIELD_DIST}, null, null, null, null, null);
         db.close();
-        cursor.moveToFirst();
-        float totLen=0;
-        while(!cursor.isAfterLast()) {
-            totLen = Float.parseFloat(cursor.getString(0));
-            cursor.moveToNext();
-        }
+        cursor.moveToLast();
+        float totLen = Float.parseFloat(cursor.getString(0));
         cursor.close();
         db.close();
         return totLen;
     }
 
+    /**
+     * This method gives the duration of the route by performing the difference between
+     * the timestamps of the last and the first row of the table.
+     *
+     * @return The duration expressed in seconds
+     */
+    public long getTotalDuration() {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        Cursor cursor = db.query(TABLENAME, new String[]{FIELD_TIME}, null, null, null, null, null);
+        db.close();
+        cursor.moveToFirst();
+        long start = cursor.getLong(0);
+        cursor.moveToLast();
+        long end = cursor.getLong(0);
+        cursor.close();
+        return (end - start)/1000;
+    }
 
+    /**
+     * This method takes the name and the description the user gave to the route and creates
+     * a string of the route in the GPX 1.1 format
+     * @param email the user email
+     * @param name the name the user gave to the route
+     * @param description the description the user gave to the route
+     * @return a String representing the route in the GPX 1.1 format
+     */
+    private String getTableInGPX(String email, String name, String description) {
+        String gpxString = "";
+        gpxString += "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>\n" +
+                "<gpx\n" +
+                "  xmlns=\"http://www.topografix.com/GPX/1/0\"\n" +
+                "  version=\"1.0\" creator=\"MoBike Mobile App\"\n" +
+                "  xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
+                "  xsi:schemaLocation=\"http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd\">\n";
+        gpxString += "<metadata>\n"+
+                "<name>"+name+"</name>\n" +
+                "<desc>"+description+"</desc>\n" +
+                "<author>\n"+
+                "<name>"+email.substring(0, email.indexOf("@"))+"</name>\n"+
+                "<email " +
+                "id=\""+    email.substring(0, email.indexOf("@"))+"\""+
+                "domain=\""+email.substring(email.indexOf("@")+1)+"\">\n"+
+                "</author>\n"+
+                "</metadata>\n";
+
+        gpxString += "<trk><name>"+name+"</name>\n" +
+                "<desc>"+description+"</desc>\n" +
+                "<trkseg>\n";
+
+
+        JSONArray array = getTableInJSON();
+        String lat, lng, alt;
+        long time;
+        for (int i = 0; i < array.length(); i++) {
+            try {
+                JSONObject row = array.getJSONObject(i);
+                lat = row.getString(FIELD_LAT);
+                lng = row.getString(FIELD_LNG);
+                alt = row.getString(FIELD_ALT);
+                time = row.getLong(FIELD_TIME);
+
+                gpxString += "<trkpt lat=\"" + lat + "\" lon=\"" + lng + "\"><ele>" +
+                        alt + "</ele><time>"+millisTimeToStr(time)+"</time></trkpt>\n";
+            } catch (JSONException e) {/*not implemented yet*/ }
+        }
+
+        gpxString += "</trkseg>\n" +
+                "</trk>\n" +
+                "</gpx>";
+        return gpxString;
+    }
+
+    /**
+     * This method is invoked when the user saves the route.
+     * This method creates the JSONObject representing the json file to be sent using
+     * the REST protocol.
+     * @param email the user email
+     * @param name the name the user gave to the route
+     * @param description the description the user gave to the route
+     * @return the JSONObject containing all the informations on the route.
+     */
+    public JSONObject exportRouteInJson(String email, String name, String description){
+        JSONObject jsonObject = new JSONObject();
+        try{
+            jsonObject.put("creatorEmail", email);
+            jsonObject.put("description", description);
+            jsonObject.put("duration", getTotalDuration());
+            jsonObject.put("length", getTotalLength());
+            jsonObject.put("name", name);
+            jsonObject.put("gpxString", getTableInGPX(email, name, description));
+        }
+        catch(JSONException e){/*not implemented yet*/ }
+        return jsonObject;
+    }
+
+    /**
+     * This method converts a timestamp expressed in unix epoch time (milliseconds since 1/1/1970)
+     * to a readable date/time format, in particular the xsd:datetime format of the XML standard,
+     * because this one is used in GPX 1.1 format too.
+     * @param millis the ecpoch time
+     * @return a date in xsd:datetime format
+     */
+    private static String millisTimeToStr(long millis){
+        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD'T'HH-mm-ss");
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(millis);
+        return format.format(calendar.getTime());
+    }
 
     /**
      * This method creates a reference to the database.

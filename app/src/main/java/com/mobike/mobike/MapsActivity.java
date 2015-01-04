@@ -1,11 +1,16 @@
 package com.mobike.mobike;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.graphics.Color;
-//import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -15,6 +20,11 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,7 +41,17 @@ import java.util.List;
  * This Activity implements the route recording controls.
  */
 
-public class MapsActivity extends ActionBarActivity implements NewLocationsListener {
+public class MapsActivity extends ActionBarActivity implements
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        com.google.android.gms.location.LocationListener{
+
+    private GoogleApiClient mGoogleApiClient;
+    private Location mCurrentLocation;
+    private LocationRequest mLocationRequest;
+    private static final int REQUEST_RESOLVE_ERROR = 1001;
+    private static final String STATE_RESOLVING_ERROR = "resolving_error";
+    private static final String DIALOG_ERROR = "dialog_error";
+    private boolean mResolvingError = false;
 
     private static final int SUMMARY_REQUEST = 1;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -41,12 +61,17 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
     private State state;        // The current state
     private static final String TAG = "MapsActivity";
     protected static final float CAMERA_ZOOM_VALUE = 15;    // The value of the map zoom. It must
-                                                        // be between 2 (min zoom) and 21 (max)
-    private GPSTracker gps;     // The Service and LocationListener object, that manages
-                                   // the route recording
+    // be between 2 (min zoom) and 21 (max)
+    private static final long MIN_DISTANCE_BW_UPDATES_METERS = 20;
+    private static final long MIN_TIME_BW_UPDATES_MS = 1000 * 5; // Minimum time between updates in milliseconds
 
     private Polyline route;     // The currently recording route to be drawn in the map
     private List<LatLng> points;    // the points of the route
+
+    private Location previousLocation;
+    private float totalDistance;
+
+    private boolean isGPSEnabled;
 
     /**
      * This method is called when the activity is created.
@@ -59,12 +84,132 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        //builds and connects the GoogleApiClient
+        buildGoogleApiClient();
+        mResolvingError = savedInstanceState != null &&
+                savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
+        //sets the map up
         setUpMapIfNeeded();
         buttonLayout = (LinearLayout) findViewById(R.id.button_layout);
         start = (Button) findViewById(R.id.start_button);
         state = State.BEGIN;
+        // checks the GPS status and, it is disabled, shows the user an alert
+        LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if(!isGPSEnabled){ showSettingsAlert(); }
+        //initialises the route on the map
         route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         points = new ArrayList<>();
+    }
+
+    protected synchronized void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+    }
+
+    public void onConnected(Bundle connectionHint) {
+        mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(
+                mGoogleApiClient); //can be modified to mMap.getMyLocation()
+        mLocationRequest = createLocationRequest();
+        totalDistance = 0;
+        updateDatabase(mCurrentLocation, true);
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult result) {
+        Log.v(TAG, "onConnectionFailed()");
+
+        if (mResolvingError) {
+            // Already attempting to resolve an error.
+        } else if (result.hasResolution()) {
+            try {
+                mResolvingError = true;
+                result.startResolutionForResult(this, REQUEST_RESOLVE_ERROR);
+            } catch (IntentSender.SendIntentException e) {
+                // There was an error with the resolution intent. Try again.
+                mGoogleApiClient.connect();
+            }
+        } else {
+            // Show dialog using GooglePlayServicesUtil.getErrorDialog()
+            showErrorDialog(result.getErrorCode());
+            mResolvingError = true;
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int cause) {
+        Log.v(TAG, "onConnectionSuspended()");
+        // The connection has been interrupted.
+        // Disable any UI components that depend on Google APIs
+        // until onConnected() is called.
+    }
+
+    /**
+     * this method creates a LocationRequest object used to get Location updates
+     * by the LocationListener
+     * @return the LocationRequest with the default values
+     */
+    protected LocationRequest createLocationRequest() {
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10*1000);
+        mLocationRequest.setFastestInterval(MIN_TIME_BW_UPDATES_MS);
+        mLocationRequest.setSmallestDisplacement(MIN_DISTANCE_BW_UPDATES_METERS);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        return mLocationRequest;
+    }
+
+    /**
+     * this method makes the app listen to location updates
+     */
+    protected void startLocationUpdates() {
+        LocationServices.FusedLocationApi.requestLocationUpdates(
+                mGoogleApiClient, mLocationRequest, this);
+    }
+
+    /**
+     * this method makes the app stop listening to location updates
+     */
+    protected void stopLocationUpdates() {
+        LocationServices.FusedLocationApi.removeLocationUpdates(
+                mGoogleApiClient, this);
+    }
+
+    // This code is about building the error dialog
+
+    /* Creates a dialog for an error message */
+    private void showErrorDialog(int errorCode) {
+        // Create a fragment for the error dialog
+        ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
+        // Pass the error that should be displayed
+        Bundle args = new Bundle();
+        args.putInt(DIALOG_ERROR, errorCode);
+        dialogFragment.setArguments(args);
+        dialogFragment.show(getFragmentManager(), "errordialog");
+    }
+
+    /* Called from ErrorDialogFragment when the dialog is dismissed. */
+    public void onDialogDismissed() {
+        mResolvingError = false;
+    }
+
+    /* A fragment to display an error dialog */
+    public static class ErrorDialogFragment extends DialogFragment {
+        public ErrorDialogFragment() { }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            // Get the error code and retrieve the appropriate dialog
+            int errorCode = this.getArguments().getInt(DIALOG_ERROR);
+            return GooglePlayServicesUtil.getErrorDialog(errorCode, this.getActivity(), REQUEST_RESOLVE_ERROR);
+        }
+
+        @Override
+        public void onDismiss(DialogInterface dialog) {
+            ((LoginActivity)getActivity()).onDialogDismissed();
+        }
     }
 
     @Override
@@ -82,6 +227,13 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
 
         // Return to the default settings, the screen can go off for inactivity
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+    }
+
+
+    @Override
+    protected void onStop() {
+        mGoogleApiClient.disconnect();
+        super.onStop();
     }
 
     /**
@@ -148,48 +300,41 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
     private void setUpMap() {
         // Enabling MyLocation Layer of Google Map
         mMap.setMyLocationEnabled(true);
-
-        // Getting LocationManager object from System Service LOCATION_SERVICE
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-        // Creating a criteria object to retrieve provider
-        //Criteria criteria = new Criteria();
-
-        // Getting the name of the best provider
-        //String provider = locationManager.getBestProvider(criteria, true);
-
-        // Getting Current Location
-        Location location = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
-
-        if(location!=null) {
-            // Getting latitude of the current location
-            double latitude = location.getLatitude();
-
-            // Getting longitude of the current location
-            double longitude = location.getLongitude();
-
-            // Creating a LatLng object for the current location
-            LatLng latLng = new LatLng(latitude, longitude);
-            // Creating blue marker showing the current location
-            //mMap.addMarker(new MarkerOptions().position(latLng).title("Start"));
-            // zooming to the current location
-            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, CAMERA_ZOOM_VALUE); //zoom value between 2(min zoom)-21(max zoom)
-            mMap.animateCamera(update);
-        }
+        Location mLocation = mMap.getMyLocation();
+        LatLng latLng = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+        mMap.addMarker(new MarkerOptions().position(latLng).title("Start"));
+        // zooming to the current location
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, CAMERA_ZOOM_VALUE); //zoom value between 2(min zoom)-21(max zoom)
+        mMap.animateCamera(update);
     }
 
-    /**
-     * This method is invoked by onChangedLocation() in GPSTracker service class.
-     * It adds the new location to the route on the map.
-     *
-     * @param location the last updated location (see GPSTracker class)
-     */
-    public void onNewLocation(Location location) {
+    public void onLocationChanged(Location location){
+        updateDatabase(location, false);
+        updateUI(location);
+    }
+
+    private void updateUI(Location location){
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, CAMERA_ZOOM_VALUE); //zoom value between 2(min zoom)-21(max zoom)
+        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, CAMERA_ZOOM_VALUE);
         mMap.animateCamera(update);
         points.add(latLng);
         route.setPoints(points);
+    }
+
+    public void updateDatabase(Location location, boolean firstRow)
+    {
+        GPSDatabase myDatabase = new GPSDatabase(this);
+        double lat = location.getLatitude();
+        double lng = location.getLongitude();
+        double alt = location.getAltitude();
+        myDatabase.open();
+
+        if(!firstRow){
+            totalDistance = totalDistance + previousLocation.distanceTo(location);
+        }
+        myDatabase.insertRow(lat, lng, alt, totalDistance);
+        previousLocation = location;
+        myDatabase.close();
     }
 
 
@@ -211,8 +356,8 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
             buttonLayout.addView(stop);
             //        startService(new Intent(this, TrackingService.class));
             state = State.RUNNING;
-
-            gps = new GPSTracker(this, this);
+            mGoogleApiClient.connect();
+            startLocationUpdates();
         }
     }
 
@@ -231,7 +376,7 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
             buttonLayout.addView(resume);
             buttonLayout.addView(stop);
             state = State.PAUSED;
-            gps.stopUsingGPS();
+            stopLocationUpdates();
         }
     }
 
@@ -249,7 +394,7 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
             buttonLayout.addView(pause);
             buttonLayout.addView(stop);
             state = State.RUNNING;
-            gps.startUsingGPS();
+            startLocationUpdates();
         }
     }
 
@@ -269,16 +414,47 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
 
             if(state == State.RUNNING) {
                 state = State.STOPPED;
-                gps.stopUsingGPS();
+                stopLocationUpdates();
             }
             else { state = State.STOPPED;}
 
 
             Intent intent = new Intent(this, SummaryActivity.class);
             startActivityForResult(intent, SUMMARY_REQUEST);
-			
+
 
         }
+    }
+
+    /**
+     * This method shows an alert inviting the user to activate the GPS in the settings menu.
+     */
+    public void showSettingsAlert(){
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+
+        // Setting Dialog Title
+        alertDialog.setTitle("GPS in settings");
+
+        // Setting Dialog Message
+        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+
+        // On pressing Settings button
+        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog,int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(intent);
+            }
+        });
+
+        // on pressing cancel button
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
     }
 
     /**
@@ -293,12 +469,4 @@ public class MapsActivity extends ActionBarActivity implements NewLocationsListe
 
         Log.v(TAG, "onActivityResult()");
     }
-}
-
-/**
- * This interface is useful to access newly updated location without using intents from
- * GPSTracker service.
- */
-interface NewLocationsListener {
-    public void onNewLocation(Location location);
 }

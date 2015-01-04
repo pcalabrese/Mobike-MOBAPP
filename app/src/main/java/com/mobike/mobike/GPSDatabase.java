@@ -40,7 +40,7 @@ public class GPSDatabase
 
     /**
      * The constructor, that creates the DBHelper object.
-     * @param context
+     * @param context the context
      */
     public GPSDatabase(Context context){
         this.context = context;
@@ -109,38 +109,6 @@ public class GPSDatabase
         db.close();
         return 0;
     }
-
-    /**
-     * This method is perfectly identical to the previous one. It was added because insertRow did
-     * successfully create the database table. I don't know why this one does...
-     * @param lat the latitude of the first location
-     * @param lng the longitude of the first location
-     * @param alt the altitude of the first location
-     * @return a random long
-     */
-    public long insertFirstRow(double lat, double lng, double alt)
-    {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        ContentValues value=new ContentValues();
-        value.put(FIELD_LAT, lat + "");
-        value.put(FIELD_LNG, lng + "");
-        value.put(FIELD_ALT, alt + "");
-        value.put(FIELD_DIST, 0 + "");
-        try
-        {
-            long l = db.insert(TABLENAME, null, value);
-            db.close();
-            return l;
-        }
-        catch (SQLiteException sqle)
-        {
-            db.close();
-        }
-        return 0;
-    }
-
-
 
     /**
      * This method performs a query for all the rows in the table TABLENAME.

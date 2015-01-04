@@ -52,6 +52,7 @@ public class MapsActivity extends ActionBarActivity implements
     private static final String STATE_RESOLVING_ERROR = "resolving_error";
     private static final String DIALOG_ERROR = "dialog_error";
     private boolean mResolvingError = false;
+
     private static final int SUMMARY_REQUEST = 1;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LinearLayout buttonLayout;
@@ -61,7 +62,7 @@ public class MapsActivity extends ActionBarActivity implements
     private static final String TAG = "MapsActivity";
     protected static final float CAMERA_ZOOM_VALUE = 15;    // The value of the map zoom. It must
     // be between 2 (min zoom) and 21 (max)
-    private static final long MIN_DISTANCE_BW_UPDATES_METERS = 5;
+    private static final long MIN_DISTANCE_BW_UPDATES_METERS = 20;
     private static final long MIN_TIME_BW_UPDATES_MS = 1000 * 5; // Minimum time between updates in milliseconds
 
     private Polyline route;     // The currently recording route to be drawn in the map
@@ -83,17 +84,20 @@ public class MapsActivity extends ActionBarActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+        //builds and connects the GoogleApiClient
         buildGoogleApiClient();
-        mGoogleApiClient.connect();
         mResolvingError = savedInstanceState != null &&
                 savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
+        //sets the map up
         setUpMapIfNeeded();
         buttonLayout = (LinearLayout) findViewById(R.id.button_layout);
         start = (Button) findViewById(R.id.start_button);
         state = State.BEGIN;
+        // checks the GPS status and, it is disabled, shows the user an alert
         LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
         isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if(!isGPSEnabled){ showSettingsAlert(); }
+        //initialises the route on the map
         route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         points = new ArrayList<>();
     }
@@ -108,7 +112,7 @@ public class MapsActivity extends ActionBarActivity implements
 
     public void onConnected(Bundle connectionHint) {
         mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(
-                mGoogleApiClient);
+                mGoogleApiClient); //can be modified to mMap.getMyLocation()
         mLocationRequest = createLocationRequest();
         totalDistance = 0;
         updateDatabase(mCurrentLocation, true);
@@ -143,6 +147,11 @@ public class MapsActivity extends ActionBarActivity implements
         // until onConnected() is called.
     }
 
+    /**
+     * this method creates a LocationRequest object used to get Location updates
+     * by the LocationListener
+     * @return the LocationRequest with the default values
+     */
     protected LocationRequest createLocationRequest() {
         LocationRequest mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10*1000);
@@ -152,11 +161,17 @@ public class MapsActivity extends ActionBarActivity implements
         return mLocationRequest;
     }
 
+    /**
+     * this method makes the app listen to location updates
+     */
     protected void startLocationUpdates() {
         LocationServices.FusedLocationApi.requestLocationUpdates(
                 mGoogleApiClient, mLocationRequest, this);
     }
 
+    /**
+     * this method makes the app stop listening to location updates
+     */
     protected void stopLocationUpdates() {
         LocationServices.FusedLocationApi.removeLocationUpdates(
                 mGoogleApiClient, this);
@@ -214,14 +229,6 @@ public class MapsActivity extends ActionBarActivity implements
         getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.v(TAG, "onStart()");
-        if (!mResolvingError) {
-            mGoogleApiClient.connect();
-        }
-    }
 
     @Override
     protected void onStop() {
@@ -349,6 +356,7 @@ public class MapsActivity extends ActionBarActivity implements
             buttonLayout.addView(stop);
             //        startService(new Intent(this, TrackingService.class));
             state = State.RUNNING;
+            mGoogleApiClient.connect();
             startLocationUpdates();
         }
     }

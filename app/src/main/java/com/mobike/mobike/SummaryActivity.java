@@ -2,7 +2,6 @@ package com.mobike.mobike;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -12,12 +11,10 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,7 +33,7 @@ public class SummaryActivity extends ActionBarActivity {
     /**
      * This method is called when the activity is created; it checks if the map is set up
      * and then adds all the recorded location to the route, for it to be displayed on the map.
-     * @param savedInstanceState
+     * @param savedInstanceState the saved data of the activity instance
      */
 
     @Override
@@ -89,22 +86,26 @@ public class SummaryActivity extends ActionBarActivity {
      */
     private void setUpMap() {
         GPSDatabase db = new GPSDatabase(this);
+        db.open();
         // Taking all the points of the route
         points = db.getAllLocations();
         //saving the first and the last ones
         LatLng start = points.get(0);
         LatLng end = points.get(points.size() -1);
+
+        // Adding the start and end markers
+        mMap.addCircle(new CircleOptions().center(start).fillColor(Color.GREEN).
+                strokeColor(Color.BLACK).radius(10));
+        mMap.addCircle(new CircleOptions().center(end).fillColor(Color.RED).
+                strokeColor(Color.BLACK).radius(10));
         // Adding the empty route to the map
         route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         // Zooming on the route
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size()/2),
                 MapsActivity.CAMERA_ZOOM_VALUE - 5);
         mMap.animateCamera(update);
-        // Adding the start and end markers
-        mMap.addMarker(new MarkerOptions().position(start).title("Start"));
-        mMap.addMarker(new MarkerOptions().position(end).title("End"));
 
-
+        db.close();
     }
 
     /**

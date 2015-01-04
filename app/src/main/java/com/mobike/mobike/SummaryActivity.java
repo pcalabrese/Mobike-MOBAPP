@@ -150,7 +150,7 @@ public class SummaryActivity extends ActionBarActivity {
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
-                new UploadRouteTask().execute(UploadURL);
+                new UploadRouteTask().execute(this);
             } else {
                 // Manda messaggio di errore "No network connection available"
                 return;
@@ -171,12 +171,12 @@ public class SummaryActivity extends ActionBarActivity {
 
 
     // AsyncTask that performs the upload of the route
-    private class UploadRouteTask extends AsyncTask<String, Void, String> {
+    private class UploadRouteTask extends AsyncTask<Context, Void, String> {
 
         @Override
-        protected String doInBackground(String... urls) {
+        protected String doInBackground(Context... context) {
             try {
-                return uploadRoute(urls[0]);
+                return uploadRoute(context[0]);
             } catch (IOException e) {
                 return "Unable to upload the route. URL may be invalid.";
             }
@@ -186,10 +186,10 @@ public class SummaryActivity extends ActionBarActivity {
         protected void onPostExecute(String result) {
         }
 
-        private String uploadRoute(String url) throws IOException {
+        private String uploadRoute(Context context) throws IOException {
             HttpURLConnection urlConnection = null;
             try {
-                URL u = new URL(url);
+                URL u = new URL(UploadURL);
                 urlConnection = (HttpURLConnection) u.openConnection();
                 urlConnection.setRequestMethod("POST");
                 urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -199,7 +199,7 @@ public class SummaryActivity extends ActionBarActivity {
                 urlConnection.setChunkedStreamingMode(0);
                 urlConnection.connect();
                 OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
-            //    out.write(exportRouteInJSON(email, routeName, routeDescription));
+                out.write((new GPSDatabase(context)).exportRouteInJson(email, routeName, routeDescription).toString());
                 out.close();
                 int httpResult = urlConnection.getResponseCode();
                 if (httpResult == HttpURLConnection.HTTP_OK) {

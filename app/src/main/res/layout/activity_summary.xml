@@ -17,6 +17,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment" />
 
     <EditText
+        android:id="@+id/route_name_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.1"
@@ -27,6 +28,7 @@
         android:hint="Route name..."/>
 
     <EditText
+        android:id="@+id/route_description_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0.1"

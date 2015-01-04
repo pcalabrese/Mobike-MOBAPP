@@ -7,4 +7,4 @@
     <item android:state_selected="true" android:color="@color/wallet_bright_foreground_holo_light"/>
     <item android:color="@color/wallet_bright_foreground_holo_light"/> <!-- not selected -->
 </selector>
-<!-- From: file:/home/marco/Mobike-MOBAPP/googleplayservices_lib/src/main/res/color/wallet_primary_text_holo_light.xml -->
+<!-- From: file:/C:/Users/Andrea-PC/AndroidStudioProjects/Mobike-MOBAPP/googleplayservices_lib/src/main/res/color/wallet_primary_text_holo_light.xml -->

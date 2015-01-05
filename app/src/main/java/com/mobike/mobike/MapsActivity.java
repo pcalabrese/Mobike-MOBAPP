@@ -168,9 +168,9 @@ public class MapsActivity extends ActionBarActivity implements
      */
     protected LocationRequest createLocationRequest() {
         LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10*1000);
-        mLocationRequest.setFastestInterval(MIN_TIME_BW_UPDATES_MS);
-        mLocationRequest.setSmallestDisplacement(MIN_DISTANCE_BW_UPDATES_METERS);
+        mLocationRequest.setInterval(0);
+        mLocationRequest.setFastestInterval(0);
+        mLocationRequest.setSmallestDisplacement(0);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         return mLocationRequest;
     }

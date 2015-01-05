@@ -109,10 +109,9 @@ public class GPSDatabase
         }
         catch (SQLiteException sqle)
         {
-            // not yet implemented
+            db.close();
+            return -2;
         }
-        db.close();
-        return 0;
     }
 
     /**
@@ -187,7 +186,7 @@ public class GPSDatabase
         Cursor cursor = db.query(TABLENAME,
                 new String[]{FIELD_LAT, FIELD_LNG}, null, null, null, null, null);
 
-        ArrayList<LatLng> returnLst = new ArrayList<>();
+        ArrayList<LatLng> returnLst = new ArrayList<LatLng>();
 
         cursor.moveToFirst();
 
@@ -198,8 +197,7 @@ public class GPSDatabase
             latitude = Double.parseDouble(cursor.getString(0));
             longitude = Double.parseDouble(cursor.getString(1));
 
-            LatLng latLng = new LatLng(latitude, longitude);
-            returnLst.add(latLng);
+            returnLst.add(new LatLng(latitude, longitude) );
 
             cursor.moveToNext();
         }

@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -20,7 +19,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -28,7 +26,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -109,21 +106,23 @@ public class SummaryActivity extends ActionBarActivity {
         db.open();
         // Taking all the points of the route
         points = db.getAllLocations();
-        //saving the first and the last ones
-        LatLng start = points.get(0);
-        LatLng end = points.get(points.size() -1);
+        if (points.size() > 0) {
+            //saving the first and the last ones
+            LatLng start = points.get(0);
+            LatLng end = points.get(points.size() - 1);
 
-        // Adding the start and end markers
-        mMap.addCircle(new CircleOptions().center(start).fillColor(Color.GREEN).
-                strokeColor(Color.BLACK).radius(10));
-        mMap.addCircle(new CircleOptions().center(end).fillColor(Color.RED).
-                strokeColor(Color.BLACK).radius(10));
-        // Adding the empty route to the map
-        route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
-        // Zooming on the route
-        CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size()/2),
-                MapsActivity.CAMERA_ZOOM_VALUE - 5);
-        mMap.animateCamera(update);
+            // Adding the start and end markers
+            mMap.addCircle(new CircleOptions().center(start).fillColor(Color.GREEN).
+                    strokeColor(Color.BLACK).radius(10));
+            mMap.addCircle(new CircleOptions().center(end).fillColor(Color.RED).
+                    strokeColor(Color.BLACK).radius(10));
+            // Adding the empty route to the map
+            route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
+            // Zooming on the route
+            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
+                    MapsActivity.CAMERA_ZOOM_VALUE - 5);
+            mMap.animateCamera(update);
+        }
 
         db.close();
     }

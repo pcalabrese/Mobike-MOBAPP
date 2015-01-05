@@ -56,6 +56,10 @@ public class SummaryActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
         setUpMapIfNeeded();
+        GPSDatabase db = new GPSDatabase(this);
+        db.open();
+        points = db.getAllLocations();
+        db.close();
         route.setPoints(points);
         routeNameText = (EditText) findViewById(R.id.route_name_text);
         routeDescriptionText = (EditText) findViewById(R.id.route_description_text);

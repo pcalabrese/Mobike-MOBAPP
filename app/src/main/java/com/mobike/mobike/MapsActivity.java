@@ -81,6 +81,9 @@ public class MapsActivity extends ActionBarActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // resetting the database
+        GPSDatabase db = new GPSDatabase(this);
+        db.deleteTable();
         setUpLayout();
         isRegistering = false;
         totalDistance = 0;
@@ -480,6 +483,9 @@ public class MapsActivity extends ActionBarActivity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         points = new ArrayList<>();
         route.setPoints(points);
+
+        GPSDatabase db = new GPSDatabase(this);
+        db.deleteTable();
 
         Log.v(TAG, "onActivityResult()");
     }

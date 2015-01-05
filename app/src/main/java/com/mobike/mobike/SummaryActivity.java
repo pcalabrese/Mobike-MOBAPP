@@ -136,8 +136,6 @@ public class SummaryActivity extends ActionBarActivity {
      * @param view the view
      */
     public void deleteRoute(View view) {
-        GPSDatabase db = new GPSDatabase(this);
-        db.deleteTable();
         // go to the mapsActivity and delete the route on the map (points = newArrayList<LatLng>;
                                                                 // route,setPoints(points);
         finish();
@@ -171,7 +169,7 @@ public class SummaryActivity extends ActionBarActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.v(TAG, "onActivityResult()");
-        deleteRoute(null);
+        finish();
     }
 
 

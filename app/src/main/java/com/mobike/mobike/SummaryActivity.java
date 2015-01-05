@@ -142,7 +142,7 @@ public class SummaryActivity extends ActionBarActivity {
 
     public void saveRoute(View view) {
         // Parte l'upload del percorso
-        if (routeNameText.getText() != null) {
+        if (routeNameText.getText().toString().length() > 0) {
             routeName = routeNameText.getText().toString();
             if(routeDescriptionText.getText() != null){
                 routeDescription = routeDescriptionText.getText().toString();

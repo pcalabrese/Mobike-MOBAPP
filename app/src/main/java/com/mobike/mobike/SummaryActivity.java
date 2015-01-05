@@ -144,7 +144,9 @@ public class SummaryActivity extends ActionBarActivity {
         // Parte l'upload del percorso
         if (routeNameText.getText() != null) {
             routeName = routeNameText.getText().toString();
-            routeDescription = routeDescriptionText.getText().toString();
+            if(routeDescriptionText.getText() != null){
+                routeDescription = routeDescriptionText.getText().toString();
+            }
             SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
             email = sharedPref.getString(LoginActivity.ACCOUNT_NAME, DEFAULT_ACCOUNT_NAME);
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

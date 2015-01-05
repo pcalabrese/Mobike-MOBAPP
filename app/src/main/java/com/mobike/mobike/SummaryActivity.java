@@ -56,6 +56,7 @@ public class SummaryActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
         setUpMapIfNeeded();
+        route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         GPSDatabase db = new GPSDatabase(this);
         db.open();
         points = db.getAllLocations();
@@ -120,8 +121,6 @@ public class SummaryActivity extends ActionBarActivity {
                     strokeColor(Color.BLACK).radius(10));
             mMap.addCircle(new CircleOptions().center(end).fillColor(Color.RED).
                     strokeColor(Color.BLACK).radius(10));
-            // Adding the empty route to the map
-            route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
             // Zooming on the route
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
                     MapsActivity.CAMERA_ZOOM_VALUE - 5);

@@ -123,7 +123,7 @@ public class GPSDatabase
 
         Cursor cursor = db.query(TABLENAME,
                 new String[]{FIELD_ID,FIELD_LAT,FIELD_LNG,FIELD_ALT, FIELD_TIME, FIELD_DIST}, null,null, null, null, null);
-        db.close();
+        //db.close();
         return cursor;
     }
 
@@ -141,6 +141,7 @@ public class GPSDatabase
      * @return JSONArray the jsonArray object representing the table
      */
     private JSONArray getTableInJSON(){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor cursor = getAllRows();
         cursor.moveToFirst();
 
@@ -171,6 +172,7 @@ public class GPSDatabase
             cursor.moveToNext();
         }
         cursor.close();
+        db.close();
         Log.d("TAG_NAME", resultSet.toString() );
         return resultSet;
     }
@@ -215,7 +217,6 @@ public class GPSDatabase
     public float getTotalLength() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(TABLENAME, new String[]{FIELD_DIST}, null, null, null, null, null);
-        db.close();
         cursor.moveToLast();
         float totLen = Float.parseFloat(cursor.getString(0));
         cursor.close();
@@ -232,12 +233,12 @@ public class GPSDatabase
     public long getTotalDuration() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         Cursor cursor = db.query(TABLENAME, new String[]{FIELD_TIME}, null, null, null, null, null);
-        db.close();
         cursor.moveToFirst();
         long start = cursor.getLong(0);
         cursor.moveToLast();
         long end = cursor.getLong(0);
         cursor.close();
+        db.close();
         return (end - start)/1000;
     }
 
@@ -260,12 +261,12 @@ public class GPSDatabase
         gpxString += "<metadata>\n"+
                 "<name>"+name+"</name>\n" +
                 "<desc>"+description+"</desc>\n" +
-                "<author>\n"+
+               /* "<author>\n"+
                 "<name>"+email.substring(0, email.indexOf("@"))+"</name>\n"+
                 "<email " +
                 "id=\""+    email.substring(0, email.indexOf("@"))+"\""+
                 "domain=\""+email.substring(email.indexOf("@")+1)+"\">\n"+
-                "</author>\n"+
+                "</author>\n"+*/
                 "</metadata>\n";
 
         gpxString += "<trk><name>"+name+"</name>\n" +
@@ -326,7 +327,7 @@ public class GPSDatabase
      * @return a date in xsd:datetime format
      */
     private static String millisTimeToStr(long millis){
-        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-DD'T'HH-mm-ss");
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millis);
         return format.format(calendar.getTime());

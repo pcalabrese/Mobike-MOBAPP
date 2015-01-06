@@ -70,6 +70,12 @@
             android:name=".ShareActivity"
             android:label="@string/title_activity_share" >
         </activity>
+
+        <service
+            android:name=".GPSService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>

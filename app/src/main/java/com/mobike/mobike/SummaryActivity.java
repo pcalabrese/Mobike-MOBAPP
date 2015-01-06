@@ -73,6 +73,7 @@ public class SummaryActivity extends ActionBarActivity {
         length.setText("Length:" + String.valueOf(db2.getTotalLength()));
         duration = (TextView) findViewById(R.id.duration_text_view);
         duration.setText("Duration: " + String.valueOf(db2.getTotalDuration()));
+        db2.close();
     }
 
     @Override
@@ -209,9 +210,11 @@ public class SummaryActivity extends ActionBarActivity {
                 urlConnection.setDoOutput(true);
                 urlConnection.setChunkedStreamingMode(0);
                 urlConnection.connect();
+                GPSDatabase db = new GPSDatabase(context);
                 OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
-                out.write((new GPSDatabase(context)).exportRouteInJson(email, routeName, routeDescription).toString());
+                out.write(db.exportRouteInJson(email, routeName, routeDescription).toString());
                 out.close();
+                db.close();
                 int httpResult = urlConnection.getResponseCode();
                 if (httpResult == HttpURLConnection.HTTP_OK) {
                     // scrive un messaggio di conferma dell'avvenuto upload

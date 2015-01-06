@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -155,9 +156,7 @@ public class SummaryActivity extends ActionBarActivity {
         // Parte l'upload del percorso
         if (routeNameText.getText().toString().length() > 0) {
             routeName = routeNameText.getText().toString();
-            if(routeDescriptionText.getText() != null){
-                routeDescription = routeDescriptionText.getText().toString();
-            }
+            routeDescription = routeDescriptionText.getText().toString();
             SharedPreferences sharedPref = getSharedPreferences(LoginActivity.ACCOUNT_NAME, Context.MODE_PRIVATE);
             email = sharedPref.getString(LoginActivity.ACCOUNT_NAME, DEFAULT_ACCOUNT_NAME);
             Log.v(TAG, "email = " + email);
@@ -166,13 +165,15 @@ public class SummaryActivity extends ActionBarActivity {
             if (networkInfo != null && networkInfo.isConnected()) {
                 new UploadRouteTask().execute(this);
             } else {
-                // Manda messaggio di errore "No network connection available"
+                Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT);
                 return;
             }
 
             // Avvia l'activity per la condivisione del tracciato sui social networks
             Intent intent = new Intent(this, ShareActivity.class);
             startActivityForResult(intent, SHARE_REQUEST);
+        } else {
+            Toast.makeText(this, "Insert a route name", Toast.LENGTH_SHORT);
         }
     }
 
@@ -218,18 +219,18 @@ public class SummaryActivity extends ActionBarActivity {
                 out.close();
                 db.close();
                 int httpResult = urlConnection.getResponseCode();
-                if (httpResult == HttpURLConnection.HTTP_OK) {
-                    // scrive un messaggio di conferma dell'avvenuto upload
+                if (httpResult == HttpURLConnection.HTTP_NO_CONTENT) {
+                    return "Upload completed!";
                 }
                 else {
                     // scrive un messaggio di errore con codice httpResult
                     Log.v(TAG, " httpResult = " + httpResult);
+                    return "Error code: " + httpResult;
                 }
             } finally {
                 if (urlConnection != null)
                     urlConnection.disconnect();
             }
-            return "";
         }
     }
 }

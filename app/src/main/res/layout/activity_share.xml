@@ -6,20 +6,13 @@
 
     <!-- i bottoni facebook e google+ sono indicativi, sono da sostituire -->
 
-    <Button android:text="google+"
-        android:id="@+id/google_plus_button"
+    <Button android:text="@string/share"
+        android:id="@+id/share_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:layout_centerInParent="true"/>
-
-    <Button android:text="facebook"
-        android:id="@+id/facebook_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_above="@id/google_plus_button"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerInParent="true"
+        android:onClick="buttonPressed"/>
 
     <Button android:text="@string/record_new_route"
         android:layout_width="match_parent"

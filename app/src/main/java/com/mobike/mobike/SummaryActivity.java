@@ -70,9 +70,10 @@ public class SummaryActivity extends ActionBarActivity {
         //set length and duration text views
         GPSDatabase db2 = new GPSDatabase(this);
         length = (TextView) findViewById(R.id.length_text_view);
-        length.setText("Length:" + String.valueOf(db2.getTotalLength()));
+        length.setText("Length: " + String.valueOf(db2.getTotalLength()) + " metri");
         duration = (TextView) findViewById(R.id.duration_text_view);
-        duration.setText("Duration: " + String.valueOf(db2.getTotalDuration()));
+        duration.setText("Duration: " + String.valueOf(db2.getTotalDuration()) + " secondi");
+        Log.v(TAG, "length: " + db2.getTotalLength() + " -- duration: " + db2.getTotalDuration());
         db2.close();
     }
 
@@ -157,8 +158,9 @@ public class SummaryActivity extends ActionBarActivity {
             if(routeDescriptionText.getText() != null){
                 routeDescription = routeDescriptionText.getText().toString();
             }
-            SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = getSharedPreferences(LoginActivity.ACCOUNT_NAME, Context.MODE_PRIVATE);
             email = sharedPref.getString(LoginActivity.ACCOUNT_NAME, DEFAULT_ACCOUNT_NAME);
+            Log.v(TAG, "email = " + email);
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {

@@ -1,5 +1,6 @@
 package com.mobike.mobike;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -41,5 +42,13 @@ public class ShareActivity extends ActionBarActivity {
     // return to MapsActivity to record a new route
     public void recordNewRoute(View view) {
         finish();
+    }
+
+    public void buttonPressed(View view) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, "URL_TO_SHARE");
+        startActivity(Intent.createChooser(intent, "Share"));
     }
 }

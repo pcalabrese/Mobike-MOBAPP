@@ -44,6 +44,7 @@ public class SummaryActivity extends ActionBarActivity {
     private  EditText routeNameText, routeDescriptionText;
     private TextView length, duration;
     private String routeName, routeDescription, email;
+    private Context context = this;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline route; // the recorded route
     private List<LatLng> points; // the points of the route
@@ -165,7 +166,7 @@ public class SummaryActivity extends ActionBarActivity {
             if (networkInfo != null && networkInfo.isConnected()) {
                 new UploadRouteTask().execute(this);
             } else {
-                Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT);
+                Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -173,7 +174,7 @@ public class SummaryActivity extends ActionBarActivity {
             Intent intent = new Intent(this, ShareActivity.class);
             startActivityForResult(intent, SHARE_REQUEST);
         } else {
-            Toast.makeText(this, "Insert a route name", Toast.LENGTH_SHORT);
+            Toast.makeText(this, "Insert a route name", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -199,6 +200,7 @@ public class SummaryActivity extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(String result) {
+            Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
         }
 
         private String uploadRoute(Context context) throws IOException {

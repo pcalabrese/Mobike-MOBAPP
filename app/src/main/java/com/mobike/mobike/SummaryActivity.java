@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -37,9 +38,10 @@ public class SummaryActivity extends ActionBarActivity {
 
     private static final int SHARE_REQUEST = 1;
     private static final String TAG = "SummaryActivity";
-    private static final String UploadURL = "";
+    private static final String UploadURL = "http://mobike.ddns.net/SRV/routes/create";
     private static final String DEFAULT_ACCOUNT_NAME = "no account";
     private  EditText routeNameText, routeDescriptionText;
+    private TextView length, duration;
     private String routeName, routeDescription, email;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline route; // the recorded route
@@ -64,6 +66,13 @@ public class SummaryActivity extends ActionBarActivity {
         route.setPoints(points);
         routeNameText = (EditText) findViewById(R.id.route_name_text);
         routeDescriptionText = (EditText) findViewById(R.id.route_description_text);
+
+        //set length and duration text views
+        GPSDatabase db2 = new GPSDatabase(this);
+        length = (TextView) findViewById(R.id.length_text_view);
+        length.setText("Length:" + String.valueOf(db2.getTotalLength()));
+        duration = (TextView) findViewById(R.id.duration_text_view);
+        duration.setText("Duration: " + String.valueOf(db2.getTotalDuration()));
     }
 
     @Override

@@ -30,6 +30,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     private static final String DIALOG_ERROR = "dialog_error";
     private static final String TAG = "LoginActivity";
     public static final String ACCOUNT_NAME = "com.mobike.mobike.account_name";
+    private static final int MAPS_REQUEST = 1;
 
     private View signInButton;
 
@@ -142,16 +143,16 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     public void onConnected(Bundle bundle) {
         // Abbiamo risolto ogni errore di connessione.
         accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
-        Log.v(TAG, "onConnected(), accountName =" + accountName);
+        Log.v(TAG, "onConnected(), accountName = " + accountName);
 
         // Salvo l'account name nelle shared preferences
-        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences(ACCOUNT_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(ACCOUNT_NAME, accountName);
         editor.commit();
 
         Intent intent = new Intent(this, MapsActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, MAPS_REQUEST);
     }
 
     @Override
@@ -164,6 +165,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     mGoogleApiClient.connect();
                 }
             }
+        } else if (requestCode == MAPS_REQUEST) {
+            finish();
         }
     }
 
@@ -212,4 +215,5 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
             ((LoginActivity)getActivity()).onDialogDismissed();
         }
     }
+
 }

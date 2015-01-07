@@ -24,7 +24,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -41,9 +43,10 @@ public class SummaryActivity extends ActionBarActivity {
     private static final String TAG = "SummaryActivity";
     private static final String UploadURL = "http://mobike.ddns.net/SRV/routes/create";
     private static final String DEFAULT_ACCOUNT_NAME = "no account";
+    public static final String ROUTE_ID = "com.mobike.mobike.ROUTE_ID";
     private  EditText routeNameText, routeDescriptionText;
     private TextView length, duration;
-    private String routeName, routeDescription, email;
+    private String routeName, routeDescription, email, routeID;
     private Context context = this;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline route; // the recorded route
@@ -170,9 +173,8 @@ public class SummaryActivity extends ActionBarActivity {
                 return;
             }
 
+            //TODO: passare alla ShareActivity l'id del percorso sul server per comporre l'url (restituito come risposta alla POST)
             // Avvia l'activity per la condivisione del tracciato sui social networks
-            Intent intent = new Intent(this, ShareActivity.class);
-            startActivityForResult(intent, SHARE_REQUEST);
         } else {
             Toast.makeText(this, "Insert a route name", Toast.LENGTH_SHORT).show();
         }
@@ -210,6 +212,7 @@ public class SummaryActivity extends ActionBarActivity {
                 urlConnection = (HttpURLConnection) u.openConnection();
                 urlConnection.setRequestMethod("POST");
                 urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.setRequestProperty("Accept", "text/plain");
                 urlConnection.setReadTimeout(10000 /* milliseconds */);
                 urlConnection.setConnectTimeout(15000 /* milliseconds */);
                 urlConnection.setDoOutput(true);
@@ -221,7 +224,14 @@ public class SummaryActivity extends ActionBarActivity {
                 out.close();
                 db.close();
                 int httpResult = urlConnection.getResponseCode();
-                if (httpResult == HttpURLConnection.HTTP_NO_CONTENT) {
+                if (httpResult == HttpURLConnection.HTTP_OK) {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                    routeID = br.readLine();
+                    Log.v(TAG, routeID);
+                    br.close();
+                    Intent intent = new Intent(context, ShareActivity.class);
+                    intent.putExtra(ROUTE_ID, routeID);
+                    startActivityForResult(intent, SHARE_REQUEST);
                     return "Upload completed!";
                 }
                 else {

@@ -6,14 +6,25 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 
 public class ShareActivity extends ActionBarActivity {
+
+    private String shareURL;
+    private TextView urlTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share);
+        urlTextView = (TextView) findViewById(R.id.url_textview);
+
+        //TODO: prendere l'id del percorso per comporre l'url e condividerlo
+        Intent intent = getIntent();
+        shareURL = "http://mobike.ddns.net/retrieve/" + intent.getStringExtra(SummaryActivity.ROUTE_ID);
+
+        urlTextView.setText(getString(R.string.share_textview) + " " + shareURL);
     }
 
 
@@ -48,7 +59,7 @@ public class ShareActivity extends ActionBarActivity {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, "URL_TO_SHARE");
+        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.shared_message) + " " + shareURL);
         startActivity(Intent.createChooser(intent, "Share"));
     }
 }

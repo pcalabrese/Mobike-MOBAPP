@@ -14,6 +14,8 @@
     <string name="save">Save</string>
     <string name="title_activity_share">Share</string>
     <string name="record_new_route">Record new route</string>
-    <string name="share">Share!</string>
+    <string name="share">Share the route!</string>
+    <string name="share_textview">You can visualize the route at this URL:</string>
+    <string name="shared_message">Hey! Look at motorcyle trip I just finished at </string>
 
 </resources>

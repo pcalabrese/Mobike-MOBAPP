@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/MoBike.iml" filepath="$PROJECT_DIR$/MoBike.iml" />
       <module fileurl="file://$PROJECT_DIR$/Mobike-MOBAPP.iml" filepath="$PROJECT_DIR$/Mobike-MOBAPP.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/facebook/facebook.iml" filepath="$PROJECT_DIR$/facebook/facebook.iml" />
       <module fileurl="file://$PROJECT_DIR$/googleplayservices_lib/googleplayservices_lib.iml" filepath="$PROJECT_DIR$/googleplayservices_lib/googleplayservices_lib.iml" />
     </modules>
   </component>

@@ -10,10 +10,14 @@ import android.view.View;
 
 public class ShareActivity extends ActionBarActivity {
 
+    private String shareURL;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share);
+
+        //TODO: prendere l'id del percorso per comporre l'url e condividerlo
     }
 
 

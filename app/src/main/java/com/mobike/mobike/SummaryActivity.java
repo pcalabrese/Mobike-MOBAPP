@@ -43,7 +43,7 @@ public class SummaryActivity extends ActionBarActivity {
     private static final String DEFAULT_ACCOUNT_NAME = "no account";
     private  EditText routeNameText, routeDescriptionText;
     private TextView length, duration;
-    private String routeName, routeDescription, email;
+    private String routeName, routeDescription, email, shareURL;
     private Context context = this;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline route; // the recorded route
@@ -170,6 +170,7 @@ public class SummaryActivity extends ActionBarActivity {
                 return;
             }
 
+            //TODO: passare alla ShareActivity l'id del percorso sul server per comporre l'url (restituito come risposta alla POST)
             // Avvia l'activity per la condivisione del tracciato sui social networks
             Intent intent = new Intent(this, ShareActivity.class);
             startActivityForResult(intent, SHARE_REQUEST);

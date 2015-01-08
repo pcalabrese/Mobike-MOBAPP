@@ -202,6 +202,8 @@ public class GPSService extends Service implements GoogleApiClient.ConnectionCal
 
     public boolean isServiceRegistering(){return isRegistering;}
 
+    public void setDistanceToZero() {totalDistance = 0;}
+
     /**
      * This method is called whenever a new location is updated.
      * It gives start to the insertion of the new location in the database and to the

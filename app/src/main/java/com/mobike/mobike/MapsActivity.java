@@ -294,7 +294,6 @@ public class MapsActivity extends ActionBarActivity implements
                     state = State.STOPPED;
                 }
                 gpsService.stopRegistering();
-                //gpsService.stopLocationUpdates();
 
                 Intent intent = new Intent(this, SummaryActivity.class);
                 startActivityForResult(intent, SUMMARY_REQUEST);
@@ -364,6 +363,7 @@ public class MapsActivity extends ActionBarActivity implements
         db.deleteTable();
         mCurrentLocation = null;
         registered = false;
+        gpsService.setDistanceToZero();
         db.close();
 
         Log.v(TAG, "onActivityResult()");

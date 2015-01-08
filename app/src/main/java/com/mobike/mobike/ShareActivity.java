@@ -20,9 +20,8 @@ public class ShareActivity extends ActionBarActivity {
         setContentView(R.layout.activity_share);
         urlTextView = (TextView) findViewById(R.id.url_textview);
 
-        //TODO: prendere l'id del percorso per comporre l'url e condividerlo
         Intent intent = getIntent();
-        shareURL = "http://mobike.ddns.net/retrieve/" + intent.getStringExtra(SummaryActivity.ROUTE_ID);
+        shareURL = "http://mobike.ddns.net/WAPP/itineraries/" + intent.getStringExtra(SummaryActivity.ROUTE_ID);
 
         urlTextView.setText(getString(R.string.share_textview) + " " + shareURL);
     }

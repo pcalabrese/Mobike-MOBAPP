@@ -10,7 +10,7 @@
         android:id="@+id/share_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="10dp"
+        android:layout_marginTop="50dp"
         android:layout_centerInParent="true"
         android:onClick="buttonPressed"/>
 
@@ -18,9 +18,19 @@
         android:id="@+id/url_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/share_textview"
+        android:gravity="center"
+        android:text="a"
+        android:autoLink="web"
         android:layout_above="@id/share_button"
-        android:layout_margin="20dp"/>
+        android:layout_margin="10dp"/>
+
+    <TextView
+        android:id="@+id/message_url_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/share_textview"
+        android:layout_above="@id/url_textview"/>
 
     <Button android:text="@string/record_new_route"
         android:layout_width="match_parent"

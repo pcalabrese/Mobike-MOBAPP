@@ -65,24 +65,26 @@
         android:id="@+id/button_layout_summary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.4"
+        android:layout_weight="0.7"
         android:gravity="center"
         android:orientation="horizontal">
 
         <Button android:id="@+id/delete_route_button"
             android:text="@string/delete"
-            android:layout_height="wrap_content"
-            android:layout_width="140dp"
-            android:layout_margin="20dp"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_margin="10dp"
             android:textColor="@color/white"
             android:background="@color/red"
             android:onClick="deleteRoute"/>
 
         <Button android:id="@+id/save_route_button"
             android:text="@string/save"
-            android:layout_height="wrap_content"
-            android:layout_width="140dp"
-            android:layout_margin="20dp"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_margin="10dp"
             android:textColor="@color/white"
             android:background="@color/green"
             android:onClick="saveRoute"/>

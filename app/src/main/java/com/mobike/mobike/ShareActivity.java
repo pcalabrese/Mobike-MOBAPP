@@ -23,7 +23,7 @@ public class ShareActivity extends ActionBarActivity {
         Intent intent = getIntent();
         shareURL = "http://mobike.ddns.net/WAPP/itineraries/" + intent.getStringExtra(SummaryActivity.ROUTE_ID);
 
-        urlTextView.setText(getString(R.string.share_textview) + " " + shareURL);
+        urlTextView.setText(shareURL);
     }
 
 

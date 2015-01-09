@@ -46,6 +46,7 @@ public class SummaryActivity extends ActionBarActivity {
     public static final String ROUTE_ID = "com.mobike.mobike.ROUTE_ID";
     private  EditText routeNameText, routeDescriptionText;
     private TextView length, duration;
+    private long durationInSeconds;
     private String routeName, routeDescription, email, routeID;
     private Context context = this;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -75,9 +76,10 @@ public class SummaryActivity extends ActionBarActivity {
         //set length and duration text views
         GPSDatabase db2 = new GPSDatabase(this);
         length = (TextView) findViewById(R.id.length_text_view);
-        length.setText("Length: " + String.valueOf(db2.getTotalLength()) + " metri");
+        length.setText("Length: " + String.format("%.02f", db2.getTotalLength()/1000) + " km");
         duration = (TextView) findViewById(R.id.duration_text_view);
-        duration.setText("Duration: " + String.valueOf(db2.getTotalDuration()) + " secondi");
+        durationInSeconds = db2.getTotalDuration();
+        duration.setText("Duration: " + String.valueOf(durationInSeconds/3600) + " h " + String.valueOf(durationInSeconds/60) + " m " + String.valueOf(durationInSeconds%60) + " s");
         Log.v(TAG, "length: " + db2.getTotalLength() + " -- duration: " + db2.getTotalDuration());
         db2.close();
     }

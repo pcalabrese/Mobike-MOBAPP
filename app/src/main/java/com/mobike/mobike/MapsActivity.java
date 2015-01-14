@@ -343,6 +343,10 @@ public class MapsActivity extends ActionBarActivity implements
      * @param location The last location updated.
      */
     public void onNewLocation(Location location){
+        if (location != null) {
+            Log.v(TAG, "Location accuracy: " + String.valueOf(location.getAccuracy()));
+            Toast.makeText(this, "Location accuracy: " + String.valueOf(location.getAccuracy()), Toast.LENGTH_SHORT).show();
+        }
         updateCamera(location);
         updateUIRoute(location);
         mCurrentLocation = location;

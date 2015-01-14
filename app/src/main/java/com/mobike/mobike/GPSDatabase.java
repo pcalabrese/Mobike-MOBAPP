@@ -261,12 +261,12 @@ public class GPSDatabase
         gpxString += "<metadata>\n"+
                 "<name>"+name+"</name>\n" +
                 "<desc>"+description+"</desc>\n" +
-               /* "<author>\n"+
+               "<author>\n"+
                 "<name>"+email.substring(0, email.indexOf("@"))+"</name>\n"+
                 "<email " +
                 "id=\""+    email.substring(0, email.indexOf("@"))+"\""+
                 "domain=\""+email.substring(email.indexOf("@")+1)+"\">\n"+
-                "</author>\n"+*/
+                "</author>\n"+
                 "</metadata>\n";
 
         gpxString += "<trk><name>"+name+"</name>\n" +

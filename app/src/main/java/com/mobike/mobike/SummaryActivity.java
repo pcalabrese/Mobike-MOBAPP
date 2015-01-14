@@ -172,7 +172,6 @@ public class SummaryActivity extends ActionBarActivity {
                 new UploadRouteTask().execute(this);
             } else {
                 Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
-                return;
             }
 
             //TODO: passare alla ShareActivity l'id del percorso sul server per comporre l'url (restituito come risposta alla POST)

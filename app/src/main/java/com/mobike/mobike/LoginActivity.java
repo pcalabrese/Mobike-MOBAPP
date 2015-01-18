@@ -32,8 +32,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     public static final String ACCOUNT_NAME = "com.mobike.mobike.account_name";
     private static final int MAPS_REQUEST = 1;
 
-    private View signInButton;
-
     private GoogleApiClient mGoogleApiClient;
     private ConnectionResult mConnectionResult;
     private boolean mResolvingError = false;
@@ -43,8 +41,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        signInButton = findViewById(R.id.sign_in_button);
-        signInButton.setOnClickListener(this);
         Plus.PlusOptions options = new Plus.PlusOptions.Builder().addActivityTypes("http://schemas.google.com/AddActivity", "http://schemas.google.com/ReviewActivity").build();
 
         mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(Plus.API, options).addScope(Plus.SCOPE_PLUS_LOGIN).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build();
@@ -66,11 +62,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                 }
             }
         }*/
-        if (view.getId() == R.id.sign_in_button) {
-            // start the asynchronous sign in flow
-            // mSignInClicked = true;
-            mGoogleApiClient.connect();
-        }
     }
 
     @Override

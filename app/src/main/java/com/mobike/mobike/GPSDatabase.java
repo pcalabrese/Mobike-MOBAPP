@@ -264,8 +264,8 @@ public class GPSDatabase
                "<author>\n"+
                 "<name>"+email.substring(0, email.indexOf("@"))+"</name>\n"+
                 "<email " +
-                "id=\""+    email.substring(0, email.indexOf("@"))+"\""+
-                "domain=\""+email.substring(email.indexOf("@")+1)+"\">\n"+
+                "<id=\""+email.substring(0, email.indexOf("@"))+"\">"+
+                "<domain=\""+email.substring(email.indexOf("@")+1)+"\">\n"+
                 "</author>\n"+
                 "</metadata>\n";
 

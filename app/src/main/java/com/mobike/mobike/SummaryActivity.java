@@ -170,12 +170,10 @@ public class SummaryActivity extends ActionBarActivity {
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
                 new UploadRouteTask().execute(this);
+                Toast.makeText(this, getResources().getString(R.string.uploading_toast), Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
             }
-
-            //TODO: passare alla ShareActivity l'id del percorso sul server per comporre l'url (restituito come risposta alla POST)
-            // Avvia l'activity per la condivisione del tracciato sui social networks
         } else {
             Toast.makeText(this, "Insert a route name", Toast.LENGTH_SHORT).show();
         }

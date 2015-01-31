@@ -18,5 +18,13 @@
     <string name="shared_message">Hey! Look at motorcyle trip I just had at </string>
     <string name="uploading_toast">Uplaoding...</string>
     <string name="logging_in">Loggin in...</string>
+    <string name="title_activity_main">Mobike</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="fragment_titles">
+        <item>Record</item>
+        <item>Routes</item>
+        <item>Events</item>
+    </string-array>
 
 </resources>

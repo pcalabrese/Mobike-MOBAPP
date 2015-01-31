@@ -32,11 +32,13 @@
             android:name=".LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
 
         <!-- metadata required to use google play services -->
@@ -50,16 +52,10 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"
-            android:screenOrientation="portrait" >
-        </activity>
-        <activity
             android:name=".SummaryActivity"
             android:label="@string/title_activity_summary"
             android:screenOrientation="portrait" >
         </activity>
-
         <activity
             android:name=".ShareActivity"
             android:label="@string/title_activity_share" >
@@ -70,6 +66,13 @@
             android:enabled="true"
             android:exported="true" >
         </service>
+
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/title_activity_main"
+            android:screenOrientation="portrait" >
+
+        </activity>
     </application>
 
 </manifest>

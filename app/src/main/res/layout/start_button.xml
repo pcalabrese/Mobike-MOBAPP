@@ -9,5 +9,4 @@
     android:layout_width="0dp"
     android:layout_weight="1"
     android:textColor="@color/white"
-    android:background="@color/green"
-    android:onClick="startButtonPressed"/>
+    android:background="@color/green"/>

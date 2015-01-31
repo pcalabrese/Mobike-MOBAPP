@@ -9,6 +9,5 @@
         android:layout_width="0dp"
         android:layout_weight="0.5"
         android:textColor="@color/white"
-        android:background="@color/orange"
-        android:onClick="pauseButtonPressed"/>
+        android:background="@color/orange"/>
 

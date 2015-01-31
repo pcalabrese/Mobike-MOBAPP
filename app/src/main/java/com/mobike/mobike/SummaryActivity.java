@@ -141,7 +141,7 @@ public class SummaryActivity extends ActionBarActivity {
                     strokeColor(Color.BLACK).radius(10));
             // Zooming on the route
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
-                    MapsActivity.CAMERA_ZOOM_VALUE - 5);
+                    MapsFragment.CAMERA_ZOOM_VALUE - 5);
             mMap.animateCamera(update);
         }
 

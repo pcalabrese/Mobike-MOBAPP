@@ -18,7 +18,9 @@
     <color name="navy">#000080</color>
     <color name="black">#000000</color>
     <color name="LightBlue">#ADD8E6</color>
-    <color name="myBlue">#168ccc</color>
+    <color name="colorPrimary">#ff1e88e5</color>
+    <color name="colorPrimaryDark">#ff1565c0</color>
+    <color name="colorAccent">#FF9800</color>
     <color name="myLightBlue">#9849bfff</color>
     <color name="orange">#FFA500</color>
 

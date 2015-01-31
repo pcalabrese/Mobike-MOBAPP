@@ -142,7 +142,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         editor.putString(ACCOUNT_NAME, accountName);
         editor.commit();
 
-        Intent intent = new Intent(this, MapsActivity.class);
+        Intent intent = new Intent(this, MainActivity.class);
         startActivityForResult(intent, MAPS_REQUEST);
     }
 

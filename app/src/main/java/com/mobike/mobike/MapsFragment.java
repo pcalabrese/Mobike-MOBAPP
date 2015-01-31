@@ -1,6 +1,8 @@
 package com.mobike.mobike;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -8,11 +10,17 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -21,6 +29,7 @@ import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
@@ -33,16 +42,18 @@ import java.util.List;
  * This Activity implements the route recording controls.
  */
 
-public class MapsActivity extends ActionBarActivity implements
-        NewLocationListener{
+public class MapsFragment extends android.support.v4.app.Fragment implements
+        NewLocationListener, View.OnClickListener {
 
     private Location mCurrentLocation;
-
+    private ActionBarActivity activity;
 
     private static final int SUMMARY_REQUEST = 1;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LinearLayout buttonLayout;
     private Button start, pause, stop, resume;
+
+
     private enum State {BEGIN, RUNNING, PAUSED, STOPPED} // All the possible states
     private State state;        // The current state
     private static final String TAG = "MapsActivity";
@@ -64,37 +75,54 @@ public class MapsActivity extends ActionBarActivity implements
      */
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // resetting the database
-        GPSDatabase db = new GPSDatabase(this);
-        db.deleteTable();
-        setUpLayout();
-        registered = false;
+
+        //bisogna ripristinare lo stato salvato, quindi bottoni, percorso sulla mappa e variabili
 
         /*mResolvingError = savedInstanceState != null &&
                 savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);*/
         // checks the GPS status and, it is disabled, shows the user an alert
         checkGPSStatus();
         registered = false;
-        gpsService = new GPSService(this, this);
+        gpsService = new GPSService(getActivity(), this);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        setUp();
     }
 
 
-
-    private void setUpLayout(){
-        setContentView(R.layout.activity_maps);
-        buttonLayout = (LinearLayout) findViewById(R.id.button_layout);
-        start = (Button) findViewById(R.id.start_button);
+    private void setUp(){
+        buttonLayout = (LinearLayout) getView().findViewById(R.id.button_layout);
+        start = (Button) getView().findViewById(R.id.start_button);
         state = State.BEGIN;
-        setUpMapIfNeeded();
+        start.setOnClickListener(this);
+        //    setUpMapIfNeeded();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
+        return rootView;
+    }
+
+    public void onDestroyView() {
+        super.onDestroyView();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        SupportMapFragment fragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.remove(fragment);
+        ft.commit();
     }
 
     /**
      * This method checks the GPS status and if it is not enabled, shows the user a dialog.
      */
     private void checkGPSStatus(){
-        LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
         if(!isGPSEnabled){ showSettingsAlert(); }
     }
@@ -111,11 +139,12 @@ public class MapsActivity extends ActionBarActivity implements
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
+        activity = (ActionBarActivity) getActivity();
 
         // Keep the screen always on for this activity
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setUpMapIfNeeded();
     }
 
@@ -124,12 +153,12 @@ public class MapsActivity extends ActionBarActivity implements
         super.onPause();
 
         // Return to the default settings, the screen can go off for inactivity
-        getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getActivity().getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
     }
 
@@ -140,10 +169,10 @@ public class MapsActivity extends ActionBarActivity implements
      */
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_map, menu);
-        return true;
+        inflater.inflate(R.menu.menu_map, menu);
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -180,7 +209,7 @@ public class MapsActivity extends ActionBarActivity implements
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+            mMap = ((SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map))
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
@@ -213,6 +242,24 @@ public class MapsActivity extends ActionBarActivity implements
     }
 
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.start_button:
+                startButtonPressed(view);
+                break;
+            case R.id.pause_button:
+                pauseButtonPressed(view);
+                break;
+            case R.id.resume_button:
+                resumeButtonPressed(view);
+                break;
+            case R.id.stop_button:
+                stopButtonPressed(view);
+                break;
+        }
+    }
+
     /**
      * This method is invoked when the "Start" button is pressed.
      * It changes the button in the lower part of the screen
@@ -224,10 +271,12 @@ public class MapsActivity extends ActionBarActivity implements
         if (view.getId() == R.id.start_button) {
             /*if (!mGoogleApiClient.isConnected()){mGoogleApiClient.connect(); }*/
             start.setVisibility(View.GONE);
-            pause = (Button) getLayoutInflater().inflate(R.layout.pause_button, buttonLayout, false);
-            stop = (Button) getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
+            pause = (Button) getActivity().getLayoutInflater().inflate(R.layout.pause_button, buttonLayout, false);
+            stop = (Button) getActivity().getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
             buttonLayout.addView(pause);
             buttonLayout.addView(stop);
+            pause.setOnClickListener(this);
+            stop.setOnClickListener(this);
             state = State.RUNNING;
             gpsService.register();
             mCurrentLocation = gpsService.getLocation();
@@ -244,10 +293,12 @@ public class MapsActivity extends ActionBarActivity implements
         if (view.getId() == R.id.pause_button) {
             pause.setVisibility(View.GONE);
             stop.setVisibility(View.GONE);
-            resume = (Button) getLayoutInflater().inflate(R.layout.resume_button, buttonLayout, false);
-            stop = (Button) getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
+            resume = (Button) getActivity().getLayoutInflater().inflate(R.layout.resume_button, buttonLayout, false);
+            stop = (Button) getActivity().getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
             buttonLayout.addView(resume);
             buttonLayout.addView(stop);
+            resume.setOnClickListener(this);
+            stop.setOnClickListener(this);
             state = State.PAUSED;
             gpsService.stopRegistering();
         }
@@ -262,10 +313,12 @@ public class MapsActivity extends ActionBarActivity implements
         if (view.getId() == R.id.resume_button) {
             resume.setVisibility(View.GONE);
             stop.setVisibility(View.GONE);
-            pause = (Button) getLayoutInflater().inflate(R.layout.pause_button, buttonLayout, false);
-            stop = (Button) getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
+            pause = (Button) getActivity().getLayoutInflater().inflate(R.layout.pause_button, buttonLayout, false);
+            stop = (Button) getActivity().getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
             buttonLayout.addView(pause);
             buttonLayout.addView(stop);
+            pause.setOnClickListener(this);
+            stop.setOnClickListener(this);
             state = State.RUNNING;
             gpsService.register();
             mCurrentLocation = gpsService.getLocation();
@@ -284,8 +337,9 @@ public class MapsActivity extends ActionBarActivity implements
                 if (resume != null) resume.setVisibility(View.GONE);
                 if (pause != null) pause.setVisibility(View.GONE);
                 stop.setVisibility(View.GONE);
-                start = (Button) getLayoutInflater().inflate(R.layout.start_button, buttonLayout, false);
+                start = (Button) getActivity().getLayoutInflater().inflate(R.layout.start_button, buttonLayout, false);
                 buttonLayout.addView(start);
+                start.setOnClickListener(this);
 
                 if (state == State.RUNNING) {
                     state = State.STOPPED;
@@ -295,11 +349,11 @@ public class MapsActivity extends ActionBarActivity implements
                 }
                 gpsService.stopRegistering();
 
-                Intent intent = new Intent(this, SummaryActivity.class);
+                Intent intent = new Intent(getActivity(), SummaryActivity.class);
                 startActivityForResult(intent, SUMMARY_REQUEST);
             }
             else {
-                Toast.makeText(this, "Wait! There is no recorded position yet!",
+                Toast.makeText(getActivity(), "Wait! There is no recorded position yet!",
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -309,7 +363,7 @@ public class MapsActivity extends ActionBarActivity implements
      * This method shows an alert inviting the user to activate the GPS in the settings menu.
      */
     public void showSettingsAlert(){
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
 
         // Setting Dialog Title
         alertDialog.setTitle("GPS in settings");
@@ -345,7 +399,7 @@ public class MapsActivity extends ActionBarActivity implements
     public void onNewLocation(Location location){
         if (location != null) {
             Log.v(TAG, "Location accuracy: " + String.valueOf(location.getAccuracy()));
-            Toast.makeText(this, "Location accuracy: " + String.valueOf(location.getAccuracy()), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Location accuracy: " + String.valueOf(location.getAccuracy()), Toast.LENGTH_SHORT).show();
         }
         updateCamera(location);
         updateUIRoute(location);
@@ -359,11 +413,11 @@ public class MapsActivity extends ActionBarActivity implements
      * @param resultCode dunno
      * @param data nada
      */
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         points = new ArrayList<>();
         route.setPoints(points);
 
-        GPSDatabase db = new GPSDatabase(this);
+        GPSDatabase db = new GPSDatabase(getActivity());
         db.deleteTable();
         mCurrentLocation = null;
         registered = false;
@@ -375,6 +429,8 @@ public class MapsActivity extends ActionBarActivity implements
 
 
 }
+
+
 
 /**
  * This interface makes it possible to communicate between GPSService and MapsActivity, giving

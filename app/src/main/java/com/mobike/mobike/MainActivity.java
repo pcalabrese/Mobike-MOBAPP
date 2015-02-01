@@ -33,6 +33,7 @@ public class MainActivity extends ActionBarActivity {
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
+        mPager.setOffscreenPageLimit(3);
         mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
         mTabs.setSelectedIndicatorColors(getResources().getColor(R.color.colorPrimary));
         mTabs.setDistributeEvenly(true);
@@ -96,32 +97,6 @@ public class MainActivity extends ActionBarActivity {
         @Override
         public int getCount() {
             return FRAGMENT_NUMBER;
-        }
-    }
-
-
-    // fragment di prova
-
-    public static class MyFragment extends Fragment {
-        private TextView textView;
-
-        public static MyFragment getInstance(int position) {
-            MyFragment myFragment = new MyFragment();
-            Bundle args = new Bundle();
-            args.putInt("position", position);
-            myFragment.setArguments(args);
-            return myFragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            View layout = inflater.inflate(R.layout.fragment_my, container, false);
-            textView = (TextView) layout.findViewById(R.id.position);
-            Bundle bundle = getArguments();
-            if (bundle != null) {
-                textView.setText("The Page Selected Is " + bundle.getInt("position"));
-            }
-            return layout;
         }
     }
 }

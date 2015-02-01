@@ -56,7 +56,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
     private enum State {BEGIN, RUNNING, PAUSED, STOPPED} // All the possible states
     private State state;        // The current state
-    private static final String TAG = "MapsActivity";
+    private static final String TAG = "MapsFragment";
     protected static final float CAMERA_ZOOM_VALUE = 15;    // The value of the map zoom. It must
     // be between 2 (min zoom) and 21 (max)
 
@@ -86,12 +86,14 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         checkGPSStatus();
         registered = false;
         gpsService = new GPSService(getActivity(), this);
+        Log.v(TAG, "onCreate()");
     }
 
     @Override
     public void onStart() {
         super.onStart();
         setUp();
+        Log.v(TAG, "onStart()");
     }
 
 
@@ -106,9 +108,11 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
+        Log.v(TAG, "onCreateView()");
         return rootView;
     }
 
+    @Override
     public void onDestroyView() {
         super.onDestroyView();
         FragmentManager fm = getActivity().getSupportFragmentManager();
@@ -116,6 +120,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         FragmentTransaction ft = fm.beginTransaction();
         ft.remove(fragment);
         ft.commit();
+        Log.v(TAG, "onDestroyView()");
     }
 
     /**
@@ -146,6 +151,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         // Keep the screen always on for this activity
         getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setUpMapIfNeeded();
+        Log.v(TAG, "onResume()");
     }
 
     @Override
@@ -154,12 +160,14 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
         // Return to the default settings, the screen can go off for inactivity
         getActivity().getWindow().clearFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        Log.v(TAG, "onPause()");
     }
 
 
     @Override
     public void onStop() {
         super.onStop();
+        Log.v(TAG, "onStop()");
     }
 
     /**

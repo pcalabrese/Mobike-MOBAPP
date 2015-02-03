@@ -9,9 +9,12 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -26,7 +29,7 @@ import java.util.List;
  * Use the {@link SearchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragment extends android.support.v4.app.Fragment {
+public class SearchFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -74,6 +77,15 @@ public class SearchFragment extends android.support.v4.app.Fragment {
         super.onStart();
         GridView gridView = (GridView) getView().findViewById(R.id.gridview);
         gridView.setAdapter(new MyAdapter(getActivity()));
+
+        Spinner spinner = (Spinner) getView().findViewById(R.id.route_types);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.route_types, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
     }
 
     @Override
@@ -107,6 +119,18 @@ public class SearchFragment extends android.support.v4.app.Fragment {
         mListener = null;
     }
 
+    // method called when an item in the Spinner is selected
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
+
+    //method called when no items in Spinner are selected
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -124,6 +148,7 @@ public class SearchFragment extends android.support.v4.app.Fragment {
 
 }
 
+// custom class for square images
 class SquareImageView extends ImageView {
     public SquareImageView(Context context) {
         super(context);
@@ -144,7 +169,7 @@ class SquareImageView extends ImageView {
     }
 }
 
-
+// adapter for items in the grid view
 class MyAdapter extends BaseAdapter {
     private List<Item> items = new ArrayList<Item>();
     private LayoutInflater inflater;
@@ -200,6 +225,7 @@ class MyAdapter extends BaseAdapter {
         return v;
     }
 
+    // class for items in the grid view
     private class Item {
         final String name;
         final int drawableId;

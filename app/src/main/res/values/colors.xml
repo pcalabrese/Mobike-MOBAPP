@@ -23,5 +23,6 @@
     <color name="colorAccent">#FF9800</color>
     <color name="myLightBlue">#9849bfff</color>
     <color name="orange">#FFA500</color>
+    <color name="myGray">#8F8F8F</color>
 
 </resources>

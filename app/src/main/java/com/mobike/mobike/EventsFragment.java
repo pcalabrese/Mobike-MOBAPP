@@ -1,6 +1,7 @@
 package com.mobike.mobike;
 
 import android.app.Activity;
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -13,8 +14,11 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.mobike.mobike.utils.Event;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -81,23 +85,19 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-        // prova lista
-        final String[] s1 = {"Evento 1", "Evento 2", "Evento 3", "Evento 4", "Evento 5", "Evento 6", "Evento 7", "Evento 8", "Evento 9", "Evento 10", "Evento 11", "Evento 12"};
-        final ArrayList<String> arrayList = new ArrayList<>(Arrays.asList(s1));
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_2, android.R.id.text1, arrayList) {
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                View view = super.getView(position, convertView, parent);
-                TextView text1 = (TextView) view.findViewById(android.R.id.text1);
-                TextView text2 = (TextView) view.findViewById(android.R.id.text2);
+        // Initialization of the events list
+        ArrayList<Event> list = new ArrayList<>();
+        list.add(new Event("Roma - Cassino", "Sunday 11/11/2014 8:30", "Sent by Andrea Donati"));
+        list.add(new Event("Roma - Sora", "Saturday 23/02/2015 9:00", "Sent by Marco Esposito"));
+        list.add(new Event("Roma - Viterbo", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese"));
+        list.add(new Event("Roma - Perugia", "Saturday 16/05/2015 8:00", "Sent by Bruno Vispi"));
+        list.add(new Event("Roma - Terni", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese"));
+        list.add(new Event("Roma - Bolsena", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese"));
+        list.add(new Event("Roma - Frosinone", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese"));
 
-                text1.setText(arrayList.get(position));
-                text2.setText(arrayList.get(position));
-                return view;
-            }
-        };
+        ListAdapter listAdapter = new ListAdapter(getActivity(), R.layout.event_list_row, list);
         ListView listView = (ListView) getView().findViewById(R.id.list_view);
-        listView.setAdapter(arrayAdapter);
+        listView.setAdapter(listAdapter);
     }
 
     @Override
@@ -158,4 +158,53 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         public void onFragmentInteraction(Uri uri);
     }
 
+}
+
+class ListAdapter extends ArrayAdapter<Event> {
+
+    public ListAdapter(Context context, int textViewResourceId) {
+        super(context, textViewResourceId);
+    }
+
+    public ListAdapter(Context context, int resource, List<Event> items) {
+        super(context, resource, items);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        View v = convertView;
+
+        if (v == null) {
+
+            LayoutInflater vi;
+            vi = LayoutInflater.from(getContext());
+            v = vi.inflate(R.layout.event_list_row, null);
+
+        }
+
+        Event p = getItem(position);
+
+        if (p != null) {
+
+            TextView tt = (TextView) v.findViewById(R.id.event_name);
+            TextView tt1 = (TextView) v.findViewById(R.id.event_date);
+            TextView tt3 = (TextView) v.findViewById(R.id.event_creator);
+
+            if (tt != null) {
+                tt.setText(p.getName());
+            }
+            if (tt1 != null) {
+
+                tt1.setText(p.getDate());
+            }
+            if (tt3 != null) {
+
+                tt3.setText(p.getCreator());
+            }
+        }
+
+        return v;
+
+    }
 }

@@ -32,13 +32,11 @@
             android:name=".LoginActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
         <!-- metadata required to use google play services -->
@@ -71,7 +69,14 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait" >
+        </activity>
 
+        <activity
+            android:name=".EventActivity"
+            android:label="@string/title_activity_event" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mobike.mobike.MainActivity" />
         </activity>
     </application>
 

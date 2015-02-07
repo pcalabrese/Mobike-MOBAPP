@@ -30,14 +30,16 @@ public class RouteActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route);
-        setUpMapIfNeeded();
 
-        route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
-        GPSDatabase db = new GPSDatabase(this);
+/*        GPSDatabase db = new GPSDatabase(this);
         db.open();
         points = db.gpxToMapsPoints(gpx);
         db.close();
-        route.setPoints(points);
+        */
+        setUpMapIfNeeded();
+/*
+        route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
+        route.setPoints(points); */
 
         // get data from bundle and visualize in textViews
         Bundle bundle = getIntent().getExtras();
@@ -111,8 +113,8 @@ public class RouteActivity extends FragmentActivity {
         GPSDatabase db = new GPSDatabase(this);
         db.open();
         // Taking all the points of the route
-        points = db.getAllLocations();
-        if (points.size() > 0) {
+
+        if (points != null && points.size() > 0) {
             //saving the first and the last ones
             LatLng start = points.get(0);
             LatLng end = points.get(points.size() - 1);

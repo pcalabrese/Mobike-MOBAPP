@@ -22,6 +22,7 @@ import java.util.ArrayList;
 public class EventActivity extends ActionBarActivity {
 
     private TextView name, date, creator, description;
+    private String gpx; // gpx of the route associated with the event
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline route; // the route
@@ -31,14 +32,16 @@ public class EventActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
-        setUpMapIfNeeded();
 
-        route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
-        GPSDatabase db = new GPSDatabase(this);
+/*        GPSDatabase db = new GPSDatabase(this);
         db.open();
         points = db.gpxToMapsPoints(gpx);
         db.close();
-        route.setPoints(points);
+*/
+        setUpMapIfNeeded();
+/*
+        route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
+        route.setPoints(points); */
 
         Bundle bundle = getIntent().getExtras();
         name = (TextView) findViewById(R.id.event_name);
@@ -50,6 +53,7 @@ public class EventActivity extends ActionBarActivity {
         date.setText(bundle.getString(EventsFragment.EVENT_DATE));
         creator.setText(bundle.getString(EventsFragment.EVENT_CREATOR));
         description.setText(bundle.getString(EventsFragment.EVENT_DESCRIPTION));
+        gpx = bundle.getString(EventsFragment.EVENT_GPX);
     }
 
     // method to finish current activity at the pressure of top left back button
@@ -108,8 +112,7 @@ public class EventActivity extends ActionBarActivity {
         GPSDatabase db = new GPSDatabase(this);
         db.open();
         // Taking all the points of the route
-        points = db.getAllLocations();
-        if (points.size() > 0) {
+        if (points != null && points.size() > 0) {
             //saving the first and the last ones
             LatLng start = points.get(0);
             LatLng end = points.get(points.size() - 1);

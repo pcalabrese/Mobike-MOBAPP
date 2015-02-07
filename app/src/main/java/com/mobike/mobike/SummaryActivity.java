@@ -76,10 +76,10 @@ public class SummaryActivity extends ActionBarActivity {
         //set length and duration text views
         GPSDatabase db2 = new GPSDatabase(this);
         length = (TextView) findViewById(R.id.length_text_view);
-        length.setText("Length: " + String.format("%.02f", db2.getTotalLength()/1000) + " km");
+        length.setText(String.format("%.02f", db2.getTotalLength()/1000) + " km");
         duration = (TextView) findViewById(R.id.duration_text_view);
         durationInSeconds = db2.getTotalDuration();
-        duration.setText("Duration: " + String.valueOf(durationInSeconds/3600) + " h " + String.valueOf(durationInSeconds/60) + " m " + String.valueOf(durationInSeconds%60) + " s");
+        duration.setText(String.valueOf(durationInSeconds/3600) + " h " + String.valueOf(durationInSeconds/60) + " m " + String.valueOf(durationInSeconds%60) + " s");
         Log.v(TAG, "length: " + db2.getTotalLength() + " -- duration: " + db2.getTotalDuration());
         db2.close();
     }

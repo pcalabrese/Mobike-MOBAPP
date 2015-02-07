@@ -35,8 +35,9 @@ public class MainActivity extends ActionBarActivity {
         mPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
         mPager.setOffscreenPageLimit(3);
         mTabs = (SlidingTabLayout) findViewById(R.id.tabs);
-        mTabs.setSelectedIndicatorColors(getResources().getColor(R.color.colorPrimary));
         mTabs.setDistributeEvenly(true);
+        mTabs.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        mTabs.setSelectedIndicatorColors(getResources().getColor(R.color.colorAccent));
         mTabs.setViewPager(mPager);
 
     }

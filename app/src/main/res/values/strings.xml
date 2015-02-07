@@ -21,10 +21,25 @@
     <string name="title_activity_main">Mobike</string>
     <string name="hello_world">Hello world!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="join">Join</string>
+    <string name="decline">Decline</string>
     <string-array name="fragment_titles">
         <item>Record</item>
         <item>Routes</item>
         <item>Events</item>
     </string-array>
+    <string-array name="route_types">
+        <item>My Routes</item>
+        <item>All Routes</item>
+    </string-array>
+    <string-array name="event_types">
+        <item>My Events</item>
+        <item>Accepted</item>
+        <item>All Events</item>
+    </string-array>
+    <string name="title_activity_event">Event</string>
+    <string name="title_activity_route">Route</string>
+    <string name="route_name_hint">Route name...</string>
+    <string name="route_description_hint">Description...</string>
 
 </resources>

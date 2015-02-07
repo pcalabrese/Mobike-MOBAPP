@@ -65,6 +65,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
     private GPSService gpsService;  //the reference to the Service
     private boolean registered; //true if at least one location was inserted in the database
+    private boolean back; // true if i'm returned from SummaryActivity
 
 
     /**
@@ -92,7 +93,8 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     @Override
     public void onStart() {
         super.onStart();
-        setUp();
+        if (!back)
+            setUp();
         Log.v(TAG, "onStart()");
     }
 
@@ -115,12 +117,12 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        FragmentManager fm = getActivity().getSupportFragmentManager();
+/*        FragmentManager fm = getActivity().getSupportFragmentManager();
         SupportMapFragment fragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         FragmentTransaction ft = fm.beginTransaction();
         ft.remove(fragment);
         ft.commit();
-        Log.v(TAG, "onDestroyView()");
+        Log.v(TAG, "onDestroyView()");*/
     }
 
     /**
@@ -432,6 +434,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         gpsService.setDistanceToZero();
         db.close();
 
+        back = true;
         Log.v(TAG, "onActivityResult()");
     }
 

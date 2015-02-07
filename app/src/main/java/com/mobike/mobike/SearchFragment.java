@@ -2,6 +2,7 @@ package com.mobike.mobike;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -9,10 +10,15 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.mobike.mobike.utils.Route;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +32,7 @@ import java.util.List;
  * Use the {@link SearchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragment extends android.support.v4.app.Fragment {
+public class SearchFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -37,6 +43,13 @@ public class SearchFragment extends android.support.v4.app.Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    public static final String ROUTE_NAME = "com.mobike.mobike.route_name";
+    public static final String ROUTE_DESCRIPTION = "com.mobike.mobike.route_description";
+    public static final String ROUTE_CREATOR = "com.mobike.mobike.route_creator";
+    public static final String ROUTE_LENGTH = "com.mobike.mobike.route_length";
+    public static final String ROUTE_DURATION = "com.mobike.mobike.route_duration";
+    public static final String ROUTE_GPX = "com.mobike.mobike.route_gpx";
 
     /**
      * Use this factory method to create a new instance of
@@ -72,8 +85,44 @@ public class SearchFragment extends android.support.v4.app.Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        Spinner spinner = (Spinner) getView().findViewById(R.id.route_types);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.route_types, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+
+        // grid view
         GridView gridView = (GridView) getView().findViewById(R.id.gridview);
-        gridView.setAdapter(new MyAdapter(getActivity()));
+        ArrayList<Route> arrayList = new ArrayList<>();
+        // popolo l'arrayList
+
+        // creo il gridAdapter
+        GridAdapter gridAdapter = new GridAdapter(getActivity(), R.layout.search_grid_item, arrayList);
+        // imposto l'adapter
+        gridView.setAdapter(gridAdapter);
+        // imposto il listener
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                // faccio partire l'activity per la visualizzazione del percorso, passando i campi di Route in un bundle
+                Route route = (Route) adapterView.getAdapter().getItem(position);
+                Intent intent = new Intent(getActivity(), RouteActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(ROUTE_NAME, route.getName());
+                bundle.putString(ROUTE_DESCRIPTION, route.getDescription());
+                bundle.putString(ROUTE_CREATOR, route.getCreator());
+                bundle.putString(ROUTE_LENGTH, route.getLength());
+                bundle.putString(ROUTE_DURATION, route.getDuration());
+                bundle.putString(ROUTE_GPX, route.getGpx());
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -107,6 +156,18 @@ public class SearchFragment extends android.support.v4.app.Fragment {
         mListener = null;
     }
 
+    // method called when an item in the Spinner is selected
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
+
+    //method called when no items in Spinner are selected
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -124,6 +185,7 @@ public class SearchFragment extends android.support.v4.app.Fragment {
 
 }
 
+// custom class for square images
 class SquareImageView extends ImageView {
     public SquareImageView(Context context) {
         super(context);
@@ -145,7 +207,53 @@ class SquareImageView extends ImageView {
 }
 
 
-class MyAdapter extends BaseAdapter {
+
+class GridAdapter extends ArrayAdapter<Route> {
+
+    public GridAdapter(Context context, int textViewResourceId) {
+        super(context, textViewResourceId);
+    }
+
+    public GridAdapter(Context context, int resource, List<Route> items) {
+        super(context, resource, items);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+
+        View v = convertView;
+
+        if (v == null) {
+
+            LayoutInflater vi;
+            vi = LayoutInflater.from(getContext());
+            v = vi.inflate(R.layout.search_grid_item, null);
+
+        }
+
+        Route p = getItem(position);
+
+        if (p != null) {
+
+            TextView textView = (TextView) v.findViewById(R.id.text);
+            ImageView imageView = (ImageView) v.findViewById(R.id.picture);
+
+            if (textView != null) {
+                textView.setText(p.getName());
+            }
+            if (imageView != null) {
+
+                imageView.setImageBitmap(p.getMap());
+            }
+        }
+
+        return v;
+
+    }
+}
+
+// adapter for items in the grid view
+/*class MyAdapter extends BaseAdapter {
     private List<Item> items = new ArrayList<Item>();
     private LayoutInflater inflater;
 
@@ -200,6 +308,7 @@ class MyAdapter extends BaseAdapter {
         return v;
     }
 
+    // class for items in the grid view
     private class Item {
         final String name;
         final int drawableId;
@@ -209,4 +318,4 @@ class MyAdapter extends BaseAdapter {
             this.drawableId = drawableId;
         }
     }
-}
+}*/

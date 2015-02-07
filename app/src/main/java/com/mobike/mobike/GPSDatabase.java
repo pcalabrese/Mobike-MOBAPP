@@ -15,6 +15,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -121,10 +124,9 @@ public class GPSDatabase
     private Cursor getAllRows(){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLENAME,
+        return db.query(TABLENAME,
                 new String[]{FIELD_ID,FIELD_LAT,FIELD_LNG,FIELD_ALT, FIELD_TIME, FIELD_DIST}, null,null, null, null, null);
         //db.close();
-        return cursor;
     }
 
     /**
@@ -188,7 +190,7 @@ public class GPSDatabase
         Cursor cursor = db.query(TABLENAME,
                 new String[]{FIELD_LAT, FIELD_LNG}, null, null, null, null, null);
 
-        ArrayList<LatLng> returnLst = new ArrayList<LatLng>();
+        ArrayList<LatLng> returnLst = new ArrayList<>();
 
         cursor.moveToFirst();
 
@@ -251,6 +253,7 @@ public class GPSDatabase
      * @return a String representing the route in the GPX 1.1 format
      */
     private String getTableInGPX(String email, String name, String description) {
+        ArrayList<LatLng> waypoints = getWayPoints();
         String gpxString = "";
         gpxString += "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>\n" +
                 "<gpx\n" +
@@ -261,15 +264,33 @@ public class GPSDatabase
         gpxString += "<metadata>\n"+
                 "<name>"+name+"</name>\n" +
                 "<desc>"+description+"</desc>\n" +
-               "<author>\n"+
+                "<author>\n"+
                 "<name>"+email.substring(0, email.indexOf("@"))+"</name>\n"+
                 "<email " +
-                "<id=\""+email.substring(0, email.indexOf("@"))+"\">"+
-                "<domain=\""+email.substring(email.indexOf("@")+1)+"\">\n"+
+                "id=\""+email.substring(0, email.indexOf("@"))+"\""+
+                "domain=\""+email.substring(email.indexOf("@")+1)+"\"\n"+
                 "</author>\n"+
                 "</metadata>\n";
+        double startLat  = waypoints.get(0).latitude;
+        double endLat = waypoints.get(waypoints.size()-1).latitude;
+        double startLng  = waypoints.get(0).longitude;
+        double endLng = waypoints.get(waypoints.size()-1).longitude;
 
-        gpxString += "<trk><name>"+name+"</name>\n" +
+        gpxString += "<wpt lat=\"" + startLat + "\" lon=\"" + startLng + "\">"+
+                "<name>Start</name></wpt>\n";
+        double wlat, wlng;
+
+        for(int j = 1; j < waypoints.size() - 1; j++){
+            wlat = waypoints.get(j).latitude;
+            wlng = waypoints.get(j).longitude;
+            gpxString += "<wpt lat=\"" + wlat + "\" lon=\"" + wlng + "\">\n";
+        }
+
+        gpxString += "<wpt lat=\"" + endLat + "\" lon=\"" + endLng + "\">"+
+                "<name>End</name></wpt>\n";
+
+
+        gpxString += "\n<trk><name>"+name+"</name>\n" +
                 "<desc>"+description+"</desc>\n" +
                 "<trkseg>\n";
 
@@ -287,13 +308,77 @@ public class GPSDatabase
 
                 gpxString += "<trkpt lat=\"" + lat + "\" lon=\"" + lng + "\"><ele>" +
                         alt + "</ele><time>"+millisTimeToStr(time)+"</time></trkpt>\n";
-            } catch (JSONException e) {/*not implemented yet*/ }
+            } catch (JSONException e) { e.printStackTrace(); }
         }
 
         gpxString += "</trkseg>\n" +
                 "</trk>\n" +
                 "</gpx>";
         return gpxString;
+    }
+
+    /**
+     * This method gets all the points in the database and returns a subset of
+     * that list, which are the waypoints of the route.
+     * @return A list of waypoints of a route.
+     */
+    public ArrayList<LatLng> getWayPoints(){
+
+        ArrayList<LatLng> waypoints = new ArrayList<>();
+        ArrayList<LatLng> allPoints = getAllLocations();
+        if (allPoints.size()<21){ return allPoints; }
+
+        int interval = allPoints.size()/19;
+        int index = 0;
+
+        for(int i = 0; i<allPoints.size()-1; i++){
+
+            if (index == 0){
+                waypoints.add(allPoints.get(i));
+            }
+            index++;
+            if (index==interval) { index = 0; }
+        }
+
+        waypoints.add(allPoints.get(allPoints.size()-1));
+
+        return waypoints;
+    }
+
+    /**
+     * This method gets a gpx file and returns the list of the TrackPoints in that file.
+     * @param gpxString A string representing a gpx file.
+     * @return A list of LatLng objects.
+     * @throws IOException when there is something wrong.
+     */
+    public ArrayList<LatLng> gpxToMapPoints(String gpxString) throws IOException {
+        ArrayList<LatLng> list = new ArrayList<>();
+        BufferedReader bufReader = new BufferedReader(new StringReader(gpxString));
+        String line;
+        double latitude;
+        double longitude;
+        LatLng couple;
+        try{
+            while( (line=bufReader.readLine()) != null ){
+                if(line.startsWith("<trkpt") ){
+                    String lat = line.substring(
+                            line.indexOf("lat=", 0)+5,
+                            line.indexOf("lon=", 0)-2);
+
+                    String lon = line.substring(
+                            line.indexOf("lon=", 0)+5,
+                            line.indexOf(">")-1);
+
+                    latitude = Double.parseDouble(lat);
+                    longitude = Double.parseDouble(lon);
+                    couple = new LatLng(latitude, longitude);
+                    list.add(couple);
+                }
+            }
+        }
+        catch (IOException e){e.printStackTrace();}
+
+        return list;
     }
 
     /**

@@ -19,8 +19,8 @@
     <color name="black">#000000</color>
     <color name="LightBlue">#ADD8E6</color>
     <color name="orange">#FFA500</color>
-    <color name="colorPrimary">#2196F3</color>
-    <color name="colorPrimaryDark">#1976D2</color>
+    <color name="colorPrimary">#1E88E5</color>
+    <color name="colorPrimaryDark">#1565C0</color>
     <color name="colorAccent">#FF9800</color>
     <color name="myGray">#8F8F8F</color>
     <color name="myLightBlue">#9849bfff</color>

@@ -15,7 +15,7 @@
         android:id="@+id/summary_map"
         tools:context="com.mobike.mobike.SummaryActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
-
+<!--
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -41,6 +41,44 @@
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"/>
 
+    </LinearLayout> -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <!-- text view for the creator of the event -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/length_text_view"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="15dp"
+            android:drawableLeft="@drawable/car_grey_24dp"
+            android:drawableStart="@drawable/car_grey_24dp"
+            android:drawablePadding="15dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/duration_text_view"
+            android:textStyle="bold"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="15dp"
+            android:drawableLeft="@drawable/clock_grey_24dp"
+            android:drawableStart="@drawable/clock_grey_24dp"
+            android:drawablePadding="15dp"/>
     </LinearLayout>
 
     <EditText
@@ -52,7 +90,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:maxLines="1"
-        android:hint="Route name..."/>
+        android:hint="@string/route_name_hint"/>
 
     <EditText
         android:id="@+id/route_description_text"
@@ -62,31 +100,31 @@
         android:layout_margin="10dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
-        android:hint="Description..."
+        android:hint="@string/route_description_hint"
         android:minLines="3"
         android:maxLines="3"/>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/button_layout_summary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.7"
-        android:gravity="center"
-        android:orientation="horizontal">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/button_layout_summary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.7"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-        <Button android:id="@+id/delete_route_button"
-            android:text="@string/delete"
-            android:layout_height="match_parent"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_margin="10dp"
-            android:textColor="@color/white"
-            android:background="@color/red"
-            android:onClick="deleteRoute"
-            style="?android:attr/buttonBarButtonStyle"/>
+            <Button android:id="@+id/delete_route_button"
+                android:text="@string/delete"
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_margin="10dp"
+                android:textColor="@color/white"
+                android:background="@color/red"
+                android:onClick="deleteRoute"
+                style="?android:attr/buttonBarButtonStyle"/>
 
-        <Button android:id="@+id/save_route_button"
+            <Button android:id="@+id/save_route_button"
             android:text="@string/save"
             android:layout_height="match_parent"
             android:layout_width="0dp"

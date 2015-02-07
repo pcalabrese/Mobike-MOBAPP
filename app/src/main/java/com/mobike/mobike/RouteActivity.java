@@ -3,7 +3,6 @@ package com.mobike.mobike;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -11,7 +10,6 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -19,18 +17,19 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
-public class EventActivity extends ActionBarActivity {
-
-    private TextView name, date, creator, description;
+public class RouteActivity extends FragmentActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline route; // the route
     private ArrayList<LatLng> points; // the points of the route
 
+    private TextView name, description, creator, length, duration;
+    private String gpx;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event);
+        setContentView(R.layout.activity_route);
         setUpMapIfNeeded();
 
         route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
@@ -40,16 +39,20 @@ public class EventActivity extends ActionBarActivity {
         db.close();
         route.setPoints(points);
 
+        // get data from bundle and visualize in textViews
         Bundle bundle = getIntent().getExtras();
-        name = (TextView) findViewById(R.id.event_name);
-        date = (TextView) findViewById(R.id.event_date);
-        creator = (TextView) findViewById(R.id.event_creator);
-        description = (TextView) findViewById(R.id.event_description);
+        name = (TextView) findViewById(R.id.route_name);
+        description = (TextView) findViewById(R.id.route_description);
+        creator = (TextView) findViewById(R.id.route_creator);
+        length = (TextView) findViewById(R.id.route_length);
+        duration = (TextView) findViewById(R.id.route_duration);
 
-        name.setText(bundle.getString(EventsFragment.EVENT_NAME));
-        date.setText(bundle.getString(EventsFragment.EVENT_DATE));
-        creator.setText(bundle.getString(EventsFragment.EVENT_CREATOR));
-        description.setText(bundle.getString(EventsFragment.EVENT_DESCRIPTION));
+        name.setText(bundle.getString(SearchFragment.ROUTE_NAME));
+        description.setText(bundle.getString(SearchFragment.ROUTE_DESCRIPTION));
+        creator.setText(bundle.getString(SearchFragment.ROUTE_CREATOR));
+        length.setText(bundle.getString(SearchFragment.ROUTE_LENGTH));
+        duration.setText(bundle.getString(SearchFragment.ROUTE_DURATION));
+        gpx = bundle.getString(SearchFragment.ROUTE_GPX);
     }
 
     // method to finish current activity at the pressure of top left back button

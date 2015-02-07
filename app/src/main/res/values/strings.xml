@@ -38,5 +38,8 @@
         <item>All Events</item>
     </string-array>
     <string name="title_activity_event">Event</string>
+    <string name="title_activity_route">Route</string>
+    <string name="route_name_hint">Route name...</string>
+    <string name="route_description_hint">Description...</string>
 
 </resources>

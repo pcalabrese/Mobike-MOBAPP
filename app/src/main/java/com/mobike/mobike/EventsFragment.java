@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.mobike.mobike.utils.Event;
+import com.mobike.mobike.utils.Route;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,11 +37,18 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    public static final String EVENT_NAME = "com.mobike.mobike.event_name";
-    public static final String EVENT_DATE = "com.mobike.mobike.event_date";
-    public static final String EVENT_CREATOR = "com.mobike.mobike.event_creator";
-    public static final String EVENT_DESCRIPTION = "com.mobike.mobike.event_description";
-    public static final String EVENT_GPX = "com.mobike.mobike.event_gpx";
+    public static final String EVENT_NAME = "com.mobike.mobike.EventsFragment.event_name";
+    public static final String EVENT_DATE = "com.mobike.mobike.EventsFragment.event_date";
+    public static final String EVENT_CREATOR = "com.mobike.mobike.EventsFragment.event_creator";
+    public static final String EVENT_DESCRIPTION = "com.mobike.mobike.EventsFragment.event_description";
+    public static final String EVENT_GPX = "com.mobike.mobike.EventsFragment.event_gpx";
+
+    public static final String ROUTE_NAME = "com.mobike.mobike.EventsFragment.route_name";
+    public static final String ROUTE_DESCRIPTION = "com.mobike.mobike.EventsFragment.route_description";
+    public static final String ROUTE_CREATOR = "com.mobike.mobike.EventsFragment.route_creator";
+    public static final String ROUTE_LENGTH = "com.mobike.mobike.EventsFragment.route_length";
+    public static final String ROUTE_DURATION = "com.mobike.mobike.EventsFragment.route_duration";
+    public static final String ROUTE_GPX = "com.mobike.mobike.EventsFragment.route_gpx";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -94,14 +102,15 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
 
         // Initialization of the events list
         ArrayList<Event> list = new ArrayList<>();
+        Route route = new Route("aaa", "bbb", "ccc", "ddd", "eee", null, "fff");
         String description = "Descrizione dell'evento, qui ci saranno scritti i dettagli inseriti dal creatore dell'evento al momento della creazione. Ci saranno più righe";
-        list.add(new Event("Roma - Cassino", "Sunday 11/11/2014 8:30", "Sent by Andrea Donati", description, ""));
-        list.add(new Event("Roma - Sora", "Saturday 23/02/2015 9:00", "Sent by Marco Esposito", description, ""));
-        list.add(new Event("Roma - Viterbo", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, ""));
-        list.add(new Event("Roma - Perugia", "Saturday 16/05/2015 8:00", "Sent by Bruno Vispi", description, ""));
-        list.add(new Event("Roma - Terni", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, ""));
-        list.add(new Event("Roma - Bolsena", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, ""));
-        list.add(new Event("Roma - Frosinone", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, ""));
+        list.add(new Event("Roma - Cassino", "Sunday 11/11/2014 8:30", "Sent by Andrea Donati", description, route));
+        list.add(new Event("Roma - Sora", "Saturday 23/02/2015 9:00", "Sent by Marco Esposito", description, route));
+        list.add(new Event("Roma - Viterbo", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route));
+        list.add(new Event("Roma - Perugia", "Saturday 16/05/2015 8:00", "Sent by Bruno Vispi", description, route));
+        list.add(new Event("Roma - Terni", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route));
+        list.add(new Event("Roma - Bolsena", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route));
+        list.add(new Event("Roma - Frosinone", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route));
 
         ListAdapter listAdapter = new ListAdapter(getActivity(), R.layout.event_list_row, list);
         ListView listView = (ListView) getView().findViewById(R.id.list_view);
@@ -116,7 +125,13 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 bundle.putString(EVENT_DATE, event.getDate());
                 bundle.putString(EVENT_CREATOR, event.getCreator());
                 bundle.putString(EVENT_DESCRIPTION, event.getDescription());
-                bundle.putString(EVENT_GPX, event.getGpx());
+                Route r = event.getRoute();
+                bundle.putString(ROUTE_NAME, r.getName());
+                bundle.putString(ROUTE_DESCRIPTION, r.getDescription());
+                bundle.putString(ROUTE_CREATOR, r.getCreator());
+                bundle.putString(ROUTE_LENGTH, r.getLength());
+                bundle.putString(ROUTE_DURATION, r.getDuration());
+                bundle.putString(ROUTE_GPX, r.getGpx());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -156,8 +171,15 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
 
     // method called when an item in the spinner is selected
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        switch (position) {
+            case 0: // first item in the spinner
+                break;
+            case 1: // second item
+                break;
+            case 2: // third item
+                break;
+        }
     }
 
     // method called when no items in the spinner are selected

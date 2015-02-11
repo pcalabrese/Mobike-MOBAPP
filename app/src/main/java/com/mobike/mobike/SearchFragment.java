@@ -3,6 +3,7 @@ package com.mobike.mobike;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -44,12 +45,12 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
     private OnFragmentInteractionListener mListener;
 
-    public static final String ROUTE_NAME = "com.mobike.mobike.route_name";
-    public static final String ROUTE_DESCRIPTION = "com.mobike.mobike.route_description";
-    public static final String ROUTE_CREATOR = "com.mobike.mobike.route_creator";
-    public static final String ROUTE_LENGTH = "com.mobike.mobike.route_length";
-    public static final String ROUTE_DURATION = "com.mobike.mobike.route_duration";
-    public static final String ROUTE_GPX = "com.mobike.mobike.route_gpx";
+    public static final String ROUTE_NAME = "com.mobike.mobike.SearchFragment.route_name";
+    public static final String ROUTE_DESCRIPTION = "com.mobike.mobike.SearchFragment.route_description";
+    public static final String ROUTE_CREATOR = "com.mobike.mobike.SearchFragment.route_creator";
+    public static final String ROUTE_LENGTH = "com.mobike.mobike.SearchFragment.route_length";
+    public static final String ROUTE_DURATION = "com.mobike.mobike.SearchFragment.route_duration";
+    public static final String ROUTE_GPX = "com.mobike.mobike.SearchFragment.route_gpx";
 
     /**
      * Use this factory method to create a new instance of
@@ -100,7 +101,22 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         GridView gridView = (GridView) getView().findViewById(R.id.gridview);
         ArrayList<Route> arrayList = new ArrayList<>();
         // popolo l'arrayList
-
+        arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.staticmap), "gpx"));
+        arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.staticmap), "gpx"));
+        arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.staticmap), "gpx"));
+        arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.staticmap), "gpx"));
+        arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.staticmap), "gpx"));
+        arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.staticmap), "gpx"));
+        arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.staticmap), "gpx"));
+        arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.staticmap), "gpx"));
         // creo il gridAdapter
         GridAdapter gridAdapter = new GridAdapter(getActivity(), R.layout.search_grid_item, arrayList);
         // imposto l'adapter
@@ -158,8 +174,13 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
     // method called when an item in the Spinner is selected
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        switch (position) {
+            case 0: // first item in the spinner
+                break;
+            case 1: // second item
+                break;
+        }
     }
 
     //method called when no items in Spinner are selected

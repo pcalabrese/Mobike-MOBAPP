@@ -1,5 +1,6 @@
 package com.mobike.mobike;
 
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -16,16 +17,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.mobike.mobike.utils.Route;
 
 import java.util.ArrayList;
 
 public class EventActivity extends ActionBarActivity {
 
     private TextView name, date, creator, description;
-    private String gpx; // gpx of the route associated with the event
+    private String route_name, route_description, route_creator, route_length, route_duration, route_gpx;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private Polyline route; // the route
+    private Polyline routePoly; // the route
     private ArrayList<LatLng> points; // the points of the route
 
     @Override
@@ -33,27 +35,39 @@ public class EventActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
 
-/*        GPSDatabase db = new GPSDatabase(this);
-        db.open();
-        points = db.gpxToMapsPoints(gpx);
-        db.close();
-*/
-        setUpMapIfNeeded();
-/*
-        route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
-        route.setPoints(points); */
-
+        /* get event and route details from the bundle, route details will be used to visualize the route
+         in a new RouteActivity (at the pressure of a button)
+         */
         Bundle bundle = getIntent().getExtras();
         name = (TextView) findViewById(R.id.event_name);
         date = (TextView) findViewById(R.id.event_date);
         creator = (TextView) findViewById(R.id.event_creator);
         description = (TextView) findViewById(R.id.event_description);
 
+        // displays event's details in textViews
         name.setText(bundle.getString(EventsFragment.EVENT_NAME));
         date.setText(bundle.getString(EventsFragment.EVENT_DATE));
         creator.setText(bundle.getString(EventsFragment.EVENT_CREATOR));
         description.setText(bundle.getString(EventsFragment.EVENT_DESCRIPTION));
-        gpx = bundle.getString(EventsFragment.EVENT_GPX);
+
+        route_name = bundle.getString(SearchFragment.ROUTE_NAME);
+        route_description = bundle.getString(SearchFragment.ROUTE_DESCRIPTION);
+        route_creator = bundle.getString(SearchFragment.ROUTE_CREATOR);
+        route_length = bundle.getString(SearchFragment.ROUTE_LENGTH);
+        route_duration = bundle.getString(SearchFragment.ROUTE_DURATION);
+        route_gpx = bundle.getString(SearchFragment.ROUTE_GPX);
+
+        // get points from route_gpx ,set up the map and finally add the polyline of the route
+/*        GPSDatabase db = new GPSDatabase(this);
+        db.open();
+        points = db.gpxToMapsPoints(route_gpx);
+        db.close();
+*/
+        setUpMapIfNeeded();
+/*
+        routePoly = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
+        routePoly.setPoints(points);
+*/
     }
 
     // method to finish current activity at the pressure of top left back button
@@ -109,9 +123,6 @@ public class EventActivity extends ActionBarActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        GPSDatabase db = new GPSDatabase(this);
-        db.open();
-        // Taking all the points of the route
         if (points != null && points.size() > 0) {
             //saving the first and the last ones
             LatLng start = points.get(0);
@@ -125,7 +136,5 @@ public class EventActivity extends ActionBarActivity {
                     MapsFragment.CAMERA_ZOOM_VALUE - 5);
             mMap.animateCamera(update);
         }
-
-        db.close();
     }
 }

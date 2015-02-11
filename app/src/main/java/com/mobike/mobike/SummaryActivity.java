@@ -21,6 +21,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
@@ -135,10 +136,13 @@ public class SummaryActivity extends ActionBarActivity {
             LatLng end = points.get(points.size() - 1);
 
             // Adding the start and end markers
-            mMap.addCircle(new CircleOptions().center(start).fillColor(Color.GREEN).
+/*            mMap.addCircle(new CircleOptions().center(start).fillColor(Color.GREEN).
                     strokeColor(Color.BLACK).radius(10));
             mMap.addCircle(new CircleOptions().center(end).fillColor(Color.RED).
-                    strokeColor(Color.BLACK).radius(10));
+                    strokeColor(Color.BLACK).radius(10)); */
+            mMap.addMarker(new MarkerOptions().position(start).title("Start"));
+            mMap.addMarker(new MarkerOptions().position(end).title("End"));
+
             // Zooming on the route
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
                     MapsFragment.CAMERA_ZOOM_VALUE - 5);

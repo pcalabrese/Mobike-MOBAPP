@@ -27,5 +27,9 @@
     <color name="acceptedGreen">#00C100</color>
     <color name="refuseRed">#EA0000</color>
     <color name="transparent">#00000000</color>
+    <color name="colorAccentOpacity">#96ff9800</color>
+    <color name="colorPrimaryOpacity">#aa1e88e5</color>
+
+    <color name="grigio_trasparente">#55000000</color>
 
 </resources>

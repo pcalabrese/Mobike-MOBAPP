@@ -11,6 +11,7 @@
 
     <!-- permission in order to get Google account -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <!--
  The ACCESS_COARSE/FINE_LOCATION permissions are not required to use

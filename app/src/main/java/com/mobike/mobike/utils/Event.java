@@ -4,14 +4,15 @@ package com.mobike.mobike.utils;
  * Created by Andrea-PC on 04/02/2015.
  */
 public class Event {
-    private String name, date, creator, description, gpx;
+    private String name, date, creator, description;
+    private Route route;
 
-    public Event(String name, String date, String creator, String description, String gpx) {
+    public Event(String name, String date, String creator, String description, Route route) {
         this.name = name;
         this.date = date;
         this.creator = creator;
         this.description = description;
-        this.gpx = gpx;
+        this.route = route;
     }
 
     public String getName() {
@@ -28,5 +29,5 @@ public class Event {
 
     public String getDescription() { return description; }
 
-    public String getGpx() { return gpx; }
+    public Route getRoute() { return route; }
 }

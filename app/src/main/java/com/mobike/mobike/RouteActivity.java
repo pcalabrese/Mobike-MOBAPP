@@ -3,6 +3,7 @@ package com.mobike.mobike;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
 import android.widget.TextView;
 
@@ -17,10 +18,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
-public class RouteActivity extends FragmentActivity {
+public class RouteActivity extends ActionBarActivity {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private Polyline route; // the route
+    private Polyline route; // the polyline of the route
     private ArrayList<LatLng> points; // the points of the route
 
     private TextView name, description, creator, length, duration;
@@ -31,17 +32,7 @@ public class RouteActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route);
 
-/*        GPSDatabase db = new GPSDatabase(this);
-        db.open();
-        points = db.gpxToMapsPoints(gpx);
-        db.close();
-        */
-        setUpMapIfNeeded();
-/*
-        route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
-        route.setPoints(points); */
-
-        // get data from bundle and visualize in textViews
+        // get data from bundle and displays in textViews
         Bundle bundle = getIntent().getExtras();
         name = (TextView) findViewById(R.id.route_name);
         description = (TextView) findViewById(R.id.route_description);
@@ -55,6 +46,17 @@ public class RouteActivity extends FragmentActivity {
         length.setText(bundle.getString(SearchFragment.ROUTE_LENGTH));
         duration.setText(bundle.getString(SearchFragment.ROUTE_DURATION));
         gpx = bundle.getString(SearchFragment.ROUTE_GPX);
+
+/*        GPSDatabase db = new GPSDatabase(this);
+        db.open();
+        points = db.gpxToMapsPoints(gpx);
+        db.close();
+*/
+        setUpMapIfNeeded();
+/*
+        route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
+        route.setPoints(points);
+*/
     }
 
     // method to finish current activity at the pressure of top left back button
@@ -110,10 +112,6 @@ public class RouteActivity extends FragmentActivity {
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        GPSDatabase db = new GPSDatabase(this);
-        db.open();
-        // Taking all the points of the route
-
         if (points != null && points.size() > 0) {
             //saving the first and the last ones
             LatLng start = points.get(0);
@@ -127,7 +125,5 @@ public class RouteActivity extends FragmentActivity {
                     MapsFragment.CAMERA_ZOOM_VALUE - 5);
             mMap.animateCamera(update);
         }
-
-        db.close();
     }
 }

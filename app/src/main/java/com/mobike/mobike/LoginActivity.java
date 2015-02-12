@@ -20,6 +20,7 @@ import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 
 //LoginActivity non ancora completa, il bottone è inutilizzato
 
@@ -100,6 +101,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         if (!mResolvingError) {
             mGoogleApiClient.connect();
         }
+
     }
 
     @Override
@@ -134,7 +136,18 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     public void onConnected(Bundle bundle) {
         // Abbiamo risolto ogni errore di connessione.
         accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
+        Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
         Log.v(TAG, "onConnected(), accountName = " + accountName);
+        if (person != null) {
+            Log.v(TAG, "onConnected(), Name = " + person.getDisplayName());
+            Log.v(TAG, "onConnected(), Name = " + person.getName());
+            if (person.hasLanguage())
+                Log.v(TAG, "onConnected(), Language = " + person.getLanguage());
+            if(person.hasGender())
+                Log.v(TAG, "onConnected(), Gender = " + person.getGender());
+            if (person.hasImage())
+                Log.v(TAG, "onConnected(), ImageURL = " + person.getImage().getUrl());
+        }
 
         // Salvo l'account name nelle shared preferences
         SharedPreferences sharedPref = getSharedPreferences(ACCOUNT_NAME, Context.MODE_PRIVATE);

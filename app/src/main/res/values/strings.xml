@@ -41,5 +41,10 @@
     <string name="title_activity_route">Route</string>
     <string name="route_name_hint">Route name...</string>
     <string name="route_description_hint">Description...</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="stop">Stop</string>
+    <string name="stop_registration">Are you sure you want to stop the registration?</string>
+    <string name="stop_registration_no_positions">Wait! There is no recorded position yet!\n Are you sure you want to stop the registration?</string>
 
 </resources>

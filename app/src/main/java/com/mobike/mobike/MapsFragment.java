@@ -343,30 +343,65 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      */
     public void stopButtonPressed(View view) {
         if (view.getId() == R.id.stop_button) {
+            final View.OnClickListener onClickListener = this;
             if(registered) {
-                if (resume != null) resume.setVisibility(View.GONE);
-                if (pause != null) pause.setVisibility(View.GONE);
-                stop.setVisibility(View.GONE);
-                start = (Button) getActivity().getLayoutInflater().inflate(R.layout.start_button, buttonLayout, false);
-                buttonLayout.addView(start);
-                start.setOnClickListener(this);
-
-                if (state == State.RUNNING) {
-                    state = State.STOPPED;
-                    gpsService.stopRegistering();
-                } else {
-                    state = State.STOPPED;
-                }
-                gpsService.stopRegistering();
-
-                Intent intent = new Intent(getActivity(), SummaryActivity.class);
-                startActivityForResult(intent, SUMMARY_REQUEST);
+                //alert dialog to stop the registration
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(getResources().getString(R.string.stop))
+                        .setMessage(getResources().getString(R.string.stop_registration))
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // stop the registration
+                                stopRegistration(onClickListener);
+                                Intent intent = new Intent(getActivity(), SummaryActivity.class);
+                                startActivityForResult(intent, SUMMARY_REQUEST);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
             }
             else {
-                Toast.makeText(getActivity(), "Wait! There is no recorded position yet!",
-                        Toast.LENGTH_SHORT).show();
+                // dialog to stop the registration if there are no recorded positions
+                new AlertDialog.Builder(getActivity())
+                        .setTitle(getResources().getString(R.string.stop))
+                        .setMessage(getResources().getString(R.string.stop_registration_no_positions))
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // stop the registration
+                                stopRegistration(onClickListener);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
             }
         }
+    }
+
+    private void stopRegistration(View.OnClickListener onClickListener) {
+        if (resume != null) resume.setVisibility(View.GONE);
+        if (pause != null) pause.setVisibility(View.GONE);
+        stop.setVisibility(View.GONE);
+        start = (Button) getActivity().getLayoutInflater().inflate(R.layout.start_button, buttonLayout, false);
+        buttonLayout.addView(start);
+        start.setOnClickListener(onClickListener);
+
+        if (state == State.RUNNING) {
+            state = State.STOPPED;
+            gpsService.stopRegistering();
+        } else {
+            state = State.STOPPED;
+        }
+        gpsService.stopRegistering();
     }
 
     /**
@@ -409,7 +444,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     public void onNewLocation(Location location){
         if (location != null) {
             Log.v(TAG, "Location accuracy: " + String.valueOf(location.getAccuracy()));
-            Toast.makeText(getActivity(), "Location accuracy: " + String.valueOf(location.getAccuracy()), Toast.LENGTH_SHORT).show();
+        //    Toast.makeText(getActivity(), "Location accuracy: " + String.valueOf(location.getAccuracy()), Toast.LENGTH_SHORT).show();
         }
         updateCamera(location);
         updateUIRoute(location);

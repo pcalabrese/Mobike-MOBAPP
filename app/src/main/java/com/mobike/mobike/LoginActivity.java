@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -154,6 +155,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(ACCOUNT_NAME, accountName);
         editor.commit();
+
+        Toast.makeText(this, "Welcome " + (person.hasName()? person.getName().getGivenName() : person.getDisplayName())+"!", Toast.LENGTH_SHORT).show();
 
         Intent intent = new Intent(this, MainActivity.class);
         startActivityForResult(intent, MAPS_REQUEST);

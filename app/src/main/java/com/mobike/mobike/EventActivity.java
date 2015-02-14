@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.mobike.mobike.utils.CustomMapFragment;
 import com.mobike.mobike.utils.Route;
 
 import java.util.ArrayList;
@@ -107,10 +109,17 @@ public class EventActivity extends ActionBarActivity {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+            mMap = ((CustomMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (mMap != null) {
+                // set listener to add the possibility to scroll the map inside the scroll view
+                ((CustomMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).setListener(new CustomMapFragment.OnTouchListener() {
+                    @Override
+                    public void onTouch() {
+                        ((ScrollView) findViewById(R.id.scroll_view)).requestDisallowInterceptTouchEvent(true);
+                    }
+                });
                 setUpMap();
             }
         }

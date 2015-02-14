@@ -1,4 +1,5 @@
 <ScrollView
+    android:id="@+id/scroll_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -127,7 +128,7 @@
     <fragment  android:layout_width="match_parent"
         android:layout_height="300dp" android:id="@+id/map"
         tools:context="com.mobike.mobike.EventActivity"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
+        android:name="com.mobike.mobike.utils.CustomMapFragment" />
 
 </LinearLayout>
 

@@ -268,7 +268,7 @@ public class GPSDatabase
                 "<name>"+email.substring(0, email.indexOf("@"))+"</name>\n"+
                 "<email " +
                 "id=\""+email.substring(0, email.indexOf("@"))+"\""+
-                "domain=\""+email.substring(email.indexOf("@")+1)+"\"\n"+
+                " domain=\""+email.substring(email.indexOf("@")+1)+"\"/>\n"+
                 "</author>\n"+
                 "</metadata>\n";
         double startLat  = waypoints.get(0).latitude;

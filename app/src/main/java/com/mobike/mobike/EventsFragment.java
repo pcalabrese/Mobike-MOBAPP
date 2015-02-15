@@ -3,9 +3,11 @@ package com.mobike.mobike;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,6 +51,9 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_LENGTH = "com.mobike.mobike.EventsFragment.route_length";
     public static final String ROUTE_DURATION = "com.mobike.mobike.EventsFragment.route_duration";
     public static final String ROUTE_GPX = "com.mobike.mobike.EventsFragment.route_gpx";
+    public static final String EVENT_INVITED = "com.mobike.mobike.EventsFragment.event_invited";
+
+    private final String TAG = "EventsFragment";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -102,15 +107,17 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
 
         // Initialization of the events list
         ArrayList<Event> list = new ArrayList<>();
-        Route route = new Route("aaa", "bbb", "ccc", "ddd", "eee", null, "fff");
+        Route route = new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
+                R.drawable.staticmap), "gpx");
         String description = "Descrizione dell'evento, qui ci saranno scritti i dettagli inseriti dal creatore dell'evento al momento della creazione. Ci saranno più righe";
-        list.add(new Event("Roma - Cassino", "Sunday 11/11/2014 8:30", "Sent by Andrea Donati", description, route));
-        list.add(new Event("Roma - Sora", "Saturday 23/02/2015 9:00", "Sent by Marco Esposito", description, route));
-        list.add(new Event("Roma - Viterbo", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route));
-        list.add(new Event("Roma - Perugia", "Saturday 16/05/2015 8:00", "Sent by Bruno Vispi", description, route));
-        list.add(new Event("Roma - Terni", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route));
-        list.add(new Event("Roma - Bolsena", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route));
-        list.add(new Event("Roma - Frosinone", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route));
+        String invited = "Andrea Donati\nMarco Esposito\nPaolo Calabrese\nBruno Vispi";
+        list.add(new Event("Roma - Cassino", "Sunday 11/11/2014 8:30", "Sent by Andrea Donati", description, route, invited));
+        list.add(new Event("Roma - Sora", "Saturday 23/02/2015 9:00", "Sent by Marco Esposito", description, route, invited));
+        list.add(new Event("Roma - Viterbo", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route, invited));
+        list.add(new Event("Roma - Perugia", "Saturday 16/05/2015 8:00", "Sent by Bruno Vispi", description, route, invited));
+        list.add(new Event("Roma - Terni", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route, invited));
+        list.add(new Event("Roma - Bolsena", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route, invited));
+        list.add(new Event("Roma - Frosinone", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route, invited));
 
         ListAdapter listAdapter = new ListAdapter(getActivity(), R.layout.event_list_row, list);
         ListView listView = (ListView) getView().findViewById(R.id.list_view);
@@ -132,7 +139,9 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 bundle.putString(ROUTE_LENGTH, r.getLength());
                 bundle.putString(ROUTE_DURATION, r.getDuration());
                 bundle.putString(ROUTE_GPX, r.getGpx());
+                bundle.putString(EVENT_INVITED, event.getInvited());
                 intent.putExtras(bundle);
+                Log.v(TAG, r.getName() + r.getDescription() + r.getCreator() + r.getLength() + r.getDuration() + r.getGpx());
                 startActivity(intent);
             }
         });

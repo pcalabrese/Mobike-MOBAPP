@@ -1,11 +1,14 @@
 package com.mobike.mobike;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -25,12 +28,14 @@ import java.util.ArrayList;
 
 public class EventActivity extends ActionBarActivity {
 
-    private TextView name, date, creator, description;
+    private TextView name, date, creator, description, invited;
     private String route_name, route_description, route_creator, route_length, route_duration, route_gpx;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline routePoly; // the route
     private ArrayList<LatLng> points; // the points of the route
+
+    private final String TAG = "EventActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,19 +50,23 @@ public class EventActivity extends ActionBarActivity {
         date = (TextView) findViewById(R.id.event_date);
         creator = (TextView) findViewById(R.id.event_creator);
         description = (TextView) findViewById(R.id.event_description);
+        invited = (TextView) findViewById(R.id.event_invited);
 
         // displays event's details in textViews
         name.setText(bundle.getString(EventsFragment.EVENT_NAME));
         date.setText(bundle.getString(EventsFragment.EVENT_DATE));
         creator.setText(bundle.getString(EventsFragment.EVENT_CREATOR));
         description.setText(bundle.getString(EventsFragment.EVENT_DESCRIPTION));
+        invited.setText(bundle.getString(EventsFragment.EVENT_INVITED));
 
-        route_name = bundle.getString(SearchFragment.ROUTE_NAME);
-        route_description = bundle.getString(SearchFragment.ROUTE_DESCRIPTION);
-        route_creator = bundle.getString(SearchFragment.ROUTE_CREATOR);
-        route_length = bundle.getString(SearchFragment.ROUTE_LENGTH);
-        route_duration = bundle.getString(SearchFragment.ROUTE_DURATION);
-        route_gpx = bundle.getString(SearchFragment.ROUTE_GPX);
+        route_name = bundle.getString(EventsFragment.ROUTE_NAME);
+        route_description = bundle.getString(EventsFragment.ROUTE_DESCRIPTION);
+        route_creator = bundle.getString(EventsFragment.ROUTE_CREATOR);
+        route_length = bundle.getString(EventsFragment.ROUTE_LENGTH);
+        route_duration = bundle.getString(EventsFragment.ROUTE_DURATION);
+        route_gpx = bundle.getString(EventsFragment.ROUTE_GPX);
+
+        Log.v(TAG, route_name + route_description + route_creator + route_length + route_duration + route_gpx);
 
         // get points from route_gpx ,set up the map and finally add the polyline of the route
 /*        GPSDatabase db = new GPSDatabase(this);
@@ -145,5 +154,18 @@ public class EventActivity extends ActionBarActivity {
                     MapsFragment.CAMERA_ZOOM_VALUE - 5);
             mMap.animateCamera(update);
         }
+    }
+
+    public void displayRoute(View view) {
+        Intent intent = new Intent(this, RouteActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString(SearchFragment.ROUTE_NAME, route_name);
+        bundle.putString(SearchFragment.ROUTE_DESCRIPTION, route_description);
+        bundle.putString(SearchFragment.ROUTE_CREATOR, route_creator);
+        bundle.putString(SearchFragment.ROUTE_LENGTH, route_length);
+        bundle.putString(SearchFragment.ROUTE_DURATION, route_duration);
+        bundle.putString(SearchFragment.ROUTE_GPX, route_gpx);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }

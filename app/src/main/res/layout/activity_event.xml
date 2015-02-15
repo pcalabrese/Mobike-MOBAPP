@@ -48,10 +48,15 @@
 
     </LinearLayout>
 
-    <!-- text view for the name of the event -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <!-- text view for the name of the event -->
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="7"
         android:id="@+id/event_name"
         android:textStyle="bold"
         android:textSize="20sp"
@@ -63,6 +68,22 @@
         android:drawableLeft="@drawable/pencil_grey_24dp"
         android:drawableStart="@drawable/pencil_grey_24dp"
         android:drawablePadding="15dp"/>
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:background="@color/myGray" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="end"
+            android:src="@drawable/map_marker_radius_grey_24dp"
+            android:background="@color/transparent"
+            android:onClick="displayRoute"/>
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
@@ -104,6 +125,27 @@
         android:layout_marginBottom="15dp"
         android:drawableLeft="@drawable/account_grey_24dp"
         android:drawableStart="@drawable/account_grey_24dp"
+        android:drawablePadding="15dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/myGray" />
+
+    <!-- text view for the invited people of the event -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/event_invited"
+        android:textStyle="bold"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginBottom="15dp"
+        android:drawableLeft="@drawable/account_multiple_grey_24dp"
+        android:drawableStart="@drawable/account_multiple_grey_24dp"
         android:drawablePadding="15dp"/>
 
     <View

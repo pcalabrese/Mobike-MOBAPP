@@ -141,4 +141,60 @@ public class RouteActivity extends ActionBarActivity {
             mMap.animateCamera(update);
         }
     }
+
+    /*private class DLRouteDetailsTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            return HTTPGetRoute(downloadURL);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try{
+                JSONObject json = new JSONObject(result);
+            }catch(JSONException e)
+            { e.printStackTrace();}
+
+            showRouteDetails(json);
+        }
+
+        private String HTTPGetEvent(String url){
+            InputStream inputStream = null;
+            String result = "";
+            try {
+
+                // create HttpClient
+                HttpClient httpclient = new DefaultHttpClient();
+
+                // make GET request to the given URL
+                HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
+
+                // receive response as inputStream
+                inputStream = httpResponse.getEntity().getContent();
+
+                // convert inputstream to string
+                if(inputStream != null)
+                    result = convertInputStreamToString(inputStream);
+                else{
+                    return null;}
+
+            } catch (Exception e) {
+                Log.d("InputStream", e.getLocalizedMessage());
+            }
+            return result;
+        }
+
+        private String convertInputStreamToString(InputStream inputStream) throws IOException {
+            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+            String line = "";
+            String result = "";
+            while((line = bufferedReader.readLine()) != null)
+                result += line;
+
+            inputStream.close();
+            return result;
+
+        }
+    }*/
 }

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -20,6 +21,17 @@ import android.widget.TextView;
 import com.mobike.mobike.utils.Event;
 import com.mobike.mobike.utils.Route;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -55,6 +67,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_DIFFICULTY = "com.mobike.mobike.EventsFragment.route_difficulty";
     public static final String ROUTE_BENDS = "com.mobike.mobike.EventsFragment.route_bends";
     public static final String ROUTE_TYPE = "com.mobike.mobike.EventsFragment.route_type";
+
+    public static final String downloadURL = "qualcosa";
 
 
     private final String TAG = "EventsFragment";
@@ -217,6 +231,102 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    public void showEventsList(JSONObject json){
+        Spinner spinner = (Spinner) getView().findViewById(R.id.event_types);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.event_types, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+        // Initialization of the events list
+        ArrayList<Event> list = new ArrayList<>();
+        // TODO popolare la lista con i dati presi dal json
+
+        ListAdapter listAdapter = new ListAdapter(getActivity(), R.layout.event_list_row, list);
+        ListView listView = (ListView) getView().findViewById(R.id.list_view);
+        listView.setAdapter(listAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Event event = (Event) adapterView.getAdapter().getItem(position);
+                Intent intent = new Intent(getActivity(), EventActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(EVENT_NAME, event.getName());
+                bundle.putString(EVENT_DATE, event.getDate());
+                bundle.putString(EVENT_CREATOR, event.getCreator());
+                bundle.putString(EVENT_DESCRIPTION, event.getDescription());
+                Route r = event.getRoute();
+                bundle.putString(ROUTE_NAME, r.getName());
+                bundle.putString(ROUTE_DESCRIPTION, r.getDescription());
+                bundle.putString(ROUTE_CREATOR, r.getCreator());
+                bundle.putString(ROUTE_LENGTH, r.getLength());
+                bundle.putString(ROUTE_DURATION, r.getDuration());
+                bundle.putString(ROUTE_GPX, r.getGpx());
+                bundle.putString(EVENT_INVITED, event.getInvited());
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+    }
+
+    private class DownloadEventsTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            return HTTPGetEvents(downloadURL);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try{
+                JSONObject json = new JSONObject(result);
+                showEventsList(json);
+            }catch(JSONException e)
+            { e.printStackTrace();}
+        }
+
+        private String HTTPGetEvents(String url){
+            InputStream inputStream = null;
+            String result = "";
+            try {
+
+                // create HttpClient
+                HttpClient httpclient = new DefaultHttpClient();
+
+                // make GET request to the given URL
+                HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
+
+                // receive response as inputStream
+                inputStream = httpResponse.getEntity().getContent();
+
+                // convert inputstream to string
+                if(inputStream != null)
+                    result = convertInputStreamToString(inputStream);
+                else{
+                    return null;}
+
+            } catch (Exception e) {
+                Log.d("InputStream", e.getLocalizedMessage());
+            }
+            return result;
+        }
+
+        private String convertInputStreamToString(InputStream inputStream) throws IOException {
+            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+            String line = "";
+            String result = "";
+            while((line = bufferedReader.readLine()) != null)
+                result += line;
+
+            inputStream.close();
+            return result;
+
+        }
     }
 
 }

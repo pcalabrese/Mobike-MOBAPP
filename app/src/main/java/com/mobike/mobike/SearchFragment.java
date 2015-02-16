@@ -5,9 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +23,17 @@ import android.widget.TextView;
 
 import com.mobike.mobike.utils.Route;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,6 +68,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_BENDS = "com.mobike.mobike.SearchFragment.route_bends";
     public static final String ROUTE_TYPE = "com.mobike.mobike.SearchFragment.route_type";
 
+    public static final String downloadURL = "qualcosa";
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -195,6 +209,46 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
     }
 
+    public void showRouteList(JSONObject json){
+        Spinner spinner = (Spinner) getView().findViewById(R.id.route_types);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.route_types, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        spinner.setAdapter(adapter);
+
+
+        // grid view
+        GridView gridView = (GridView) getView().findViewById(R.id.gridview);
+        ArrayList<Route> arrayList = new ArrayList<>();
+        // TODO popolo l'arrayList con i dati presi dal json
+
+        // creo il gridAdapter
+        GridAdapter gridAdapter = new GridAdapter(getActivity(), R.layout.search_grid_item, arrayList);
+        // imposto l'adapter
+        gridView.setAdapter(gridAdapter);
+        // imposto il listener
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                // faccio partire l'activity per la visualizzazione del percorso, passando i campi di Route in un bundle
+                Route route = (Route) adapterView.getAdapter().getItem(position);
+                Intent intent = new Intent(getActivity(), RouteActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putString(ROUTE_NAME, route.getName());
+                bundle.putString(ROUTE_DESCRIPTION, route.getDescription());
+                bundle.putString(ROUTE_CREATOR, route.getCreator());
+                bundle.putString(ROUTE_LENGTH, route.getLength());
+                bundle.putString(ROUTE_DURATION, route.getDuration());
+                bundle.putString(ROUTE_GPX, route.getGpx());
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }
+        });
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -208,6 +262,61 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    private class DownloadRoutesTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            return HTTPGetRoutes(downloadURL);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try{
+                JSONObject json = new JSONObject(result);
+                showRouteList(json);
+            }catch(JSONException e)
+            { e.printStackTrace();};
+        }
+
+        private String HTTPGetRoutes(String url){
+            InputStream inputStream = null;
+            String result = "";
+            try {
+
+                // create HttpClient
+                HttpClient httpclient = new DefaultHttpClient();
+
+                // make GET request to the given URL
+                HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
+
+                // receive response as inputStream
+                inputStream = httpResponse.getEntity().getContent();
+
+                // convert inputstream to string
+                if(inputStream != null)
+                    result = convertInputStreamToString(inputStream);
+                else{
+                    return null;}
+
+            } catch (Exception e) {
+                Log.d("InputStream", e.getLocalizedMessage());
+            }
+            return result;
+        }
+
+        private String convertInputStreamToString(InputStream inputStream) throws IOException {
+            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+            String line = "";
+            String result = "";
+            while((line = bufferedReader.readLine()) != null)
+                result += line;
+
+            inputStream.close();
+            return result;
+
+        }
     }
 
 }

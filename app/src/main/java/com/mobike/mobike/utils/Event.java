@@ -16,6 +16,11 @@ public class Event {
         this.invited = invited;
     }
 
+    public Event(String name, String date, String creator){
+        this.name = name;
+        this.date = date;
+        this.creator = creator;
+    }
     public String getName() {
         return name;
     }
@@ -33,4 +38,16 @@ public class Event {
     public Route getRoute() { return route; }
 
     public String getInvited() { return invited; }
+
+    public void setDescription(String desc){
+        this.description = desc;
+    }
+
+    public void setRoute(Route r){
+        this.route = r;
+    }
+
+    public void setInvited(String invited){
+        this.invited = invited;
+    }
 }

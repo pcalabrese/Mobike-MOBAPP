@@ -3,6 +3,7 @@ package com.mobike.mobike;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -24,6 +25,17 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.utils.CustomMapFragment;
 import com.mobike.mobike.utils.Route;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class EventActivity extends ActionBarActivity {
@@ -36,6 +48,8 @@ public class EventActivity extends ActionBarActivity {
     private ArrayList<LatLng> points; // the points of the route
 
     private final String TAG = "EventActivity";
+
+    private static final String downloadURL = "http//:mobike.ddns.net/SRV/qualcosa";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,4 +182,60 @@ public class EventActivity extends ActionBarActivity {
         intent.putExtras(bundle);
         startActivity(intent);
     }
+
+    /*private class DLEventDetailsTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            return HTTPGetEvents(downloadURL);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try{
+                JSONObject json = new JSONObject(result);
+            }catch(JSONException e)
+            { e.printStackTrace();}
+
+            showEventDetails(json);
+        }
+
+        private String HTTPGetEvent(String url){
+            InputStream inputStream = null;
+            String result = "";
+            try {
+
+                // create HttpClient
+                HttpClient httpclient = new DefaultHttpClient();
+
+                // make GET request to the given URL
+                HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
+
+                // receive response as inputStream
+                inputStream = httpResponse.getEntity().getContent();
+
+                // convert inputstream to string
+                if(inputStream != null)
+                    result = convertInputStreamToString(inputStream);
+                else{
+                    return null;}
+
+            } catch (Exception e) {
+                Log.d("InputStream", e.getLocalizedMessage());
+            }
+            return result;
+        }
+
+        private String convertInputStreamToString(InputStream inputStream) throws IOException {
+            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+            String line = "";
+            String result = "";
+            while((line = bufferedReader.readLine()) != null)
+                result += line;
+
+            inputStream.close();
+            return result;
+
+        }
+    }*/
 }

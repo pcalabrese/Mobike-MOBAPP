@@ -104,6 +104,39 @@
         android:minLines="3"
         android:maxLines="3"/>
 
+    <!-- difficulty -->
+    <EditText
+        android:id="@+id/route_difficulty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:maxLines="1"
+        android:hint="@string/route_difficulty_hint"/>
+
+    <!-- bends -->
+    <EditText
+        android:id="@+id/route_bends"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:maxLines="1"
+        android:hint="@string/route_bends_hint"/>
+
+    <!-- type -->
+    <EditText
+        android:id="@+id/route_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:maxLines="1"
+        android:hint="@string/route_type_hint"/>
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/button_layout_summary"
@@ -125,15 +158,15 @@
                 style="?android:attr/buttonBarButtonStyle"/>
 
             <Button android:id="@+id/save_route_button"
-            android:text="@string/save"
-            android:layout_height="match_parent"
-            android:layout_width="0dp"
-            android:layout_weight="0.5"
-            android:layout_margin="10dp"
-            android:textColor="@color/white"
-            android:background="@color/green"
-            android:onClick="saveRoute"
-            style="?android:attr/buttonBarButtonStyle"/>
+                android:text="@string/save"
+                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_margin="10dp"
+                android:textColor="@color/white"
+                android:background="@color/green"
+                android:onClick="saveRoute"
+                style="?android:attr/buttonBarButtonStyle"/>
 
     </LinearLayout>
 

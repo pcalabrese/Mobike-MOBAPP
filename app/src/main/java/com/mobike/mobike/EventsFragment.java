@@ -52,6 +52,10 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_DURATION = "com.mobike.mobike.EventsFragment.route_duration";
     public static final String ROUTE_GPX = "com.mobike.mobike.EventsFragment.route_gpx";
     public static final String EVENT_INVITED = "com.mobike.mobike.EventsFragment.event_invited";
+    public static final String ROUTE_DIFFICULTY = "com.mobike.mobike.EventsFragment.route_difficulty";
+    public static final String ROUTE_BENDS = "com.mobike.mobike.EventsFragment.route_bends";
+    public static final String ROUTE_TYPE = "com.mobike.mobike.EventsFragment.route_type";
+
 
     private final String TAG = "EventsFragment";
 
@@ -108,7 +112,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         // Initialization of the events list
         ArrayList<Event> list = new ArrayList<>();
         Route route = new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx");
+                R.drawable.staticmap), "gpx", "5", "7", "Mountain");
         String description = "Descrizione dell'evento, qui ci saranno scritti i dettagli inseriti dal creatore dell'evento al momento della creazione. Ci saranno più righe";
         String invited = "Andrea Donati\nMarco Esposito\nPaolo Calabrese\nBruno Vispi";
         list.add(new Event("Roma - Cassino", "Sunday 11/11/2014 8:30", "Sent by Andrea Donati", description, route, invited));
@@ -140,6 +144,9 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 bundle.putString(ROUTE_DURATION, r.getDuration());
                 bundle.putString(ROUTE_GPX, r.getGpx());
                 bundle.putString(EVENT_INVITED, event.getInvited());
+                bundle.putString(ROUTE_DIFFICULTY, r.getDifficulty());
+                bundle.putString(ROUTE_BENDS, r.getBends());
+                bundle.putString(ROUTE_TYPE, r.getType());
                 intent.putExtras(bundle);
                 Log.v(TAG, r.getName() + r.getDescription() + r.getCreator() + r.getLength() + r.getDuration() + r.getGpx());
                 startActivity(intent);

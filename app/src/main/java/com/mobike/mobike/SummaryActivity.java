@@ -45,7 +45,7 @@ public class SummaryActivity extends ActionBarActivity {
     private static final String UploadURL = "http://mobike.ddns.net/SRV/routes/create";
     private static final String DEFAULT_ACCOUNT_NAME = "no account";
     public static final String ROUTE_ID = "com.mobike.mobike.ROUTE_ID";
-    private  EditText routeNameText, routeDescriptionText;
+    private  EditText routeNameText, routeDescriptionText, routeDifficulty, routeBends, routeType;
     private TextView length, duration;
     private long durationInSeconds;
     private String routeName, routeDescription, email, routeID;
@@ -73,6 +73,9 @@ public class SummaryActivity extends ActionBarActivity {
         route.setPoints(points);
         routeNameText = (EditText) findViewById(R.id.route_name_text);
         routeDescriptionText = (EditText) findViewById(R.id.route_description_text);
+        routeDifficulty = (EditText) findViewById(R.id.route_difficulty);
+        routeBends = (EditText) findViewById(R.id.route_bends);
+        routeType = (EditText) findViewById(R.id.route_type);
 
         //set length and duration text views
         GPSDatabase db2 = new GPSDatabase(this);
@@ -163,8 +166,14 @@ public class SummaryActivity extends ActionBarActivity {
     }
 
     public void saveRoute(View view) {
-        // Parte l'upload del percorso
-        if (routeNameText.getText().toString().length() > 0) {
+        if (routeNameText.getText().toString().length() == 0) {
+            Toast.makeText(this, "Insert a route name", Toast.LENGTH_SHORT).show();
+            return;
+        } else if ((!(routeDifficulty.getText().toString().length() == 0) && (Integer.parseInt(routeDifficulty.getText().toString()) < 1 || Integer.parseInt(routeDifficulty.getText().toString()) > 10))
+                || (!(routeBends.getText().toString().length() == 0) && (Integer.parseInt(routeBends.getText().toString()) < 1 || Integer.parseInt(routeBends.getText().toString()) > 10))) {
+            Toast.makeText(this, "Difficulty and Bends must be between 1 and 10", Toast.LENGTH_SHORT).show();
+            return;
+        } else {
             routeName = routeNameText.getText().toString();
             routeDescription = routeDescriptionText.getText().toString();
             SharedPreferences sharedPref = getSharedPreferences(LoginActivity.ACCOUNT_NAME, Context.MODE_PRIVATE);
@@ -178,8 +187,6 @@ public class SummaryActivity extends ActionBarActivity {
             } else {
                 Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
             }
-        } else {
-            Toast.makeText(this, "Insert a route name", Toast.LENGTH_SHORT).show();
         }
     }
 

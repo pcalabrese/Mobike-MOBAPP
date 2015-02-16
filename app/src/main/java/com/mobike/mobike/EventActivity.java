@@ -29,7 +29,7 @@ import java.util.ArrayList;
 public class EventActivity extends ActionBarActivity {
 
     private TextView name, date, creator, description, invited;
-    private String route_name, route_description, route_creator, route_length, route_duration, route_gpx;
+    private String route_name, route_description, route_creator, route_length, route_duration, route_gpx, route_difficulty, route_bends, route_type;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline routePoly; // the route
@@ -65,6 +65,9 @@ public class EventActivity extends ActionBarActivity {
         route_length = bundle.getString(EventsFragment.ROUTE_LENGTH);
         route_duration = bundle.getString(EventsFragment.ROUTE_DURATION);
         route_gpx = bundle.getString(EventsFragment.ROUTE_GPX);
+        route_difficulty = bundle.getString(EventsFragment.ROUTE_DIFFICULTY);
+        route_bends = bundle.getString(EventsFragment.ROUTE_BENDS);
+        route_type = bundle.getString(EventsFragment.ROUTE_TYPE);
 
         Log.v(TAG, route_name + route_description + route_creator + route_length + route_duration + route_gpx);
 
@@ -165,6 +168,9 @@ public class EventActivity extends ActionBarActivity {
         bundle.putString(SearchFragment.ROUTE_LENGTH, route_length);
         bundle.putString(SearchFragment.ROUTE_DURATION, route_duration);
         bundle.putString(SearchFragment.ROUTE_GPX, route_gpx);
+        bundle.putString(SearchFragment.ROUTE_DIFFICULTY, route_difficulty);
+        bundle.putString(SearchFragment.ROUTE_BENDS, route_bends);
+        bundle.putString(SearchFragment.ROUTE_TYPE, route_type);
         intent.putExtras(bundle);
         startActivity(intent);
     }

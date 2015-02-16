@@ -51,6 +51,9 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_LENGTH = "com.mobike.mobike.SearchFragment.route_length";
     public static final String ROUTE_DURATION = "com.mobike.mobike.SearchFragment.route_duration";
     public static final String ROUTE_GPX = "com.mobike.mobike.SearchFragment.route_gpx";
+    public static final String ROUTE_DIFFICULTY = "com.mobike.mobike.SearchFragment.route_difficulty";
+    public static final String ROUTE_BENDS = "com.mobike.mobike.SearchFragment.route_bends";
+    public static final String ROUTE_TYPE = "com.mobike.mobike.SearchFragment.route_type";
 
     /**
      * Use this factory method to create a new instance of
@@ -102,21 +105,21 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         ArrayList<Route> arrayList = new ArrayList<>();
         // popolo l'arrayList
         arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx"));
+                R.drawable.staticmap), "gpx", "7", "5", "Mountain"));
         arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx"));
+                R.drawable.staticmap), "gpx", "7", "5", "Mountain"));
         arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx"));
+                R.drawable.staticmap), "gpx", "7", "5", "Mountain"));
         arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx"));
+                R.drawable.staticmap), "gpx", "7", "5", "Mountain"));
         arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx"));
+                R.drawable.staticmap), "gpx", "7", "5", "Mountain"));
         arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx"));
+                R.drawable.staticmap), "gpx", "7", "5", "Mountain"));
         arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx"));
+                R.drawable.staticmap), "gpx", "7", "5", "Mountain"));
         arrayList.add(new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx"));
+                R.drawable.staticmap), "gpx", "7", "5", "Mountain"));
         // creo il gridAdapter
         GridAdapter gridAdapter = new GridAdapter(getActivity(), R.layout.search_grid_item, arrayList);
         // imposto l'adapter
@@ -135,6 +138,9 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 bundle.putString(ROUTE_LENGTH, route.getLength());
                 bundle.putString(ROUTE_DURATION, route.getDuration());
                 bundle.putString(ROUTE_GPX, route.getGpx());
+                bundle.putString(ROUTE_DIFFICULTY, route.getDifficulty());
+                bundle.putString(ROUTE_BENDS, route.getBends());
+                bundle.putString(ROUTE_TYPE, route.getType());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

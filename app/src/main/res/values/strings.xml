@@ -39,12 +39,15 @@
     </string-array>
     <string name="title_activity_event">Event</string>
     <string name="title_activity_route">Route</string>
-    <string name="route_name_hint">Route name...</string>
+    <string name="route_name_hint">Route name... (required)</string>
     <string name="route_description_hint">Description...</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="stop">Stop</string>
     <string name="stop_registration">Are you sure you want to stop the registration?</string>
     <string name="stop_registration_no_positions">Wait! There is no recorded position yet!\n Are you sure you want to stop the registration?</string>
+    <string name="route_difficulty_hint">Difficulty... (number between 1 and 10)</string>
+    <string name="route_bends_hint">Bends... (number between 1 and 10)</string>
+    <string name="route_type_hint">Route type...</string>
 
 </resources>

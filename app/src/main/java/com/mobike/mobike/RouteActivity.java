@@ -26,7 +26,7 @@ public class RouteActivity extends ActionBarActivity {
     private Polyline route; // the polyline of the route
     private ArrayList<LatLng> points; // the points of the route
 
-    private TextView name, description, creator, length, duration;
+    private TextView name, description, creator, length, duration, difficulty, bends, type;
     private String gpx;
 
     @Override
@@ -41,6 +41,9 @@ public class RouteActivity extends ActionBarActivity {
         creator = (TextView) findViewById(R.id.route_creator);
         length = (TextView) findViewById(R.id.route_length);
         duration = (TextView) findViewById(R.id.route_duration);
+        difficulty = (TextView) findViewById(R.id.route_difficulty);
+        bends = (TextView) findViewById(R.id.route_bends);
+        type = (TextView) findViewById(R.id.route_type);
 
         name.setText(bundle.getString(SearchFragment.ROUTE_NAME));
         description.setText(bundle.getString(SearchFragment.ROUTE_DESCRIPTION));
@@ -48,6 +51,9 @@ public class RouteActivity extends ActionBarActivity {
         length.setText(bundle.getString(SearchFragment.ROUTE_LENGTH));
         duration.setText(bundle.getString(SearchFragment.ROUTE_DURATION));
         gpx = bundle.getString(SearchFragment.ROUTE_GPX);
+        difficulty.setText("Difficulty: " + bundle.getString(SearchFragment.ROUTE_DIFFICULTY));
+        bends.setText("Bends: " + bundle.getString(SearchFragment.ROUTE_BENDS));
+        type.setText("Type: " + bundle.getString(SearchFragment.ROUTE_TYPE));
 
 /*        GPSDatabase db = new GPSDatabase(this);
         db.open();

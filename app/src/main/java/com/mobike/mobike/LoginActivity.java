@@ -7,6 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +26,15 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 
-//LoginActivity non ancora completa, il bottone è inutilizzato
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class LoginActivity extends ActionBarActivity implements View.OnClickListener, ConnectionCallbacks, OnConnectionFailedListener {
 
@@ -37,7 +48,10 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     private GoogleApiClient mGoogleApiClient;
     private ConnectionResult mConnectionResult;
     private boolean mResolvingError = false;
-    private String accountName;
+    private String email, name, surname;
+    private Context context = this;
+
+    private static final String postURL = "http://mobike.ddns.net/SRV/users/auth";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,9 +150,10 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     @Override
     public void onConnected(Bundle bundle) {
         // Abbiamo risolto ogni errore di connessione.
-        accountName = Plus.AccountApi.getAccountName(mGoogleApiClient);
+        email = Plus.AccountApi.getAccountName(mGoogleApiClient);
         Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-        Log.v(TAG, "onConnected(), accountName = " + accountName);
+        name = person.getName().getGivenName();
+        surname = person.getName().getFamilyName();
         if (person != null) {
             Log.v(TAG, "onConnected(), Name = " + person.getDisplayName());
             Log.v(TAG, "onConnected(), Name = " + person.getName());
@@ -153,13 +168,16 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         // Salvo l'account name nelle shared preferences
         SharedPreferences sharedPref = getSharedPreferences(ACCOUNT_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(ACCOUNT_NAME, accountName);
+        editor.putString(ACCOUNT_NAME, email);
         editor.commit();
 
-        Toast.makeText(this, "Welcome " + (person.hasName()? person.getName().getGivenName() : person.getDisplayName())+"!", Toast.LENGTH_SHORT).show();
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+            new LoginPostTask().execute();
+        else
+            Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
 
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivityForResult(intent, MAPS_REQUEST);
     }
 
     @Override
@@ -223,4 +241,68 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         }
     }
 
+
+
+
+    // AsyncTask that performs the post of the user
+    private class LoginPostTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... context) {
+            try {
+                return postUser();
+            } catch (IOException e) {
+                return "Unable to upload the route. URL may be invalid.";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
+        }
+
+        private String postUser() throws IOException {
+            HttpURLConnection urlConnection = null;
+            try {
+                URL u = new URL(postURL);
+                urlConnection = (HttpURLConnection) u.openConnection();
+                urlConnection.setRequestMethod("POST");
+                urlConnection.setRequestProperty("Content-Type", "application/json");
+                urlConnection.setRequestProperty("Accept", "text/plain");
+                urlConnection.setReadTimeout(10000 /* milliseconds */);
+                urlConnection.setConnectTimeout(15000 /* milliseconds */);
+                urlConnection.setDoOutput(true);
+                urlConnection.setChunkedStreamingMode(0);
+                urlConnection.connect();
+                JSONObject jsonObject = new JSONObject();
+                try{
+                    jsonObject.put("name", name);
+                    jsonObject.put("surname", surname);
+                    jsonObject.put("email", email);
+                }
+                catch(JSONException e){/*not implemented yet*/ }
+                OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
+                out.write(jsonObject.toString());
+                out.close();
+                int httpResult = urlConnection.getResponseCode();
+                if (httpResult == HttpURLConnection.HTTP_OK) {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
+                    String userID = br.readLine();
+                    Log.v(TAG, "userID: " + userID);
+                    br.close();
+                    Intent intent = new Intent(context, MainActivity.class);
+                    startActivityForResult(intent, MAPS_REQUEST);
+                    return "Welcome " + name + "!";
+                }
+                else {
+                    // scrive un messaggio di errore con codice httpResult
+                    Log.v(TAG, " httpResult = " + httpResult);
+                    return "Error code: " + httpResult;
+                }
+            } finally {
+                if (urlConnection != null)
+                    urlConnection.disconnect();
+            }
+        }
+    }
 }

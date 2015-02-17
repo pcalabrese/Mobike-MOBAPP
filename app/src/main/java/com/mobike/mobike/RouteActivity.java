@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.utils.CustomMapFragment;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class RouteActivity extends ActionBarActivity {
@@ -55,16 +56,18 @@ public class RouteActivity extends ActionBarActivity {
         bends.setText("Bends: " + bundle.getString(SearchFragment.ROUTE_BENDS));
         type.setText("Type: " + bundle.getString(SearchFragment.ROUTE_TYPE));
 
-/*        GPSDatabase db = new GPSDatabase(this);
+        GPSDatabase db = new GPSDatabase(this);
         db.open();
-        points = db.gpxToMapsPoints(gpx);
+        try {
+            points = db.gpxToMapPoints(gpx);
+        } catch (IOException e) {}
         db.close();
-*/
+
         setUpMapIfNeeded();
-/*
+
         route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         route.setPoints(points);
-*/
+
     }
 
     // method to finish current activity at the pressure of top left back button

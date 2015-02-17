@@ -29,13 +29,13 @@
         <item>Events</item>
     </string-array>
     <string-array name="route_types">
-        <item>My Routes</item>
         <item>All Routes</item>
+        <item>My Routes</item>
     </string-array>
     <string-array name="event_types">
+        <item>All Events</item>
         <item>My Events</item>
         <item>Accepted</item>
-        <item>All Events</item>
     </string-array>
     <string name="title_activity_event">Event</string>
     <string name="title_activity_route">Route</string>

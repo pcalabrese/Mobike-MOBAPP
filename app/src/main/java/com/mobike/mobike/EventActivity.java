@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.utils.CustomMapFragment;
 import com.mobike.mobike.utils.Route;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class EventActivity extends ActionBarActivity {
@@ -72,16 +73,18 @@ public class EventActivity extends ActionBarActivity {
         Log.v(TAG, route_name + route_description + route_creator + route_length + route_duration + route_gpx);
 
         // get points from route_gpx ,set up the map and finally add the polyline of the route
-/*        GPSDatabase db = new GPSDatabase(this);
+        GPSDatabase db = new GPSDatabase(this);
         db.open();
-        points = db.gpxToMapsPoints(route_gpx);
+        try {
+            points = db.gpxToMapPoints(route_gpx);
+        } catch (IOException e) {}
         db.close();
-*/
+
         setUpMapIfNeeded();
-/*
+
         routePoly = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         routePoly.setPoints(points);
-*/
+
     }
 
     // method to finish current activity at the pressure of top left back button

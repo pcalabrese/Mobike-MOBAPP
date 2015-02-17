@@ -27,6 +27,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -68,7 +69,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_BENDS = "com.mobike.mobike.SearchFragment.route_bends";
     public static final String ROUTE_TYPE = "com.mobike.mobike.SearchFragment.route_type";
 
-    public static final String downloadURL = "qualcosa";
+    public static final String downloadURL = "http://mobike.ddns.net/SRV/routes/retrieveall";
+    public static final String GPXURL = "http://mobike.ddns.net/SRV/routes";
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -734,7 +736,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
     }
 
-    public void showRouteList(JSONObject json){
+    public void showRouteList(JSONArray json) {
         Spinner spinner = (Spinner) getView().findViewById(R.id.route_types);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
@@ -749,6 +751,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         GridView gridView = (GridView) getView().findViewById(R.id.gridview);
         ArrayList<Route> arrayList = new ArrayList<>();
         // TODO popolo l'arrayList con i dati presi dal json
+        AsyncTask<String, Void, String> a = new GPXTask();
+
 
         // creo il gridAdapter
         GridAdapter gridAdapter = new GridAdapter(getActivity(), R.layout.search_grid_item, arrayList);
@@ -799,10 +803,62 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         @Override
         protected void onPostExecute(String result) {
             try{
-                JSONObject json = new JSONObject(result);
+                JSONArray json = new JSONArray(result);
                 showRouteList(json);
             }catch(JSONException e)
             { e.printStackTrace();};
+        }
+
+        private String HTTPGetRoutes(String url){
+            InputStream inputStream = null;
+            String result = "";
+            try {
+
+                // create HttpClient
+                HttpClient httpclient = new DefaultHttpClient();
+
+                // make GET request to the given URL
+                HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
+
+                // receive response as inputStream
+                inputStream = httpResponse.getEntity().getContent();
+
+                // convert inputstream to string
+                if(inputStream != null)
+                    result = convertInputStreamToString(inputStream);
+                else{
+                    return null;}
+
+            } catch (Exception e) {
+                Log.d("InputStream", e.getLocalizedMessage());
+            }
+            return result;
+        }
+
+        private String convertInputStreamToString(InputStream inputStream) throws IOException {
+            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+            String line = "";
+            String result = "";
+            while((line = bufferedReader.readLine()) != null)
+                result += line;
+
+            inputStream.close();
+            return result;
+
+        }
+    }
+
+    private class GPXTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            return HTTPGetRoutes(GPXURL+"/urls[0]/gpx");
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+
         }
 
         private String HTTPGetRoutes(String url){

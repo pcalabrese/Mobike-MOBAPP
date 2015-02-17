@@ -72,7 +72,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_TYPE = "com.mobike.mobike.EventsFragment.route_type";
 
     public static final String downloadEventsURL = "qualcosa";
-    public static final String downloadRoutesURL = "mobike.ddns.net/SRV/routes/retrieveall";
+    public static final String downloadRoutesURL = "http://mobike.ddns.net/SRV/routes/retrieveall";
 
     public static JSONArray eventRoutes;
 

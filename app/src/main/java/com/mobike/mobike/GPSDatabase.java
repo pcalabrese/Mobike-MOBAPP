@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mobike.mobike.utils.PolyUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 
 import static com.mobike.mobike.DatabaseStrings.*;
 /**
@@ -43,6 +45,9 @@ public class GPSDatabase
     public final String CREATERDB="CREATE TABLE "+ TABLENAME+"("+ FIELD_ID +" INTEGER PRIMARY KEY, " +
             FIELD_LAT+" VARCHAR NOT NULL, "+ FIELD_LNG+" VARCHAR NOT NULL, "+FIELD_ALT +" VARCHAR, " +
             FIELD_TIME+" INTEGER, " + FIELD_DIST + " REAL);";
+
+    private final String staticMapURL = "https://maps.googleapis.com/maps/api/staticmap?size=400x400&path=weight:5%7Ccolor:0xff0000ff%7Cenc:";
+    private final int maxEncodedPoints = 100;
 
 
     /**
@@ -390,7 +395,7 @@ public class GPSDatabase
      * @param description the description the user gave to the route
      * @return the JSONObject containing all the informations on the route.
      */
-    public JSONObject exportRouteInJson(String email, String name, String description){
+    public JSONObject exportRouteInJson(String email, String name, String description, String difficulty, String bends, String type){
         JSONObject jsonObject = new JSONObject();
         try{
             jsonObject.put("creatorEmail", email);
@@ -399,6 +404,10 @@ public class GPSDatabase
             jsonObject.put("length", getTotalLength());
             jsonObject.put("name", name);
             jsonObject.put("gpxString", getTableInGPX(email, name, description));
+            jsonObject.put("difficulty", difficulty);
+            jsonObject.put("bends", bends);
+            jsonObject.put("type", type);
+            jsonObject.put("thumbnail", getEncodedPolylineURL());
         }
         catch(JSONException e){/*not implemented yet*/ }
         return jsonObject;
@@ -431,5 +440,19 @@ public class GPSDatabase
     public void close(){
         dbHelper.close();
         //return true;
+    }
+
+    public String getEncodedPolylineURL() {
+        ArrayList<LatLng> input = getAllLocations(), result = new ArrayList<>();
+        if (input.size() < maxEncodedPoints) {
+            result = input;
+        } else {
+            int n = (input.size()/maxEncodedPoints) + 1;
+            for (int i = 0; i < input.size() - 1; i++) {
+                if (i%n == 0)
+                    result.add(input.get(i));
+            }
+        }
+        return staticMapURL + PolyUtil.encode(result);
     }
 }

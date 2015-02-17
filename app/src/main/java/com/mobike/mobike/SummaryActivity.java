@@ -48,7 +48,7 @@ public class SummaryActivity extends ActionBarActivity {
     private  EditText routeNameText, routeDescriptionText, routeDifficulty, routeBends, routeType;
     private TextView length, duration;
     private long durationInSeconds;
-    private String routeName, routeDescription, email, routeID;
+    private String routeName, routeDescription, email, routeID, difficulty, bends, type;
     private Context context = this;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline route; // the recorded route
@@ -84,7 +84,7 @@ public class SummaryActivity extends ActionBarActivity {
         duration = (TextView) findViewById(R.id.duration_text_view);
         durationInSeconds = db2.getTotalDuration();
         duration.setText(String.valueOf(durationInSeconds/3600) + " h " + String.valueOf(durationInSeconds/60) + " m " + String.valueOf(durationInSeconds%60) + " s");
-        Log.v(TAG, "length: " + db2.getTotalLength() + " -- duration: " + db2.getTotalDuration());
+        Log.v(TAG, "length: " + db2.getTotalLength() + " -- duration: " + db2.getTotalDuration() + " -- url:" + db2.getEncodedPolylineURL());
         db2.close();
     }
 
@@ -176,6 +176,9 @@ public class SummaryActivity extends ActionBarActivity {
         } else {
             routeName = routeNameText.getText().toString();
             routeDescription = routeDescriptionText.getText().toString();
+            difficulty = routeDifficulty.getText().toString();
+            bends = routeBends.getText().toString();
+            type = routeType.getText().toString();
             SharedPreferences sharedPref = getSharedPreferences(LoginActivity.ACCOUNT_NAME, Context.MODE_PRIVATE);
             email = sharedPref.getString(LoginActivity.ACCOUNT_NAME, DEFAULT_ACCOUNT_NAME);
             Log.v(TAG, "email = " + email);
@@ -230,7 +233,7 @@ public class SummaryActivity extends ActionBarActivity {
                 urlConnection.connect();
                 GPSDatabase db = new GPSDatabase(context);
                 OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
-                out.write(db.exportRouteInJson(email, routeName, routeDescription).toString());
+                out.write(db.exportRouteInJson(email, routeName, routeDescription, difficulty, bends, type).toString());
                 out.close();
                 db.close();
                 int httpResult = urlConnection.getResponseCode();

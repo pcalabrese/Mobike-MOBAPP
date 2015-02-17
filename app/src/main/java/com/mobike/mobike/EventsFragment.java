@@ -3,6 +3,7 @@ package com.mobike.mobike;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -25,6 +26,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -34,6 +36,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -68,7 +71,10 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_BENDS = "com.mobike.mobike.EventsFragment.route_bends";
     public static final String ROUTE_TYPE = "com.mobike.mobike.EventsFragment.route_type";
 
-    public static final String downloadURL = "qualcosa";
+    public static final String downloadEventsURL = "qualcosa";
+    public static final String downloadRoutesURL = "mobike.ddns.net/SRV/routes/retrieveall";
+
+    public static JSONArray eventRoutes;
 
 
     private final String TAG = "EventsFragment";
@@ -113,6 +119,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     @Override
     public void onStart() {
         super.onStart();
+        new DLEventRouteTask().execute(downloadRoutesURL);
+        new DownloadEventsTask().execute(downloadEventsURL);
 
         Spinner spinner = (Spinner) getView().findViewById(R.id.event_types);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -123,6 +131,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
+        // TODO TUTTA QUESTA PARTE FITTIZIA L'HO LASCIATA PERCHE' POTREBBE ESSERE UTILE NEL CASO NON FINISSIMO
         // Initialization of the events list
         ArrayList<Event> list = new ArrayList<>();
         Route route = new Route("Roma - Cassino", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
@@ -233,8 +242,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         public void onFragmentInteraction(Uri uri);
     }
 
-    public void showEventsList(JSONObject json){
-        Spinner spinner = (Spinner) getView().findViewById(R.id.event_types);
+    public void showEventsList(JSONArray json){
+        /*Spinner spinner = (Spinner) getView().findViewById(R.id.event_types);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.event_types, android.R.layout.simple_spinner_item);
@@ -242,10 +251,30 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+        */
+
 
         // Initialization of the events list
         ArrayList<Event> list = new ArrayList<>();
-        // TODO popolare la lista con i dati presi dal json
+
+        JSONObject jsonEvent;
+        String name, date, creator, description;
+        Route route;
+
+        for (int i = 0; i< json.length(); i++){
+            try{
+                jsonEvent = json.getJSONObject(i);
+                name = jsonEvent.getString("name");
+                date = jsonEvent.getString("StartDate");
+                creator = jsonEvent.getInt("creatorID")+"";
+                description = jsonEvent.getString("description");
+                route = getRouteById(jsonEvent.getInt("routeID"));
+                String invited = "Andrea Donati\nMarco Esposito\nPaolo Calabrese\nBruno Vispi";
+
+                list.add(new Event(name, date, creator, description, route, invited));
+
+            }catch(JSONException e){e.printStackTrace();}
+        }
 
         ListAdapter listAdapter = new ListAdapter(getActivity(), R.layout.event_list_row, list);
         ListView listView = (ListView) getView().findViewById(R.id.list_view);
@@ -274,23 +303,101 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         });
     }
 
+    public Route getRouteById(int id){
+        for(int i = 0; i< eventRoutes.length(); i++){
+            try{
+                if(eventRoutes.getJSONObject(i).getInt("id") == id){
+                    JSONObject job =eventRoutes.getJSONObject(i);
+                    String name = job.getString("name");
+                    String description = job.getString("description");
+                    String creator = job.getString("creatorEmail");
+                    String length = job.getDouble("length") + "";
+                    String duration = job.getInt("duration")+"";
+                    Bitmap map = null;
+                    String gpx = job.getString("url");
+                    String difficulty = job.getInt("difficulty") + "";
+                    String bends = job.getInt("bends") + "";
+                    String type = "DefaultRouteType";
+                    return new Route(name, description, creator, length, duration, map, gpx,
+                                        difficulty, bends, type);
+                }
+            }catch(JSONException e){e.printStackTrace();}
+        }
+        return null;
+    }
+
     private class DownloadEventsTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... urls) {
-            return HTTPGetEvents(downloadURL);
+            return HTTPGetEvents(urls[0]);
         }
 
         @Override
         protected void onPostExecute(String result) {
             try{
-                JSONObject json = new JSONObject(result);
+                JSONArray json = new JSONArray(result);
                 showEventsList(json);
             }catch(JSONException e)
             { e.printStackTrace();}
         }
 
         private String HTTPGetEvents(String url){
+            InputStream inputStream = null;
+            String result = "";
+            try {
+
+                // create HttpClient
+                HttpClient httpclient = new DefaultHttpClient();
+
+                // make GET request to the given URL
+                HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
+
+                // receive response as inputStream
+                inputStream = httpResponse.getEntity().getContent();
+
+                // convert inputstream to string
+                if(inputStream != null)
+                    result = convertInputStreamToString(inputStream);
+                else{
+                    return null;}
+
+            } catch (Exception e) {
+                Log.d("InputStream", e.getLocalizedMessage());
+            }
+            return result;
+        }
+
+        private String convertInputStreamToString(InputStream inputStream) throws IOException {
+            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+            String line = "";
+            String result = "";
+            while((line = bufferedReader.readLine()) != null)
+                result += line;
+
+            inputStream.close();
+            return result;
+
+        }
+    }
+
+    private class DLEventRouteTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected String doInBackground(String... urls) {
+            return HTTPGetRoutes(downloadRoutesURL);
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            try{
+                JSONArray json = new JSONArray(result);
+                eventRoutes = json;
+            }catch(JSONException e)
+            { e.printStackTrace();}
+        }
+
+        private String HTTPGetRoutes(String url){
             InputStream inputStream = null;
             String result = "";
             try {

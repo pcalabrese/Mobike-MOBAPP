@@ -70,8 +70,6 @@ public class EventActivity extends ActionBarActivity {
         route_bends = bundle.getString(EventsFragment.ROUTE_BENDS);
         route_type = bundle.getString(EventsFragment.ROUTE_TYPE);
 
-        Log.v(TAG, route_name + route_description + route_creator + route_length + route_duration + route_gpx);
-
         // get points from route_gpx ,set up the map and finally add the polyline of the route
         GPSDatabase db = new GPSDatabase(this);
         db.open();

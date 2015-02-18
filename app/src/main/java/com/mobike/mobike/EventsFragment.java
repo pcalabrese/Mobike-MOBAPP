@@ -119,8 +119,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     @Override
     public void onStart() {
         super.onStart();
-        new DLEventRouteTask().execute(downloadRoutesURL);
-        new DownloadEventsTask().execute(downloadEventsURL);
+//        new DLEventRouteTask().execute(downloadRoutesURL);
+//        new DownloadEventsTask().execute(downloadEventsURL);
 
         Spinner spinner = (Spinner) getView().findViewById(R.id.event_types);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -658,7 +658,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 "</trkseg>\n" +
                 "</trk>\n" +
                 "</gpx>";
-        Route route = new Route("Spinaceto - Palmarola", "descrizione", "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
+        String descrizione = "Route description. There will be all the route's details written by the creator at the creation. There will be more lines.";
+        Route route = new Route("Spinaceto - Palmarola", descrizione, "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
                 R.drawable.staticmap), gpx, "3", "3", "Mountain");
         String description = "Descrizione dell'evento, qui ci saranno scritti i dettagli inseriti dal creatore dell'evento al momento della creazione. Ci saranno più righe";
         String invited = "Andrea Donati\nMarco Esposito\nPaolo Calabrese\nBruno Vispi";

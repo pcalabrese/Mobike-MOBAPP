@@ -83,7 +83,7 @@ public class SummaryActivity extends ActionBarActivity {
         length.setText(String.format("%.02f", db2.getTotalLength()/1000) + " km");
         duration = (TextView) findViewById(R.id.duration_text_view);
         durationInSeconds = db2.getTotalDuration();
-        duration.setText(String.valueOf(durationInSeconds/3600) + " h " + String.valueOf(durationInSeconds/60) + " m " + String.valueOf(durationInSeconds%60) + " s");
+        duration.setText(String.valueOf(durationInSeconds/3600) + " h " + String.valueOf((durationInSeconds/60)%60) + " m " + String.valueOf(durationInSeconds%60) + " s");
         Log.v(TAG, "length: " + db2.getTotalLength() + " -- duration: " + db2.getTotalDuration() + " -- url:" + db2.getEncodedPolylineURL());
         db2.close();
     }

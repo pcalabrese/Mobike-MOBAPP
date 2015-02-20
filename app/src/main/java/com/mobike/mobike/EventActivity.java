@@ -56,7 +56,7 @@ public class EventActivity extends ActionBarActivity {
         // displays event's details in textViews
         name.setText(bundle.getString(EventsFragment.EVENT_NAME));
         date.setText(bundle.getString(EventsFragment.EVENT_DATE));
-        creator.setText(bundle.getString(EventsFragment.EVENT_CREATOR));
+        creator.setText("Created by " + bundle.getString(EventsFragment.EVENT_CREATOR));
         description.setText(bundle.getString(EventsFragment.EVENT_DESCRIPTION));
         invited.setText(bundle.getString(EventsFragment.EVENT_INVITED));
 

@@ -1,6 +1,7 @@
 package com.mobike.mobike;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -71,11 +72,13 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_BENDS = "com.mobike.mobike.EventsFragment.route_bends";
     public static final String ROUTE_TYPE = "com.mobike.mobike.EventsFragment.route_type";
 
-    public static final String downloadEventsURL = "http://mobike.ddns.net/SRV/events/retrieveall";
+    public static final String downloadAllEventsURL = "http://mobike.ddns.net/SRV/events/retrieveall";
+    public static final String downloadUserEventsURL = "";
+    public static final String downloadAcceptedEventsURL = "";
     public static final String downloadRoutesURL = "http://mobike.ddns.net/SRV/routes/retrieveall";
 
     public static JSONArray eventRoutes;
-
+    private ProgressDialog progressDialog;
 
     private final String TAG = "EventsFragment";
 
@@ -120,7 +123,9 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public void onStart() {
         super.onStart();
         new DLEventRouteTask().execute(downloadRoutesURL);
-        new DownloadEventsTask().execute(downloadEventsURL);
+        new DownloadEventsTask().execute(downloadAllEventsURL);
+
+        progressDialog = ProgressDialog.show(getActivity(), "Downloading events...", "", true, false);
 
         Spinner spinner = (Spinner) getView().findViewById(R.id.event_types);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -130,6 +135,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
 
         // TODO TUTTA QUESTA PARTE FITTIZIA L'HO LASCIATA PERCHE' POTREBBE ESSERE UTILE NEL CASO NON FINISSIMO
         // Initialization of the events list
@@ -212,14 +218,23 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     // method called when an item in the spinner is selected
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        String type = "all";
         switch (position) {
-            case 0: // first item in the spinner
+            case 0: /* new DLEventRouteTask().execute(downloadRoutesURL);
+                new DownloadEventsTask().execute(downloadAllEventsURL);
+                type = "all"; */
                 break;
-            case 1: // second item
+            case 1: /* new DLEventRouteTask().execute(downloadRoutesURL);
+                new DownloadEventsTask().execute(downloadUserEventsURL);
+                type = "your"; */
                 break;
-            case 2: // third item
+            case 2: /* new DLEventRouteTask().execute(downloadRoutesURL);
+                new DownloadEventsTask().execute(downloadAcceptedEventsURL);
+                type = "accepted"; */
                 break;
         }
+
+//        progressDialog = ProgressDialog.show(getActivity(), "Downloading " + type + " events...", "", true, false);
     }
 
     // method called when no items in the spinner are selected
@@ -305,6 +320,9 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 startActivity(intent);
             }
         });
+
+        if (progressDialog != null)
+            progressDialog.dismiss();
     }
 
     public Route getRouteById(int id){

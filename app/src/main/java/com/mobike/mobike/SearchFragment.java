@@ -1,6 +1,7 @@
 package com.mobike.mobike;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -59,6 +60,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private ProgressDialog progressDialog;
 
     public static final String ROUTE_NAME = "com.mobike.mobike.SearchFragment.route_name";
     public static final String ROUTE_DESCRIPTION = "com.mobike.mobike.SearchFragment.route_description";
@@ -109,6 +111,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
         new DownloadRoutesTask().execute();
 
+        progressDialog = ProgressDialog.show(getActivity(), "Downloading routes...", "", true, false);
+
         Spinner spinner = (Spinner) getView().findViewById(R.id.route_types);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
@@ -120,7 +124,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
 
         // grid view
-        GridView gridView = (GridView) getView().findViewById(R.id.gridview);
+/*        GridView gridView = (GridView) getView().findViewById(R.id.gridview);
         String description = "Route description. There will be all the route's details written by the creator at the creation. There will be more lines.";
         ArrayList<Route> arrayList = new ArrayList<>();
         // popolo l'arrayList
@@ -164,7 +168,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
-        });
+        }); */
     }
 
     @Override
@@ -283,6 +287,9 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 startActivity(intent);
             }
         });
+
+        if(progressDialog != null)
+            progressDialog.dismiss();
     }
 
     /**

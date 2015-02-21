@@ -54,6 +54,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String TAG = "SearchFragment";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -61,6 +62,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
     private OnFragmentInteractionListener mListener;
     private ProgressDialog progressDialog;
+    private Boolean initialSpinner = true;
 
     public static final String ROUTE_NAME = "com.mobike.mobike.SearchFragment.route_name";
     public static final String ROUTE_DESCRIPTION = "com.mobike.mobike.SearchFragment.route_description";
@@ -72,7 +74,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_BENDS = "com.mobike.mobike.SearchFragment.route_bends";
     public static final String ROUTE_TYPE = "com.mobike.mobike.SearchFragment.route_type";
 
-    public static final String downloadRoutesURL = "http://mobike.ddns.net/SRV/routes/retrieveall";
+    public static final String downloadAllRoutesURL = "http://mobike.ddns.net/SRV/routes/retrieveall";
+    public static final String downloadUserRoutesURL = "qualcosa";
     public static final String GPXURL = "http://mobike.ddns.net/SRV/routes";
     /**
      * Use this factory method to create a new instance of
@@ -103,15 +106,15 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        downloadRoutes(downloadAllRoutesURL);
+
+        Log.v(TAG, "onCreate()");
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        new DownloadRoutesTask().execute();
-
-        progressDialog = ProgressDialog.show(getActivity(), "Downloading routes...", "", true, false);
 
         Spinner spinner = (Spinner) getView().findViewById(R.id.route_types);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -121,54 +124,11 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(this);
 
+        initialSpinner = true;
 
-        // grid view
-/*        GridView gridView = (GridView) getView().findViewById(R.id.gridview);
-        String description = "Route description. There will be all the route's details written by the creator at the creation. There will be more lines.";
-        ArrayList<Route> arrayList = new ArrayList<>();
-        // popolo l'arrayList
-        arrayList.add(new Route("Spinaceto - Palmarola", description, "Created by Andrea Donati", "50 km", "44m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx", "3", "3", "Mountain"));
-        arrayList.add(new Route("Roma - Sora", description, "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx", "3", "3", "Mountain"));
-        arrayList.add(new Route("Roma - Viterbo", description, "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx", "3", "3", "Mountain"));
-        arrayList.add(new Route("Roma - Perugia", description, "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx", "3", "3", "Mountain"));
-        arrayList.add(new Route("Roma - Terni", description, "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx", "3", "3", "Mountain"));
-        arrayList.add(new Route("Roma - Bolsena", description, "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx", "7", "5", "Mountain"));
-        arrayList.add(new Route("Roma - Frosinone", description, "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx", "7", "5", "Mountain"));
-        arrayList.add(new Route("Roma - Sutri", description, "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx", "7", "5", "Mountain"));
-        // creo il gridAdapter
-        GridAdapter gridAdapter = new GridAdapter(getActivity(), R.layout.search_grid_item, arrayList);
-        // imposto l'adapter
-        gridView.setAdapter(gridAdapter);
-        // imposto il listener
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                // faccio partire l'activity per la visualizzazione del percorso, passando i campi di Route in un bundle
-                Route route = (Route) adapterView.getAdapter().getItem(position);
-                Intent intent = new Intent(getActivity(), RouteActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(ROUTE_NAME, route.getName());
-                bundle.putString(ROUTE_DESCRIPTION, route.getDescription());
-                bundle.putString(ROUTE_CREATOR, route.getCreator());
-                bundle.putString(ROUTE_LENGTH, route.getLength());
-                bundle.putString(ROUTE_DURATION, route.getDuration());
-                bundle.putString(ROUTE_GPX, route.getGpx());
-                bundle.putString(ROUTE_DIFFICULTY, route.getDifficulty());
-                bundle.putString(ROUTE_BENDS, route.getBends());
-                bundle.putString(ROUTE_TYPE, route.getType());
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        }); */
+        Log.v(TAG, "onStart()");
     }
 
     @Override
@@ -205,12 +165,23 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     // method called when an item in the Spinner is selected
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+        Log.v(TAG, "onItemSelected()");
+        if (initialSpinner) {
+            initialSpinner = false;
+            return;
+        }
         switch (position) {
-            case 0: // first item in the spinner
+            case 0: downloadRoutes(downloadAllRoutesURL);
                 break;
-            case 1: // second item
+            case 1: //downloadRoutes(downloadUserRoutesURL);
                 break;
         }
+    }
+
+    private void downloadRoutes(String url) {
+        new DownloadRoutesTask().execute(url);
+        progressDialog = ProgressDialog.show(getActivity(), "Downloading routes...", "", true, false);
+        Log.v(TAG, "downloadRoutes: " + url);
     }
 
     //method called when no items in Spinner are selected
@@ -220,16 +191,6 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     }
 
     public void showRouteList(JSONArray json) {
-/*        Spinner spinner = (Spinner) getView().findViewById(R.id.route_types);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.route_types, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-*/
-
         // grid view
         GridView gridView = (GridView) getView().findViewById(R.id.gridview);
         ArrayList<Route> arrayList = new ArrayList<>();
@@ -307,11 +268,13 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         public void onFragmentInteraction(Uri uri);
     }
 
+
+
     private class DownloadRoutesTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... urls) {
-            return HTTPGetRoutes(downloadRoutesURL);
+            return HTTPGetRoutes(urls[0]);
         }
 
         @Override

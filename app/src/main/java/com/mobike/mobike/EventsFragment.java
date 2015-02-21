@@ -79,6 +79,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
 
     public static JSONArray eventRoutes;
     private ProgressDialog progressDialog;
+    private Boolean initialSpinner = true;
 
     private final String TAG = "EventsFragment";
 
@@ -117,15 +118,14 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        downloadEvents(downloadAllEventsURL);
+
+        Log.v(TAG, "onCreate()");
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        new DLEventRouteTask().execute(downloadRoutesURL);
-        new DownloadEventsTask().execute(downloadAllEventsURL);
-
-        progressDialog = ProgressDialog.show(getActivity(), "Downloading events...", "", true, false);
 
         Spinner spinner = (Spinner) getView().findViewById(R.id.event_types);
         // Create an ArrayAdapter using the string array and a default spinner layout
@@ -137,51 +137,9 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this);
 
-        // TODO TUTTA QUESTA PARTE FITTIZIA L'HO LASCIATA PERCHE' POTREBBE ESSERE UTILE NEL CASO NON FINISSIMO
-        // Initialization of the events list
-/*        ArrayList<Event> list = new ArrayList<>();
-        String descrizione = "Route description. There will be all the route's details written by the creator at the creation. There will be more lines.";
-        Route route = new Route("Spinaceto - Palmarola", descrizione, "Created by Andrea Donati", "150 km", "1h 32m 06s", BitmapFactory.decodeResource(getActivity().getResources(),
-                R.drawable.staticmap), "gpx", "3", "3", "Mountain");
-        String description = "Descrizione dell'evento, qui ci saranno scritti i dettagli inseriti dal creatore dell'evento al momento della creazione. Ci saranno più righe";
-        String invited = "Andrea Donati\nMarco Esposito\nPaolo Calabrese\nBruno Vispi";
-        list.add(new Event("Spinaceto - Palmarola", "Sunday 11/11/2014 8:30", "Sent by Andrea Donati", description, route, invited));
-        list.add(new Event("Roma - Sora", "Saturday 23/02/2015 9:00", "Sent by Marco Esposito", description, route, invited));
-        list.add(new Event("Roma - Viterbo", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route, invited));
-        list.add(new Event("Roma - Perugia", "Saturday 16/05/2015 8:00", "Sent by Bruno Vispi", description, route, invited));
-        list.add(new Event("Roma - Terni", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route, invited));
-        list.add(new Event("Roma - Bolsena", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route, invited));
-        list.add(new Event("Roma - Frosinone", "Friday 16/05/2015 8:00", "Sent by Paolo Calabrese", description, route, invited));
+        initialSpinner = true;
 
-        ListAdapter listAdapter = new ListAdapter(getActivity(), R.layout.event_list_row, list);
-        ListView listView = (ListView) getView().findViewById(R.id.list_view);
-        listView.setAdapter(listAdapter);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                Event event = (Event) adapterView.getAdapter().getItem(position);
-                Intent intent = new Intent(getActivity(), EventActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString(EVENT_NAME, event.getName());
-                bundle.putString(EVENT_DATE, event.getDate());
-                bundle.putString(EVENT_CREATOR, event.getCreator());
-                bundle.putString(EVENT_DESCRIPTION, event.getDescription());
-                Route r = event.getRoute();
-                bundle.putString(ROUTE_NAME, r.getName());
-                bundle.putString(ROUTE_DESCRIPTION, r.getDescription());
-                bundle.putString(ROUTE_CREATOR, r.getCreator());
-                bundle.putString(ROUTE_LENGTH, r.getLength());
-                bundle.putString(ROUTE_DURATION, r.getDuration());
-                bundle.putString(ROUTE_GPX, r.getGpx());
-                bundle.putString(EVENT_INVITED, event.getInvited());
-                bundle.putString(ROUTE_DIFFICULTY, r.getDifficulty());
-                bundle.putString(ROUTE_BENDS, r.getBends());
-                bundle.putString(ROUTE_TYPE, r.getType());
-                intent.putExtras(bundle);
-                Log.v(TAG, r.getName() + r.getDescription() + r.getCreator() + r.getLength() + r.getDuration() + r.getGpx());
-                startActivity(intent);
-            }
-        }); */
+        Log.v(TAG, "onStart()");
     }
 
     @Override
@@ -218,23 +176,27 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     // method called when an item in the spinner is selected
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-        String type = "all";
+        Log.v(TAG, "onItemSelected()");
+        if (initialSpinner) {
+            initialSpinner = false;
+            return;
+        }
         switch (position) {
-            case 0: /* new DLEventRouteTask().execute(downloadRoutesURL);
-                new DownloadEventsTask().execute(downloadAllEventsURL);
-                type = "all"; */
+            case 0: downloadEvents(downloadAllEventsURL);
                 break;
-            case 1: /* new DLEventRouteTask().execute(downloadRoutesURL);
-                new DownloadEventsTask().execute(downloadUserEventsURL);
-                type = "your"; */
+            case 1: //downloadEvents(downloadUserEventsURL);
                 break;
-            case 2: /* new DLEventRouteTask().execute(downloadRoutesURL);
-                new DownloadEventsTask().execute(downloadAcceptedEventsURL);
-                type = "accepted"; */
+            case 2: //downloadEvents(downloadAcceptedEventsURL);
                 break;
         }
+    }
 
-//        progressDialog = ProgressDialog.show(getActivity(), "Downloading " + type + " events...", "", true, false);
+    private void downloadEvents(String url) {
+        new DLEventRouteTask().execute(downloadRoutesURL);
+        new DownloadEventsTask().execute(url);
+
+        progressDialog = ProgressDialog.show(getActivity(), "Downloading events...", "", true, false);
+        Log.v(TAG, "downloadEvents: " + url);
     }
 
     // method called when no items in the spinner are selected
@@ -259,17 +221,6 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     }
 
     public void showEventsList(JSONArray json){
-        /*Spinner spinner = (Spinner) getView().findViewById(R.id.event_types);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                R.array.event_types, android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        spinner.setAdapter(adapter);
-        */
-
-
         // Initialization of the events list
         ArrayList<Event> list = new ArrayList<>();
 
@@ -347,6 +298,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         }
         return null;
     }
+
 
     private class DownloadEventsTask extends AsyncTask<String, Void, String> {
 

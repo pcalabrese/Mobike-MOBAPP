@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.mobike.mobike.network.DownloadRoutesTask;
 import com.mobike.mobike.utils.Route;
 
 import org.apache.http.HttpResponse;
@@ -179,8 +180,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     }
 
     private void downloadRoutes(String url) {
-        new DownloadRoutesTask().execute(url);
-        progressDialog = ProgressDialog.show(getActivity(), "Downloading routes...", "", true, false);
+        new DownloadRoutesTask(getActivity(), this).execute(url);
         Log.v(TAG, "downloadRoutes: " + url);
     }
 
@@ -248,9 +248,6 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 startActivity(intent);
             }
         });
-
-        if(progressDialog != null)
-            progressDialog.dismiss();
     }
 
     /**
@@ -270,7 +267,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
 
 
-    private class DownloadRoutesTask extends AsyncTask<String, Void, String> {
+/*    private class DownloadRoutesTask extends AsyncTask<String, Void, String> {
 
         @Override
         protected String doInBackground(String... urls) {
@@ -323,7 +320,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
             return result;
 
         }
-    }
+    } */
 
     private class GPXTask extends AsyncTask<String, Void, String> {
 

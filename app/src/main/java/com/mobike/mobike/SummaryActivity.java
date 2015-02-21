@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.mobike.mobike.network.UploadRouteTask;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -40,7 +41,7 @@ import java.util.List;
 
 public class SummaryActivity extends ActionBarActivity {
 
-    private static final int SHARE_REQUEST = 1;
+    public static final int SHARE_REQUEST = 1;
     private static final String TAG = "SummaryActivity";
     private static final String UploadURL = "http://mobike.ddns.net/SRV/routes/create";
     private static final String DEFAULT_ACCOUNT_NAME = "no account";
@@ -185,7 +186,8 @@ public class SummaryActivity extends ActionBarActivity {
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
-                new UploadRouteTask().execute(this);
+                //new UploadRouteTask().execute(this);
+                new UploadRouteTask(this, email, routeName, routeDescription, difficulty, bends, type).execute();
                 Toast.makeText(this, getResources().getString(R.string.uploading_toast), Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
@@ -202,7 +204,7 @@ public class SummaryActivity extends ActionBarActivity {
 
 
     // AsyncTask that performs the upload of the route
-    private class UploadRouteTask extends AsyncTask<Context, Void, String> {
+/*    private class UploadRouteTask extends AsyncTask<Context, Void, String> {
 
         @Override
         protected String doInBackground(Context... context) {
@@ -226,8 +228,8 @@ public class SummaryActivity extends ActionBarActivity {
                 urlConnection.setRequestMethod("POST");
                 urlConnection.setRequestProperty("Content-Type", "application/json");
                 urlConnection.setRequestProperty("Accept", "text/plain");
-                urlConnection.setReadTimeout(10000 /* milliseconds */);
-                urlConnection.setConnectTimeout(15000 /* milliseconds */);
+                urlConnection.setReadTimeout(10000);
+                urlConnection.setConnectTimeout(15000);
                 urlConnection.setDoOutput(true);
                 urlConnection.setChunkedStreamingMode(0);
                 urlConnection.connect();
@@ -257,5 +259,5 @@ public class SummaryActivity extends ActionBarActivity {
                     urlConnection.disconnect();
             }
         }
-    }
+    } */
 }

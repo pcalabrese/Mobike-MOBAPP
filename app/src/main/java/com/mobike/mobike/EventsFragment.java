@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.mobike.mobike.network.DownloadEventsTask;
 import com.mobike.mobike.utils.Event;
 import com.mobike.mobike.utils.Route;
 
@@ -61,6 +62,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String EVENT_DESCRIPTION = "com.mobike.mobike.EventsFragment.event_description";
     public static final String EVENT_GPX = "com.mobike.mobike.EventsFragment.event_gpx";
 
+    public static final String ROUTE_ID = "com.mobike.mobike.EventsFragment.route_id";
     public static final String ROUTE_NAME = "com.mobike.mobike.EventsFragment.route_name";
     public static final String ROUTE_DESCRIPTION = "com.mobike.mobike.EventsFragment.route_description";
     public static final String ROUTE_CREATOR = "com.mobike.mobike.EventsFragment.route_creator";
@@ -182,7 +184,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
             return;
         }
         switch (position) {
-            case 0: downloadEvents(downloadAllEventsURL);
+            case 0:
+                downloadEvents(downloadAllEventsURL);
                 break;
             case 1: //downloadEvents(downloadUserEventsURL);
                 break;
@@ -192,10 +195,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     }
 
     private void downloadEvents(String url) {
-        new DLEventRouteTask().execute(downloadRoutesURL);
-        new DownloadEventsTask().execute(url);
-
-        progressDialog = ProgressDialog.show(getActivity(), "Downloading events...", "", true, false);
+        new DownloadEventsTask(getActivity(), this).execute(url);
         Log.v(TAG, "downloadEvents: " + url);
     }
 
@@ -220,27 +220,28 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         public void onFragmentInteraction(Uri uri);
     }
 
-    public void showEventsList(JSONArray json){
+    public void showEventsList(JSONArray json) {
         // Initialization of the events list
         ArrayList<Event> list = new ArrayList<>();
 
         JSONObject jsonEvent;
-        String name, date, creator, description;
-        Route route;
+        String name, date, creator, description, routeID;
 
-        for (int i = 0; i< json.length(); i++){
-            try{
+        for (int i = 0; i < json.length(); i++) {
+            try {
                 jsonEvent = json.getJSONObject(i);
                 name = jsonEvent.getString("name");
                 date = jsonEvent.getString("startDate");
-                creator = jsonEvent.getInt("creatorId")+"";
+                creator = jsonEvent.getInt("creatorId") + "";
                 description = jsonEvent.getString("description");
-                route = getRouteById(jsonEvent.getInt("routeId"));
+                routeID = jsonEvent.getInt("routeId") + "";
                 String invited = "Andrea Donati\nMarco Esposito\nPaolo Calabrese\nBruno Vispi";
 
-                list.add(new Event(name, date, creator, description, route, invited));
+                list.add(new Event(name, date, creator, description, routeID, invited));
 
-            }catch(JSONException e){e.printStackTrace();}
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         ListAdapter listAdapter = new ListAdapter(getActivity(), R.layout.event_list_row, list);
@@ -256,161 +257,42 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 bundle.putString(EVENT_DATE, event.getDate());
                 bundle.putString(EVENT_CREATOR, event.getCreator());
                 bundle.putString(EVENT_DESCRIPTION, event.getDescription());
-                Route r = event.getRoute();
-                bundle.putString(ROUTE_NAME, r.getName());
-                bundle.putString(ROUTE_DESCRIPTION, r.getDescription());
-                bundle.putString(ROUTE_CREATOR, r.getCreator());
-                bundle.putString(ROUTE_LENGTH, r.getLength());
-                bundle.putString(ROUTE_DURATION, r.getDuration());
-                bundle.putString(ROUTE_GPX, r.getGpx());
                 bundle.putString(EVENT_INVITED, event.getInvited());
-                bundle.putString(ROUTE_DIFFICULTY, r.getDifficulty());
-                bundle.putString(ROUTE_BENDS, r.getBends());
-                bundle.putString(ROUTE_TYPE, r.getType());
+                bundle.putString(ROUTE_ID, event.getRouteID());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
-
-        if (progressDialog != null)
-            progressDialog.dismiss();
     }
 
-    public Route getRouteById(int id){
-        for(int i = 0; i< eventRoutes.length(); i++){
-            try{
-                if(eventRoutes.getJSONObject(i).getInt("id") == id){
-                    JSONObject job =eventRoutes.getJSONObject(i);
+/*    public Route getRouteById(int id) {
+        for (int i = 0; i < eventRoutes.length(); i++) {
+            try {
+                if (eventRoutes.getJSONObject(i).getInt("id") == id) {
+                    JSONObject job = eventRoutes.getJSONObject(i);
                     String name = job.getString("name");
                     String description = job.getString("description");
                     String creator = job.getString("creatorEmail");
                     String length = job.getDouble("length") + "";
-                    String duration = job.getInt("duration")+"";
+                    String duration = job.getInt("duration") + "";
                     Bitmap map = null;
                     String gpx = job.getString("url");
                     String difficulty = job.getInt("difficulty") + "";
                     String bends = job.getInt("bends") + "";
                     String type = "DefaultRouteType";
                     return new Route(name, description, creator, length, duration, map, gpx,
-                                        difficulty, bends, type);
+                            difficulty, bends, type);
                 }
-            }catch(JSONException e){e.printStackTrace();}
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
         return null;
-    }
-
-
-    private class DownloadEventsTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            return HTTPGetEvents(urls[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            try{
-                JSONArray json = new JSONArray(result);
-                showEventsList(json);
-            }catch(JSONException e)
-            { e.printStackTrace();}
-        }
-
-        private String HTTPGetEvents(String url){
-            InputStream inputStream = null;
-            String result = "";
-            try {
-
-                // create HttpClient
-                HttpClient httpclient = new DefaultHttpClient();
-
-                // make GET request to the given URL
-                HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
-                // receive response as inputStream
-                inputStream = httpResponse.getEntity().getContent();
-
-                // convert inputstream to string
-                if(inputStream != null)
-                    result = convertInputStreamToString(inputStream);
-                else{
-                    return null;}
-
-            } catch (Exception e) {
-                Log.d("InputStream", e.getLocalizedMessage());
-            }
-            return result;
-        }
-
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while((line = bufferedReader.readLine()) != null)
-                result += line;
-
-            inputStream.close();
-            return result;
-
-        }
-    }
-
-    private class DLEventRouteTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            return HTTPGetRoutes(downloadRoutesURL);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            try{
-                JSONArray json = new JSONArray(result);
-                eventRoutes = json;
-            }catch(JSONException e)
-            { e.printStackTrace();}
-        }
-
-        private String HTTPGetRoutes(String url){
-            InputStream inputStream = null;
-            String result = "";
-            try {
-
-                // create HttpClient
-                HttpClient httpclient = new DefaultHttpClient();
-
-                // make GET request to the given URL
-                HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
-                // receive response as inputStream
-                inputStream = httpResponse.getEntity().getContent();
-
-                // convert inputstream to string
-                if(inputStream != null)
-                    result = convertInputStreamToString(inputStream);
-                else{
-                    return null;}
-
-            } catch (Exception e) {
-                Log.d("InputStream", e.getLocalizedMessage());
-            }
-            return result;
-        }
-
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while((line = bufferedReader.readLine()) != null)
-                result += line;
-
-            inputStream.close();
-            return result;
-
-        }
-    }
-
+    } */
 }
+
+
+
 
 class ListAdapter extends ArrayAdapter<Event> {
 

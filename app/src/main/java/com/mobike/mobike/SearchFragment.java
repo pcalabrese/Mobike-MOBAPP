@@ -266,62 +266,6 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     }
 
 
-
-/*    private class DownloadRoutesTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            return HTTPGetRoutes(urls[0]);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            try{
-                JSONArray json = new JSONArray(result);
-                showRouteList(json);
-            }catch(JSONException e)
-            { e.printStackTrace();};
-        }
-
-        private String HTTPGetRoutes(String url){
-            InputStream inputStream = null;
-            String result = "";
-            try {
-
-                // create HttpClient
-                HttpClient httpclient = new DefaultHttpClient();
-
-                // make GET request to the given URL
-                HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
-                // receive response as inputStream
-                inputStream = httpResponse.getEntity().getContent();
-
-                // convert inputstream to string
-                if(inputStream != null)
-                    result = convertInputStreamToString(inputStream);
-                else{
-                    return null;}
-
-            } catch (Exception e) {
-                Log.d("InputStream", e.getLocalizedMessage());
-            }
-            return result;
-        }
-
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while((line = bufferedReader.readLine()) != null)
-                result += line;
-
-            inputStream.close();
-            return result;
-
-        }
-    } */
-
     private class GPXTask extends AsyncTask<String, Void, String> {
 
         @Override

@@ -264,31 +264,6 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
             }
         });
     }
-
-/*    public Route getRouteById(int id) {
-        for (int i = 0; i < eventRoutes.length(); i++) {
-            try {
-                if (eventRoutes.getJSONObject(i).getInt("id") == id) {
-                    JSONObject job = eventRoutes.getJSONObject(i);
-                    String name = job.getString("name");
-                    String description = job.getString("description");
-                    String creator = job.getString("creatorEmail");
-                    String length = job.getDouble("length") + "";
-                    String duration = job.getInt("duration") + "";
-                    Bitmap map = null;
-                    String gpx = job.getString("url");
-                    String difficulty = job.getInt("difficulty") + "";
-                    String bends = job.getInt("bends") + "";
-                    String type = "DefaultRouteType";
-                    return new Route(name, description, creator, length, duration, map, gpx,
-                            difficulty, bends, type);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
-    } */
 }
 
 

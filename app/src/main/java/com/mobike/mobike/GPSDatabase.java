@@ -48,6 +48,7 @@ public class GPSDatabase
 
     private final String staticMapURL = "https://maps.googleapis.com/maps/api/staticmap?size=400x400&path=weight:5%7Ccolor:0xff0000ff%7Cenc:";
     private final int maxEncodedPoints = 100;
+    private final String TAG = "GPSDatabase";
 
 
     /**
@@ -171,7 +172,7 @@ public class GPSDatabase
                         }
                     }
                     catch( Exception e ){
-                        Log.d("TAG_NAME", e.getMessage());
+                        Log.d(TAG, e.getMessage());
                     }
                 }
             }
@@ -180,7 +181,7 @@ public class GPSDatabase
         }
         cursor.close();
         db.close();
-        Log.d("TAG_NAME", resultSet.toString() );
+        Log.d(TAG, resultSet.toString() );
         return resultSet;
     }
 

@@ -48,9 +48,10 @@ public class RouteActivity extends ActionBarActivity {
 
         name.setText(bundle.getString(SearchFragment.ROUTE_NAME));
         description.setText(bundle.getString(SearchFragment.ROUTE_DESCRIPTION));
-        creator.setText(bundle.getString(SearchFragment.ROUTE_CREATOR));
-        length.setText(bundle.getString(SearchFragment.ROUTE_LENGTH));
-        duration.setText(bundle.getString(SearchFragment.ROUTE_DURATION));
+        creator.setText("Created by " + bundle.getString(SearchFragment.ROUTE_CREATOR));
+        length.setText(String.format("%.01f", Float.parseFloat(bundle.getString(SearchFragment.ROUTE_LENGTH))/1000) + " km");
+        int durationInSeconds = Integer.parseInt(bundle.getString(SearchFragment.ROUTE_DURATION));
+        duration.setText(String.valueOf(durationInSeconds/3600) + " h " + String.valueOf((durationInSeconds/60)%60) + " m " + String.valueOf(durationInSeconds%60) + " s");
         gpx = bundle.getString(SearchFragment.ROUTE_GPX);
         difficulty.setText("Difficulty: " + bundle.getString(SearchFragment.ROUTE_DIFFICULTY));
         bends.setText("Bends: " + bundle.getString(SearchFragment.ROUTE_BENDS));

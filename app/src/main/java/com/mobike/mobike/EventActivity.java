@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.mobike.mobike.network.DownloadRouteTask;
 import com.mobike.mobike.utils.CustomMapFragment;
 import com.mobike.mobike.utils.Route;
 
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 public class EventActivity extends ActionBarActivity {
 
     private TextView name, date, creator, description, invited;
-    private String route_name, route_description, route_creator, route_length, route_duration, route_gpx, route_difficulty, route_bends, route_type;
+    private Route route;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline routePoly; // the route
@@ -56,26 +57,23 @@ public class EventActivity extends ActionBarActivity {
         // displays event's details in textViews
         name.setText(bundle.getString(EventsFragment.EVENT_NAME));
         date.setText(bundle.getString(EventsFragment.EVENT_DATE));
-        creator.setText(bundle.getString(EventsFragment.EVENT_CREATOR));
+        creator.setText("Created by " + bundle.getString(EventsFragment.EVENT_CREATOR));
         description.setText(bundle.getString(EventsFragment.EVENT_DESCRIPTION));
         invited.setText(bundle.getString(EventsFragment.EVENT_INVITED));
 
-        route_name = bundle.getString(EventsFragment.ROUTE_NAME);
-        route_description = bundle.getString(EventsFragment.ROUTE_DESCRIPTION);
-        route_creator = bundle.getString(EventsFragment.ROUTE_CREATOR);
-        route_length = bundle.getString(EventsFragment.ROUTE_LENGTH);
-        route_duration = bundle.getString(EventsFragment.ROUTE_DURATION);
-        route_gpx = bundle.getString(EventsFragment.ROUTE_GPX);
-        route_difficulty = bundle.getString(EventsFragment.ROUTE_DIFFICULTY);
-        route_bends = bundle.getString(EventsFragment.ROUTE_BENDS);
-        route_type = bundle.getString(EventsFragment.ROUTE_TYPE);
+        new DownloadRouteTask(this).execute(bundle.getString(EventsFragment.ROUTE_ID));
+    }
+
+    public void setRoute(Route route) {
+        this.route = route;
 
         // get points from route_gpx ,set up the map and finally add the polyline of the route
         GPSDatabase db = new GPSDatabase(this);
         db.open();
         try {
-            points = db.gpxToMapPoints(route_gpx);
-        } catch (IOException e) {}
+            points = db.gpxToMapPoints(route.getGpx());
+        } catch (IOException e) {
+        }
         db.close();
 
         setUpMapIfNeeded();
@@ -83,6 +81,7 @@ public class EventActivity extends ActionBarActivity {
         routePoly = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         routePoly.setPoints(points);
 
+        Log.v(TAG, "setRoute()");
     }
 
     // method to finish current activity at the pressure of top left back button
@@ -163,72 +162,16 @@ public class EventActivity extends ActionBarActivity {
     public void displayRoute(View view) {
         Intent intent = new Intent(this, RouteActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(SearchFragment.ROUTE_NAME, route_name);
-        bundle.putString(SearchFragment.ROUTE_DESCRIPTION, route_description);
-        bundle.putString(SearchFragment.ROUTE_CREATOR, route_creator);
-        bundle.putString(SearchFragment.ROUTE_LENGTH, route_length);
-        bundle.putString(SearchFragment.ROUTE_DURATION, route_duration);
-        bundle.putString(SearchFragment.ROUTE_GPX, route_gpx);
-        bundle.putString(SearchFragment.ROUTE_DIFFICULTY, route_difficulty);
-        bundle.putString(SearchFragment.ROUTE_BENDS, route_bends);
-        bundle.putString(SearchFragment.ROUTE_TYPE, route_type);
+        bundle.putString(SearchFragment.ROUTE_NAME, route.getName());
+        bundle.putString(SearchFragment.ROUTE_DESCRIPTION, route.getDescription());
+        bundle.putString(SearchFragment.ROUTE_CREATOR, route.getCreator());
+        bundle.putString(SearchFragment.ROUTE_LENGTH, route.getLength());
+        bundle.putString(SearchFragment.ROUTE_DURATION, route.getDuration());
+        bundle.putString(SearchFragment.ROUTE_GPX, route.getGpx());
+        bundle.putString(SearchFragment.ROUTE_DIFFICULTY, route.getDifficulty());
+        bundle.putString(SearchFragment.ROUTE_BENDS, route.getBends());
+        bundle.putString(SearchFragment.ROUTE_TYPE, route.getType());
         intent.putExtras(bundle);
         startActivity(intent);
     }
-
-    /*private class DLEventDetailsTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            return HTTPGetEvents(downloadURL);
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            try{
-                JSONObject json = new JSONObject(result);
-            }catch(JSONException e)
-            { e.printStackTrace();}
-
-            showEventDetails(json);
-        }
-
-        private String HTTPGetEvent(String url){
-            InputStream inputStream = null;
-            String result = "";
-            try {
-
-                // create HttpClient
-                HttpClient httpclient = new DefaultHttpClient();
-
-                // make GET request to the given URL
-                HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
-                // receive response as inputStream
-                inputStream = httpResponse.getEntity().getContent();
-
-                // convert inputstream to string
-                if(inputStream != null)
-                    result = convertInputStreamToString(inputStream);
-                else{
-                    return null;}
-
-            } catch (Exception e) {
-                Log.d("InputStream", e.getLocalizedMessage());
-            }
-            return result;
-        }
-
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while((line = bufferedReader.readLine()) != null)
-                result += line;
-
-            inputStream.close();
-            return result;
-
-        }
-    }*/
 }

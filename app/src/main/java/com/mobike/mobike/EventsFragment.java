@@ -264,6 +264,11 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
             }
         });
     }
+
+
+    public void createEvent(View view) {
+
+    }
 }
 
 

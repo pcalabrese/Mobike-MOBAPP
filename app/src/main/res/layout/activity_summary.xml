@@ -144,7 +144,6 @@
             android:id="@+id/button_layout_summary"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -156,8 +155,7 @@
                 android:layout_margin="10dp"
                 android:textColor="@color/white"
                 android:background="@color/red"
-                android:onClick="deleteRoute"
-                style="?android:attr/buttonBarButtonStyle"/>
+                android:onClick="deleteRoute"/>
 
             <Button android:id="@+id/save_route_button"
                 android:text="@string/save"
@@ -167,8 +165,7 @@
                 android:layout_margin="10dp"
                 android:textColor="@color/white"
                 android:background="@color/green"
-                android:onClick="saveRoute"
-                style="?android:attr/buttonBarButtonStyle"/>
+                android:onClick="saveRoute"/>
 
     </LinearLayout>
 

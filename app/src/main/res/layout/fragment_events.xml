@@ -36,7 +36,7 @@
         android:dividerHeight="0.5dp"/>
 
 </LinearLayout>
-<!--
+
         <com.mobike.mobike.utils.CircleButton
             android:layout_width="64dip"
             android:layout_height="64dip"
@@ -46,7 +46,8 @@
             android:src="@drawable/plus_circle_orange_dp"
             app:cb_color="@color/colorPrimary"
             app:cb_pressedRingWidth="8dip"
-            android:layout_margin="15dp"/>
--->
+            android:layout_margin="15dp"
+            android:onClick="createEvent"/>
+
     </RelativeLayout>
 </FrameLayout>

@@ -19,33 +19,6 @@
         android:id="@+id/summary_map"
         tools:context="com.mobike.mobike.SummaryActivity"
         android:name="com.google.android.gms.maps.SupportMapFragment" />
-<!--
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2.5"
-        android:orientation="horizontal"
-        android:gravity="center">
-
-        <TextView
-            android:id="@+id/length_text_view"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:gravity="center"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"/>
-
-        <TextView
-            android:id="@+id/duration_text_view"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:gravity="center"
-            android:layout_marginLeft="10dp"
-            android:layout_marginStart="10dp"/>
-
-    </LinearLayout> -->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -93,7 +66,8 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:maxLines="1"
-        android:hint="@string/route_name_hint"/>
+        android:hint="@string/route_name_hint"
+        android:textStyle="bold"/>
 
     <EditText
         android:id="@+id/route_description_text"

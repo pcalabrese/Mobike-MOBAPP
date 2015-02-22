@@ -16,11 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.mobike.mobike.network.DownloadEventsTask;
+import com.mobike.mobike.utils.CircleButton;
 import com.mobike.mobike.utils.Event;
 import com.mobike.mobike.utils.Route;
 
@@ -50,7 +52,7 @@ import java.util.List;
  * Use the {@link EventsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EventsFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener {
+public class EventsFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -140,6 +142,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         spinner.setOnItemSelectedListener(this);
 
         initialSpinner = true;
+
+        ((CircleButton) getView().findViewById(R.id.create_event)).setOnClickListener(this);
 
         Log.v(TAG, "onStart()");
     }
@@ -266,8 +270,14 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     }
 
 
-    public void createEvent(View view) {
-
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.create_event:
+                Intent intent = new Intent(getActivity(), EventCreationActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 }
 

@@ -39,7 +39,7 @@
     </string-array>
     <string name="title_activity_event">Event</string>
     <string name="title_activity_route">Route</string>
-    <string name="route_name_hint">Route name... (required)</string>
+    <string name="route_name_hint">Name... (required)</string>
     <string name="route_description_hint">Description...</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
@@ -49,5 +49,18 @@
     <string name="route_difficulty_hint">Difficulty... (number between 1 and 10)</string>
     <string name="route_bends_hint">Bends... (number between 1 and 10)</string>
     <string name="route_type_hint">Route type...</string>
+    <string name="new_event">New Event</string>
+    <string name="event_name_hint">Name</string>
+    <string name="event_description_hint">Description</string>
+    <string name="event_date">Choose a date</string>
+    <string name="pick_date">Pick Date</string>
+    <string name="event_time">Choose time</string>
+    <string name="pick_time">Pick Time</string>
+    <string name="invite_user_hint">Invite other users</string>
+    <string name="invite">Invite</string>
+    <string name="cancel">Cancel</string>
+    <string name="create">Create</string>
+    <string name="pick_route">Pick Route</string>
+    <string name="title_activity_event_creation">Event Creation</string>
 
 </resources>

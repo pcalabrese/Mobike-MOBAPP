@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 public class EventActivity extends ActionBarActivity {
 
-    private TextView name, date, creator, description, invited;
+    private TextView name, date, creator, description, invited, startLocation, creationDate;
     private Route route;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -53,6 +53,8 @@ public class EventActivity extends ActionBarActivity {
         creator = (TextView) findViewById(R.id.event_creator);
         description = (TextView) findViewById(R.id.event_description);
         invited = (TextView) findViewById(R.id.event_invited);
+        startLocation = (TextView) findViewById(R.id.start_location);
+        creationDate = (TextView) findViewById(R.id.creation_date);
 
         // displays event's details in textViews
         name.setText(bundle.getString(EventsFragment.EVENT_NAME));
@@ -60,6 +62,8 @@ public class EventActivity extends ActionBarActivity {
         creator.setText("Created by " + bundle.getString(EventsFragment.EVENT_CREATOR));
         description.setText(bundle.getString(EventsFragment.EVENT_DESCRIPTION));
         invited.setText(bundle.getString(EventsFragment.EVENT_INVITED));
+        startLocation.setText("Start location: " + bundle.getString(EventsFragment.EVENT_START_LOCATION));
+        creationDate.setText("Created on " + bundle.getString(EventsFragment.EVENT_CREATION_DATE));
 
         new DownloadRouteTask(this).execute(bundle.getString(EventsFragment.ROUTE_ID));
     }

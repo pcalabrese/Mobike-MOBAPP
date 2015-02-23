@@ -85,6 +85,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobike.mobike.MainActivity" />
         </activity>
+        <activity
+            android:name=".EventCreationActivity"
+            android:label="@string/title_activity_event_creation">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mobike.mobike.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

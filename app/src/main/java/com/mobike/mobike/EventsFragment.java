@@ -16,11 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.mobike.mobike.network.DownloadEventsTask;
+import com.mobike.mobike.utils.CircleButton;
 import com.mobike.mobike.utils.Event;
 import com.mobike.mobike.utils.Route;
 
@@ -50,7 +52,7 @@ import java.util.List;
  * Use the {@link EventsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EventsFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener {
+public class EventsFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -60,16 +62,18 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String EVENT_DATE = "com.mobike.mobike.EventsFragment.event_date";
     public static final String EVENT_CREATOR = "com.mobike.mobike.EventsFragment.event_creator";
     public static final String EVENT_DESCRIPTION = "com.mobike.mobike.EventsFragment.event_description";
-    public static final String EVENT_GPX = "com.mobike.mobike.EventsFragment.event_gpx";
-
+    public static final String EVENT_INVITED = "com.mobike.mobike.EventsFragment.event_invited";
     public static final String ROUTE_ID = "com.mobike.mobike.EventsFragment.route_id";
+    public static final String EVENT_START_LOCATION = "com.mobike.mobike.EventsFragment.event_start_location";
+    public static final String EVENT_CREATION_DATE = "com.mobike.mobike.EventsFragment.event_creation_date";
+
+    public static final String EVENT_GPX = "com.mobike.mobike.EventsFragment.event_gpx";
     public static final String ROUTE_NAME = "com.mobike.mobike.EventsFragment.route_name";
     public static final String ROUTE_DESCRIPTION = "com.mobike.mobike.EventsFragment.route_description";
     public static final String ROUTE_CREATOR = "com.mobike.mobike.EventsFragment.route_creator";
     public static final String ROUTE_LENGTH = "com.mobike.mobike.EventsFragment.route_length";
     public static final String ROUTE_DURATION = "com.mobike.mobike.EventsFragment.route_duration";
     public static final String ROUTE_GPX = "com.mobike.mobike.EventsFragment.route_gpx";
-    public static final String EVENT_INVITED = "com.mobike.mobike.EventsFragment.event_invited";
     public static final String ROUTE_DIFFICULTY = "com.mobike.mobike.EventsFragment.route_difficulty";
     public static final String ROUTE_BENDS = "com.mobike.mobike.EventsFragment.route_bends";
     public static final String ROUTE_TYPE = "com.mobike.mobike.EventsFragment.route_type";
@@ -140,6 +144,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         spinner.setOnItemSelectedListener(this);
 
         initialSpinner = true;
+
+        ((CircleButton) getView().findViewById(R.id.create_event)).setOnClickListener(this);
 
         Log.v(TAG, "onStart()");
     }
@@ -225,7 +231,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         ArrayList<Event> list = new ArrayList<>();
 
         JSONObject jsonEvent;
-        String name, date, creator, description, routeID;
+        String name, date, creator, description, routeID, startLocation, creationDate;
 
         for (int i = 0; i < json.length(); i++) {
             try {
@@ -236,8 +242,10 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 description = jsonEvent.getString("description");
                 routeID = jsonEvent.getInt("routeId") + "";
                 String invited = "Andrea Donati\nMarco Esposito\nPaolo Calabrese\nBruno Vispi";
+                startLocation = jsonEvent.getString("startLocation");
+                creationDate = jsonEvent.getString("creationDate");
 
-                list.add(new Event(name, date, creator, description, routeID, invited));
+                list.add(new Event(name, date, creator, description, routeID, startLocation, creationDate, invited));
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -259,6 +267,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 bundle.putString(EVENT_DESCRIPTION, event.getDescription());
                 bundle.putString(EVENT_INVITED, event.getInvited());
                 bundle.putString(ROUTE_ID, event.getRouteID());
+                bundle.putString(EVENT_START_LOCATION, event.getStartLocation());
+                bundle.putString(EVENT_CREATION_DATE, event.getCreationDate());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -266,8 +276,14 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     }
 
 
-    public void createEvent(View view) {
-
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.create_event:
+                Intent intent = new Intent(getActivity(), EventCreationActivity.class);
+                startActivity(intent);
+                break;
+        }
     }
 }
 

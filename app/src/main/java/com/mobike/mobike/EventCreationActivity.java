@@ -17,6 +17,8 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.mobike.mobike.network.UploadEventTask;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -51,6 +53,8 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 break;
             case R.id.create:
                 //create and send event
+                //new UploadEventTask(this, event).execute();
+                //finish();
                 break;
             case R.id.pick_date:
                 //create PickDateDialog and display date in date text view
@@ -91,9 +95,6 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
 
         textView.setAdapter(adapter);
         textView.setTokenizer(tokenizer);
-
-        //textView.setText("Creatore,");
-        //tokenizer.terminateToken("Creatore");
     }
 
 

@@ -62,5 +62,6 @@
     <string name="create">Create</string>
     <string name="pick_route">Pick Route</string>
     <string name="title_activity_event_creation">Event Creation</string>
+    <string name="event_start_location_hint">Start location</string>
 
 </resources>

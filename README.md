@@ -12,7 +12,7 @@ Milestone 2 - Release Candidate
 ==============
 - [Presentation]()
 - [Demo video of android application](https://drive.google.com/open?id=0B_1wI-LJKIS-b2s2UmRQRkc2Zmc&authuser=0)
-- [Demo video of the website]()
+- [Demo video of the website](https://drive.google.com/open?id=0B0jdXB8d2b4pWksyeTZISkxuQlk&authuser=0)
 - [Report Survey]()
 
 =============

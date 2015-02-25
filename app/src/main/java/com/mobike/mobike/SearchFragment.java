@@ -65,6 +65,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     private ProgressDialog progressDialog;
     private Boolean initialSpinner = true;
 
+    public static final String ROUTE_ID = "com.mobike.mobike.SearchFragment.route_id";
     public static final String ROUTE_NAME = "com.mobike.mobike.SearchFragment.route_name";
     public static final String ROUTE_DESCRIPTION = "com.mobike.mobike.SearchFragment.route_description";
     public static final String ROUTE_CREATOR = "com.mobike.mobike.SearchFragment.route_creator";
@@ -77,7 +78,6 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
     public static final String downloadAllRoutesURL = "http://mobike.ddns.net/SRV/routes/retrieveall";
     public static final String downloadUserRoutesURL = "qualcosa";
-    public static final String GPXURL = "http://mobike.ddns.net/SRV/routes";
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -195,7 +195,6 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         GridView gridView = (GridView) getView().findViewById(R.id.gridview);
         ArrayList<Route> arrayList = new ArrayList<>();
         // TODO popolo l'arrayList con i dati presi dal json
-        AsyncTask<String, Void, String> a = new GPXTask();
 
         JSONObject jsonRoute;
         String name, description, creator, duration, length, gpx, difficulty, bends, type; // ora type non c'è nel json
@@ -214,10 +213,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 difficulty = jsonRoute.getInt("difficulty") + "";
                 bends = jsonRoute.getInt("bends") + "";
                 type = "DefaultRouteType";
-                new Route(name, description, creator, length, duration, map, gpx,
-                        difficulty, bends, type);
-
-                arrayList.add(new Route(name, description, creator, length, duration, map, gpx, difficulty, bends, type));
+                String id = jsonRoute.getInt("id") + "";
+                arrayList.add(new Route(name, description, creator, length, duration, map, gpx, difficulty, bends, type, id));
 
             }catch(JSONException e){e.printStackTrace();}
         }
@@ -235,6 +232,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 Route route = (Route) adapterView.getAdapter().getItem(position);
                 Intent intent = new Intent(getActivity(), RouteActivity.class);
                 Bundle bundle = new Bundle();
+                bundle.putString(ROUTE_ID, route.getID());
                 bundle.putString(ROUTE_NAME, route.getName());
                 bundle.putString(ROUTE_DESCRIPTION, route.getDescription());
                 bundle.putString(ROUTE_CREATOR, route.getCreator());
@@ -266,56 +264,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     }
 
 
-    private class GPXTask extends AsyncTask<String, Void, String> {
 
-        @Override
-        protected String doInBackground(String... urls) {
-            return HTTPGetRoutes(GPXURL+"/"+ urls[0] + "/gpx");
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-        }
-
-        private String HTTPGetRoutes(String url){
-            InputStream inputStream = null;
-            String result = "";
-            try {
-
-                // create HttpClient
-                HttpClient httpclient = new DefaultHttpClient();
-
-                // make GET request to the given URL
-                HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
-
-                // receive response as inputStream
-                inputStream = httpResponse.getEntity().getContent();
-
-                // convert inputstream to string
-                if(inputStream != null)
-                    result = convertInputStreamToString(inputStream);
-                else{
-                    return null;}
-
-            } catch (Exception e) {
-                Log.d("InputStream", e.getLocalizedMessage());
-            }
-            return result;
-        }
-
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while((line = bufferedReader.readLine()) != null)
-                result += line;
-
-            inputStream.close();
-            return result;
-
-        }
-    }
 
 }
 

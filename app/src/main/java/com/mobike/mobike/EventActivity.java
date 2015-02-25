@@ -21,6 +21,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.mobike.mobike.network.DownloadGpxTask;
 import com.mobike.mobike.network.DownloadRouteTask;
 import com.mobike.mobike.utils.CustomMapFragment;
 import com.mobike.mobike.utils.Route;
@@ -28,10 +29,11 @@ import com.mobike.mobike.utils.Route;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class EventActivity extends ActionBarActivity {
+public class EventActivity extends ActionBarActivity implements DownloadGpxTask.GpxInterface {
 
     private TextView name, date, creator, description, invited, startLocation, creationDate;
     private Route route;
+    private String gpx;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline routePoly; // the route
@@ -66,16 +68,18 @@ public class EventActivity extends ActionBarActivity {
         creationDate.setText("Created on " + bundle.getString(EventsFragment.EVENT_CREATION_DATE));
 
         new DownloadRouteTask(this).execute(bundle.getString(EventsFragment.ROUTE_ID));
+        new DownloadGpxTask(this).execute(bundle.getString(EventsFragment.ROUTE_ID));
     }
 
-    public void setRoute(Route route) {
-        this.route = route;
+    @Override
+    public void setGpx(String gpx) {
+        this.gpx = gpx;
 
         // get points from route_gpx ,set up the map and finally add the polyline of the route
         GPSDatabase db = new GPSDatabase(this);
         db.open();
         try {
-            points = db.gpxToMapPoints(route.getGpx());
+            points = db.gpxToMapPoints(gpx);
         } catch (IOException e) {
         }
         db.close();
@@ -85,6 +89,13 @@ public class EventActivity extends ActionBarActivity {
         routePoly = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         routePoly.setPoints(points);
 
+        Log.v(TAG, "points size = " + points.size());
+        Log.v(TAG, "setGpx(), gpx: " + gpx);
+        Log.v(TAG, "setGpx()");
+    }
+
+    public void setRoute(Route route) {
+        this.route = route;
         Log.v(TAG, "setRoute()");
     }
 
@@ -160,6 +171,7 @@ public class EventActivity extends ActionBarActivity {
             CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
                     MapsFragment.CAMERA_ZOOM_VALUE - 5);
             mMap.animateCamera(update);
+            Log.v(TAG, "setUpMap()");
         }
     }
 
@@ -171,7 +183,6 @@ public class EventActivity extends ActionBarActivity {
         bundle.putString(SearchFragment.ROUTE_CREATOR, route.getCreator());
         bundle.putString(SearchFragment.ROUTE_LENGTH, route.getLength());
         bundle.putString(SearchFragment.ROUTE_DURATION, route.getDuration());
-        bundle.putString(SearchFragment.ROUTE_GPX, route.getGpx());
         bundle.putString(SearchFragment.ROUTE_DIFFICULTY, route.getDifficulty());
         bundle.putString(SearchFragment.ROUTE_BENDS, route.getBends());
         bundle.putString(SearchFragment.ROUTE_TYPE, route.getType());

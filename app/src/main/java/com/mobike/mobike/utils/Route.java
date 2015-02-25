@@ -6,10 +6,10 @@ import android.graphics.Bitmap;
  * Created by Andrea-PC on 07/02/2015.
  */
 public class Route {
-    private String name, description, creator, length, duration, gpx, difficulty, bends, type;
+    private String name, description, creator, length, duration, gpx, difficulty, bends, type, id;
     private Bitmap map;
 
-    public Route(String name, String description, String creator, String length, String duration, Bitmap map, String gpx, String difficulty, String bends, String type) {
+    public Route(String name, String description, String creator, String length, String duration, Bitmap map, String gpx, String difficulty, String bends, String type, String id) {
         this.name = name;
         this.description = description;
         this.creator = creator;
@@ -20,6 +20,7 @@ public class Route {
         this.difficulty = difficulty;
         this.bends = bends;
         this.type = type;
+        this.id = id;
     }
 
     public String getName() { return name; }
@@ -41,4 +42,10 @@ public class Route {
     public String getBends() { return bends; }
 
     public String getType() { return type; }
+
+    public String getID() { return id; }
+
+    public void setID(String id) {
+        this.id = id;
+    }
 }

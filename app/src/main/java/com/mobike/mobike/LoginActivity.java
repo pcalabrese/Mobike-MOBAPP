@@ -42,7 +42,11 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     private static final String STATE_RESOLVING_ERROR = "resolving_error";
     private static final String DIALOG_ERROR = "dialog_error";
     private static final String TAG = "LoginActivity";
-    public static final String ACCOUNT_NAME = "com.mobike.mobike.account_name";
+    public static final String USER = "com.mobike.mobike.user";
+    public static final String EMAIL = "com.mobike.mobike.email";
+    public static final String NAME = "com.mobike.mobike.name";
+    public static final String SURNAME = "com.mobike.mobike.surname";
+    public static final String NICKNAME = "com.mobike.mobike.nickname";
     private static final int MAPS_REQUEST = 1;
 
     private GoogleApiClient mGoogleApiClient;
@@ -166,10 +170,13 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         }
 
         // Salvo l'account name nelle shared preferences
-        SharedPreferences sharedPref = getSharedPreferences(ACCOUNT_NAME, Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences(USER, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(ACCOUNT_NAME, email);
-        editor.commit();
+        editor.putString(EMAIL, email);
+        editor.putString(NAME, name);
+        editor.putString(SURNAME, surname);
+        //editor.putString(NICKNAME, nickname);
+        editor.apply();
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();

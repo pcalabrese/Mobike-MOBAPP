@@ -75,12 +75,12 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
 
     public void onDateSet(DatePicker view, int year, int month, int day) {
         TextView dateText = (TextView) findViewById(R.id.date);
-        dateText.setText(day + "/" + (month + 1) + "/" + year);
+        dateText.setText(String.format("%02d", day) + "/" + String.format("%02d", month+1) + "/" + String.format("%04d", year));
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         TextView timeText = (TextView) findViewById(R.id.time);
-        timeText.setText(hourOfDay + ":" + minute);
+        timeText.setText(String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute));
     }
 
 /*    public void downloadUsers() {

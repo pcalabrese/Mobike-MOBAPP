@@ -44,7 +44,7 @@ public class DownloadUsersTask extends AsyncTask<String, Void, String> {
             JSONArray array = new JSONArray(result);
             for (int i = 0; i < array.length(); i++) {
                 JSONObject user = array.getJSONObject(i);
-                String name = user.getString("name");
+                String name = user.getString("nickname");
                 userList.add(name);
                 ((EventCreationActivity) activity).setUsersHints(userList);
             }

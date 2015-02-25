@@ -15,6 +15,18 @@
         tools:context="com.mobike.mobike.RouteActivity"
         android:name="com.mobike.mobike.utils.CustomMapFragment" />
 
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="5dp"
+        android:layout_margin="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
     <!-- text view for the name of the event -->
     <TextView
         android:layout_width="match_parent"
@@ -172,5 +184,34 @@
         android:layout_marginStart="15dp"
         android:layout_marginBottom="15dp"/>
 
+</LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="5dp"
+        android:layout_margin="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/review_item" />
+            <include layout="@layout/review_item" />
+            <include layout="@layout/review_item" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Load more..."
+                style="?android:attr/buttonBarButtonStyle"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>
 </ScrollView>

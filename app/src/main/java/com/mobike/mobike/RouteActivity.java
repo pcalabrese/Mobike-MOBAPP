@@ -38,6 +38,7 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route);
+        setUpMapIfNeeded();
 
         // get data from bundle and displays in textViews
         Bundle bundle = getIntent().getExtras();
@@ -76,13 +77,13 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
         }
         db.close();
 
-        setUpMapIfNeeded();
+        setUpMap();
 
         routePoly = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         routePoly.setPoints(points);
 
         Log.v(TAG, "points size = " + points.size());
-        Log.v(TAG, "setGpx(), gpx: " + gpx);
+        Log.v(TAG, "setGpx(), gpx size: " + gpx.length() + ", gpx: " + gpx);
         Log.v(TAG, "setGpx()");
     }
 
@@ -147,6 +148,8 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
      */
     private void setUpMap() {
         if (points != null && points.size() > 0) {
+
+            Log.v(TAG, "setUpMap()");
             //saving the first and the last ones
             LatLng start = points.get(0);
             LatLng end = points.get(points.size() - 1);

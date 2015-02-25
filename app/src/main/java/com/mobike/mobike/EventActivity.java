@@ -45,6 +45,7 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
+        setUpMapIfNeeded();
 
         /* get event and route details from the bundle, route details will be used to visualize the route
          in a new RouteActivity (at the pressure of a button)
@@ -84,7 +85,7 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
         }
         db.close();
 
-        setUpMapIfNeeded();
+        setUpMap();
 
         routePoly = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         routePoly.setPoints(points);

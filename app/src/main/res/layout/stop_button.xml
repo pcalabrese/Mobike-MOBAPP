@@ -8,5 +8,7 @@
     android:layout_height="match_parent"
     android:layout_width="0dp"
     android:layout_weight="0.5"
+    android:layout_marginLeft="10dp"
+    android:layout_marginStart="10dp"
     android:textColor="@color/white"
-    android:background="@color/red"/>
+    android:background="@drawable/stop_button"/>

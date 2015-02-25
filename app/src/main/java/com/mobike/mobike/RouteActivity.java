@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -16,24 +17,28 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.mobike.mobike.network.DownloadGpxTask;
 import com.mobike.mobike.utils.CustomMapFragment;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class RouteActivity extends ActionBarActivity {
+public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.GpxInterface {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
-    private Polyline route; // the polyline of the route
+    private Polyline routePoly; // the polyline of the route
     private ArrayList<LatLng> points; // the points of the route
 
     private TextView name, description, creator, length, duration, difficulty, bends, type;
     private String gpx;
 
+    private static final String TAG = "RouteActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route);
+        setUpMapIfNeeded();
 
         // get data from bundle and displays in textViews
         Bundle bundle = getIntent().getExtras();
@@ -52,23 +57,34 @@ public class RouteActivity extends ActionBarActivity {
         length.setText(String.format("%.01f", Float.parseFloat(bundle.getString(SearchFragment.ROUTE_LENGTH))/1000) + " km");
         int durationInSeconds = Integer.parseInt(bundle.getString(SearchFragment.ROUTE_DURATION));
         duration.setText(String.valueOf(durationInSeconds/3600) + " h " + String.valueOf((durationInSeconds/60)%60) + " m " + String.valueOf(durationInSeconds%60) + " s");
-        gpx = bundle.getString(SearchFragment.ROUTE_GPX);
         difficulty.setText("Difficulty: " + bundle.getString(SearchFragment.ROUTE_DIFFICULTY));
         bends.setText("Bends: " + bundle.getString(SearchFragment.ROUTE_BENDS));
         type.setText("Type: " + bundle.getString(SearchFragment.ROUTE_TYPE));
 
+        new DownloadGpxTask(this).execute(bundle.getString(SearchFragment.ROUTE_ID));
+    }
+
+    @Override
+    public void setGpx(String gpx) {
+        this.gpx = gpx;
+
+        // get points from route_gpx ,set up the map and finally add the polyline of the route
         GPSDatabase db = new GPSDatabase(this);
         db.open();
         try {
             points = db.gpxToMapPoints(gpx);
-        } catch (IOException e) {}
+        } catch (IOException e) {
+        }
         db.close();
 
-        setUpMapIfNeeded();
+        setUpMap();
 
-        route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
-        route.setPoints(points);
+        routePoly = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
+        routePoly.setPoints(points);
 
+        Log.v(TAG, "points size = " + points.size());
+        Log.v(TAG, "setGpx(), gpx size: " + gpx.length() + ", gpx: " + gpx);
+        Log.v(TAG, "setGpx()");
     }
 
     // method to finish current activity at the pressure of top left back button
@@ -132,6 +148,8 @@ public class RouteActivity extends ActionBarActivity {
      */
     private void setUpMap() {
         if (points != null && points.size() > 0) {
+
+            Log.v(TAG, "setUpMap()");
             //saving the first and the last ones
             LatLng start = points.get(0);
             LatLng end = points.get(points.size() - 1);

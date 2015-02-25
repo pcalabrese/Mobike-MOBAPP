@@ -165,7 +165,7 @@
             android:layout_marginEnd="10dp"
             android:layout_marginLeft="10dp"
             android:text="@string/pick_date"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/blue_button"
             android:textColor="@color/white"/>
     </LinearLayout>
 
@@ -196,7 +196,7 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginLeft="10dp"
                 android:text="@string/pick_time"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/blue_button"
                 android:textColor="@color/white"/>
         </LinearLayout>
 
@@ -236,7 +236,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:text="@string/pick_route"
-        android:background="@color/colorPrimary"
+        android:background="@drawable/blue_button"
         android:textColor="@color/white"
         android:layout_gravity="center"/>
 </LinearLayout>

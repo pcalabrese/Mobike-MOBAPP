@@ -364,25 +364,28 @@ public class GPSDatabase
         double latitude;
         double longitude;
         LatLng couple;
-        try{
-            while( (line=bufReader.readLine()) != null ){
-                if(line.startsWith("<trkpt") ){
-                    String lat = line.substring(
-                            line.indexOf("lat=", 0)+5,
-                            line.indexOf("lon=", 0)-2);
+        String[] array = gpxString.split("trkpt ");
+        Log.v(TAG, "array length: "+ array.length);
+        for (int i = 0; i < array.length; i++) {
+            if(array[i].startsWith("lat=") ){
+            /*    String lat = array[i].substring(
+                        array[i].indexOf("lat=", 0)+5,
+                        array[i].indexOf("lon=", 0)-2);
 
-                    String lon = line.substring(
-                            line.indexOf("lon=", 0)+5,
-                            line.indexOf(">")-1);
+                String lon = array[i].substring(
+                        array[i].indexOf("lon=", 0)+5,
+                        array[i].indexOf(">")-1); */
 
-                    latitude = Double.parseDouble(lat);
-                    longitude = Double.parseDouble(lon);
-                    couple = new LatLng(latitude, longitude);
-                    list.add(couple);
-                }
+                String lat = array[i].substring(array[i].indexOf("lat=")+5 , array[i].indexOf("lon=")-2);
+                String lon = array[i].substring(array[i].indexOf("lon=")+5, array[i].indexOf("lon=")+13);
+
+                latitude = Double.parseDouble(lat);
+                longitude = Double.parseDouble(lon);
+                couple = new LatLng(latitude, longitude);
+                list.add(couple);
             }
         }
-        catch (IOException e){e.printStackTrace();}
+        Log.v(TAG, " "+list.get(0) + " "+list.get(1) + " "+list.get(list.size()-1));
 
         return list;
     }

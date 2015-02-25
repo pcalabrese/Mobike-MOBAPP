@@ -57,11 +57,12 @@ public class DownloadRouteTask extends AsyncTask<String, Void, String> {
             String duration = jsonRoute.getInt("duration")+"";
             Bitmap map = null;
             //String gpx = jsonRoute.getString("url");
-            String gpx = "gpx";
+            String gpx = "";
             String difficulty = jsonRoute.getInt("difficulty") + "";
             String bends = jsonRoute.getInt("bends") + "";
             String type = "DefaultRouteType";
-            ((EventActivity) activity).setRoute(new Route(name, description, creator, length, duration, map, gpx, difficulty, bends, type));
+            String id = jsonRoute.getInt("id") + "";
+            ((EventActivity) activity).setRoute(new Route(name, description, creator, length, duration, map, gpx, difficulty, bends, type, id));
         }catch(JSONException e){
             e.printStackTrace();
         }

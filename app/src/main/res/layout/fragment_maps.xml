@@ -2,46 +2,48 @@
 <!-- LinearLayout verticale che contiene un fragment con la mappa e un altro LinearLayout con i bottoni
     che vengono aggiunti dinamicamente via codice -->
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main_layout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
+<FrameLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="6"
+        android:layout_height="match_parent"
         android:id="@+id/map"
         tools:context="com.mobike.mobike.MapsFragment"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:tag="map"/>
-
-    <!--    <FrameLayout
-            android:id="@+id/map_container"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="6"/> -->
+        <!--android:layout_weight="6" -->
+    </FrameLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/button_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_alignParentBottom="true"
         android:gravity="center"
         android:orientation="horizontal">
+    <!--android:layout_weight="1" -->
 
         <Button android:id="@+id/start_button"
             android:text="@string/start_button"
             android:layout_height="match_parent"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:layout_marginLeft="60dp"
+            android:layout_marginRight="60dp"
             android:textColor="@color/white"
-            android:background="@color/green"/>
+            android:background="@drawable/start_button"/>
 
     </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

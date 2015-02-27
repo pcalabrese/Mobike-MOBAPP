@@ -65,5 +65,6 @@
     <string name="event_start_location_hint">Start location</string>
     <string name="load_more">Load more...</string>
     <string name="account">Account</string>
+    <string name="edit">Edit</string>
 
 </resources>

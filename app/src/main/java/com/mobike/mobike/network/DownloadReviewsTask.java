@@ -49,7 +49,7 @@ public class DownloadReviewsTask extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         try{
-            JSONArray json = new JSONArray(result);
+            JSONObject json = new JSONObject(result);
             // visualizza le reviews
             ((RouteActivity) activity).setReviews(json);
         }catch(JSONException e)

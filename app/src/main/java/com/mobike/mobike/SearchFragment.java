@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -192,7 +193,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
     public void showRouteList(JSONArray json) {
         // grid view
-        GridView gridView = (GridView) getView().findViewById(R.id.gridview);
+        ListView listView = (ListView) getView().findViewById(R.id.list_view);
         ArrayList<Route> arrayList = new ArrayList<>();
         // TODO popolo l'arrayList con i dati presi dal json
 
@@ -223,9 +224,9 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         // creo il gridAdapter
         GridAdapter gridAdapter = new GridAdapter(getActivity(), R.layout.search_grid_item, arrayList);
         // imposto l'adapter
-        gridView.setAdapter(gridAdapter);
+        listView.setAdapter(gridAdapter);
         // imposto il listener
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 // faccio partire l'activity per la visualizzazione del percorso, passando i campi di Route in un bundle
@@ -310,7 +311,7 @@ class GridAdapter extends ArrayAdapter<Route> {
 
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
-            v = vi.inflate(R.layout.search_grid_item, null);
+            v = vi.inflate(R.layout.route_list_row, null);
 
         }
 
@@ -318,16 +319,27 @@ class GridAdapter extends ArrayAdapter<Route> {
 
         if (p != null) {
 
-            TextView textView = (TextView) v.findViewById(R.id.text);
-            ImageView imageView = (ImageView) v.findViewById(R.id.picture);
+            TextView name = (TextView) v.findViewById(R.id.route_name);
+            TextView length = (TextView) v.findViewById(R.id.route_length);
+            TextView duration = (TextView) v.findViewById(R.id.route_duration);
+            TextView creator = (TextView) v.findViewById(R.id.route_creator);
+            TextView type = (TextView) v.findViewById(R.id.route_type);
+            ImageView imageView = (ImageView) v.findViewById(R.id.route_image);
 
-            if (textView != null) {
-                textView.setText(p.getName());
+            if (name != null)
+                name.setText(p.getName());
+            if (length != null)
+                length.setText(String.format("%.01f", Float.parseFloat(p.getLength())/1000) + " km");
+            if (duration != null) {
+                int durationInSeconds = Integer.parseInt(p.getDuration());
+                duration.setText(String.valueOf(durationInSeconds/3600) + " h " + String.valueOf((durationInSeconds/60)%60) + " m " + String.valueOf(durationInSeconds%60) + " s");
             }
-            if (imageView != null) {
-
+            if (creator != null)
+                creator.setText(p.getCreator());
+            if (type != null)
+                type.setText(p.getType());
+            if (imageView != null)
                 imageView.setImageBitmap(p.getMap());
-            }
         }
 
         return v;

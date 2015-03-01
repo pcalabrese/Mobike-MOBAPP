@@ -16,7 +16,15 @@
         android:layout_height="2dp"
         android:background="@color/colorAccent" />
 
-    <GridView
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9"
+        android:cacheColorHint="#00000000"
+        android:divider="@null"/>
+
+<!--    <GridView
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -25,7 +33,6 @@
         android:horizontalSpacing="2dp"
         android:stretchMode="columnWidth"
         android:numColumns="2"
-        android:background="@color/colorAccent"
-    />
+        android:background="@color/colorAccent"/> -->
 
 </LinearLayout>

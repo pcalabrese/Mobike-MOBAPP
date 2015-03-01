@@ -5,14 +5,14 @@
     android:layout_height="match_parent">
 
     <com.mobike.mobike.SquareImageView
-        android:id="@+id/picture"
+        android:id="@+id/route_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         />
 
     <TextView
-        android:id="@+id/text"
+        android:id="@+id/route_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"

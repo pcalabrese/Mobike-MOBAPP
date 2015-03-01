@@ -52,7 +52,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     private GoogleApiClient mGoogleApiClient;
     private ConnectionResult mConnectionResult;
     private boolean mResolvingError = false;
-    private String email, name, surname;
+    private String email, name, surname, imageURL;
     private Context context = this;
 
     private static final String postURL = "http://mobike.ddns.net/SRV/users/auth";
@@ -165,8 +165,10 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                 Log.v(TAG, "onConnected(), Language = " + person.getLanguage());
             if(person.hasGender())
                 Log.v(TAG, "onConnected(), Gender = " + person.getGender());
-            if (person.hasImage())
+            if (person.hasImage()) {
+                imageURL = person.getImage().getUrl();
                 Log.v(TAG, "onConnected(), ImageURL = " + person.getImage().getUrl());
+            }
         }
 
         // Salvo l'account name nelle shared preferences
@@ -286,6 +288,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     jsonObject.put("name", name);
                     jsonObject.put("surname", surname);
                     jsonObject.put("email", email);
+                    jsonObject.put("imageURL", imageURL);
                 }
                 catch(JSONException e){/*not implemented yet*/ }
                 OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());

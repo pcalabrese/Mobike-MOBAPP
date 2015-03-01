@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent" >
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="2dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.mobike.mobike.SquareImageView
+                android:id="@+id/route_image"
+                android:layout_width="105dp"
+                android:layout_height="105dp"
+                android:layout_margin="5dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/staticmap"/>
+
+            <!-- TextView with the name of the route -->
+            <TextView
+                android:id="@+id/route_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/route_image"
+                android:layout_toEndOf="@+id/route_image"
+                android:layout_alignParentTop="true"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:text="Roma - Cassino"/>
+
+            <!-- TextView with the length of the route -->
+            <TextView
+                android:id="@+id/route_length"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/route_image"
+                android:layout_toEndOf="@+id/route_image"
+                android:layout_below="@+id/route_name"
+                android:textStyle="italic"
+                android:textSize="15sp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:text="150 km"/>
+
+            <!-- TextView with the duration of the route -->
+            <TextView
+                android:id="@+id/route_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/route_length"
+                android:layout_toEndOf="@+id/route_length"
+                android:layout_below="@+id/route_name"
+                android:textStyle="italic"
+                android:textSize="15sp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:text="1h 54m 32s"/>
+
+            <!-- TextView with the creator of the route -->
+            <TextView
+                android:id="@+id/route_creator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/route_image"
+                android:layout_toEndOf="@+id/route_image"
+                android:layout_below="@+id/route_length"
+                android:textStyle="italic"
+                android:textSize="15sp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:text="Created by donand"/>
+
+            <!-- TextView with the type of the route -->
+            <TextView
+                android:id="@+id/route_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/route_image"
+                android:layout_toEndOf="@+id/route_image"
+                android:layout_below="@+id/route_creator"
+                android:textStyle="italic"
+                android:textSize="15sp"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:text="Mountain"/>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</FrameLayout>

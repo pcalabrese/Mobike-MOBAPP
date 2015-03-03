@@ -47,6 +47,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     public static final String NAME = "com.mobike.mobike.name";
     public static final String SURNAME = "com.mobike.mobike.surname";
     public static final String NICKNAME = "com.mobike.mobike.nickname";
+    public static final String ID = "com.mobike.mobike.id";
     private static final int MAPS_REQUEST = 1;
 
     private GoogleApiClient mGoogleApiClient;
@@ -300,6 +301,10 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     String userID = br.readLine();
                     Log.v(TAG, "userID: " + userID);
                     br.close();
+                    SharedPreferences sharedPref = getSharedPreferences(USER, Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putInt(ID, Integer.parseInt(userID));
+                    editor.apply();
                     Intent intent = new Intent(context, MainActivity.class);
                     startActivityForResult(intent, MAPS_REQUEST);
                     return "Welcome " + name + "!";

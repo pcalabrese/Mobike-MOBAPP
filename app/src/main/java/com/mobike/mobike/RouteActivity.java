@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -18,7 +19,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.network.DownloadGpxTask;
+import com.mobike.mobike.network.DownloadReviewsTask;
 import com.mobike.mobike.utils.CustomMapFragment;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,29 +68,7 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
         type.setText("Type: " + bundle.getString(SearchFragment.ROUTE_TYPE));
 
         new DownloadGpxTask(this).execute(bundle.getString(SearchFragment.ROUTE_ID));
-    }
-
-    @Override
-    public void setGpx(String gpx) {
-        this.gpx = gpx;
-
-        // get points from route_gpx ,set up the map and finally add the polyline of the route
-        GPSDatabase db = new GPSDatabase(this);
-        db.open();
-        try {
-            points = db.gpxToMapPoints(gpx);
-        } catch (IOException e) {
-        }
-        db.close();
-
-        setUpMap();
-
-        routePoly = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
-        routePoly.setPoints(points);
-
-        Log.v(TAG, "points size = " + points.size());
-        Log.v(TAG, "setGpx(), gpx size: " + gpx.length() + ", gpx: " + gpx);
-        Log.v(TAG, "setGpx()");
+        //new DownloadReviewsTask(this).execute(bundle.getString(SearchFragment.ROUTE_ID), userID); prendere lo userID dalle shared pref
     }
 
     // method to finish current activity at the pressure of top left back button
@@ -164,59 +148,49 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
         }
     }
 
-    /*private class DLRouteDetailsTask extends AsyncTask<String, Void, String> {
+    @Override
+    public void setGpx(String gpx) {
+        this.gpx = gpx;
 
-        @Override
-        protected String doInBackground(String... urls) {
-            return HTTPGetRoute(downloadURL);
+        // get points from route_gpx ,set up the map and finally add the polyline of the route
+        GPSDatabase db = new GPSDatabase(this);
+        db.open();
+        try {
+            points = db.gpxToMapPoints(gpx);
+        } catch (IOException e) {
         }
+        db.close();
 
-        @Override
-        protected void onPostExecute(String result) {
-            try{
-                JSONObject json = new JSONObject(result);
-            }catch(JSONException e)
-            { e.printStackTrace();}
+        setUpMap();
 
-            showRouteDetails(json);
-        }
+        routePoly = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
+        routePoly.setPoints(points);
 
-        private String HTTPGetEvent(String url){
-            InputStream inputStream = null;
-            String result = "";
-            try {
+        Log.v(TAG, "points size = " + points.size());
+        Log.v(TAG, "setGpx(), gpx size: " + gpx.length() + ", gpx: " + gpx);
+        Log.v(TAG, "setGpx()");
+    }
 
-                // create HttpClient
-                HttpClient httpclient = new DefaultHttpClient();
+    public void setReviews(JSONObject object) {
+        /* inflate di un eventuale recensione dell'utente (un file xml con la recensione, il bottone modifica e la linea di separazione
+            da aggiungere la linear layout con id "reviews_list"
+        if (user ha una review) {
+            JSONObject userReview = object.getJSONObject("user review");
 
-                // make GET request to the given URL
-                HttpResponse httpResponse = httpclient.execute(new HttpGet(url));
+        */
+        String user, rate, message;
+        try {
+            JSONArray array = object.getJSONArray("reviews");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject review = array.getJSONObject(i);
+                user = review.getString("user");
+                rate = review.getString("rate");
+                message = review.getString("message");
 
-                // receive response as inputStream
-                inputStream = httpResponse.getEntity().getContent();
-
-                // convert inputstream to string
-                if(inputStream != null)
-                    result = convertInputStreamToString(inputStream);
-                else{
-                    return null;}
-
-            } catch (Exception e) {
-                Log.d("InputStream", e.getLocalizedMessage());
+                // aggiungi review al linear layout "reviews_list"
+                // inflate del file "review_item.xml" con i campi popolati
             }
-            return result;
-        }
+        } catch (JSONException e) {}
+    }
 
-        private String convertInputStreamToString(InputStream inputStream) throws IOException {
-            BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-            String line = "";
-            String result = "";
-            while((line = bufferedReader.readLine()) != null)
-                result += line;
-
-            inputStream.close();
-            return result;
-
-        }
-    }*/
 }

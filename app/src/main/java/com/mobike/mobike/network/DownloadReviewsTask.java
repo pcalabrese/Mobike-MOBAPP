@@ -1,11 +1,14 @@
 package com.mobike.mobike.network;
 
+/**
+ * Created by Andrea-PC on 27/02/2015.
+ */
+
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.mobike.mobike.EventCreationActivity;
+import com.mobike.mobike.RouteActivity;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -22,37 +25,40 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /**
- * Created by Andrea-PC on 22/02/2015.
+ * Created by Andrea-PC on 27/02/2015.
  */
-public class DownloadUsersTask extends AsyncTask<String, Void, String> {
+public class DownloadReviewsTask extends AsyncTask<String, Void, String> {
     private Activity activity;
-    private static final String downloadUsersURL = "qualcosa";
 
-    public DownloadUsersTask(Activity activity) {
+    private static final String downloadReviewsURL = "qualcosa";
+
+    public DownloadReviewsTask(Activity activity) {
         this.activity = activity;
     }
 
     @Override
     protected String doInBackground(String... urls) {
-        return HTTPGetUsers(downloadUsersURL);
+        return HTTPGetReviews(downloadReviewsURL + urls[0] + "/" + urls[1]);
+    }
+
+    @Override
+    protected void onPreExecute() {
+        //progressDialog = ProgressDialog.show(activity, "Downloading events...", "", true, false);
     }
 
     @Override
     protected void onPostExecute(String result) {
-        ArrayList<String> userList = new ArrayList<>();
         try{
-            JSONArray array = new JSONArray(result);
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject user = array.getJSONObject(i);
-                String name = user.getString("nickname");
-                userList.add(name);
-                ((EventCreationActivity) activity).setUsersHints(userList);
-            }
+            JSONObject json = new JSONObject(result);
+            // visualizza le reviews
+            ((RouteActivity) activity).setReviews(json);
         }catch(JSONException e)
-        { e.printStackTrace();}
+        { e.printStackTrace();};
+
+        //progressDialog.dismiss();
     }
 
-    private String HTTPGetUsers(String url){
+    private String HTTPGetReviews(String url){
         InputStream inputStream = null;
         String result = "";
         try {

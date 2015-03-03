@@ -1,14 +1,19 @@
 package com.mobike.mobike.utils;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 /**
  * Created by Andrea-PC on 04/02/2015.
  */
 public class Event {
-    private String name, date, creator, description, invited, routeID, startLocation, creationDate;
+    private String name, date, creator, description, routeID, startLocation, creationDate, invited;
 
     public Event(String name, String date, String creator, String description, String routeID, String startLocation, String creationDate, String invited) {
         this.name = name;
@@ -21,11 +26,6 @@ public class Event {
         this.creationDate = creationDate;
     }
 
-    public Event(String name, String date, String creator){
-        this.name = name;
-        this.date = date;
-        this.creator = creator;
-    }
     public String getName() {
         return name;
     }
@@ -60,15 +60,24 @@ public class Event {
         this.invited = invited;
     }
 
-    public JSONObject exportInJSON() {
+    public JSONObject exportInJSON(int userID) {
         JSONObject result = new JSONObject();
         try {
             result.put("name", name);
             result.put("description", description);
-            result.put("date", date);
-            result.put("creator", creator);
-            result.put("routeId", routeID);
-            // creo un JSONArray con gli invitati e lo metto nel campo "invited" dell'oggetto result (solo nomi, o nickname)
+            result.put("startDate", date);
+            JSONObject c = new JSONObject();
+            c.put("nickname", creator);
+            c.put("userID", userID);
+            result.put("creator", c);
+            result.put("routeID", routeID);
+            result.put("startLocation", startLocation);
+            // creo un JSONArray con gli invitati e lo metto nel campo "invited" dell'oggetto result (solo nickname)
+            JSONArray array = new JSONArray();
+            String[] invitedArray = invited.split("\n");
+            for (int i = 0; i < invitedArray.length; i++)
+                array.put(new JSONObject().put("nickname", invitedArray[i]));
+
         } catch (JSONException e) {}
         return result;
     }

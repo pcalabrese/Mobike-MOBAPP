@@ -1,10 +1,12 @@
 package com.mobike.mobike.network;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.mobike.mobike.LoginActivity;
 import com.mobike.mobike.utils.Event;
 
 import java.io.BufferedReader;
@@ -35,7 +37,7 @@ public class UploadEventTask extends AsyncTask<String, Void, String> {
             return uploadEvent();
         } catch (IOException e) {
             Log.v(TAG, "exception  message: " + e.getMessage() + " exception class: " + e.getClass());
-            return "Unable to upload the route. URL may be invalid.";
+            return "Unable to upload the event. URL may be invalid.";
         }
     }
 
@@ -58,9 +60,11 @@ public class UploadEventTask extends AsyncTask<String, Void, String> {
             urlConnection.setChunkedStreamingMode(0);
             urlConnection.connect();
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
-            out.write(event.exportInJSON().toString());
+            SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.ID, Context.MODE_PRIVATE);
+            int userID = sharedPref.getInt(LoginActivity.ID, 0);
+            out.write(event.exportInJSON(userID).toString());
             out.close();
-            Log.v(TAG, "json sent: " + event.exportInJSON().toString());
+            Log.v(TAG, "json sent: " + event.exportInJSON(userID).toString());
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {
                 String routeID;

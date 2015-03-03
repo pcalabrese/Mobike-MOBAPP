@@ -11,4 +11,4 @@
     android:layout_marginLeft="60dp"
     android:layout_marginRight="60dp"
     android:textColor="@color/white"
-    android:background="@drawable/start_button"/>
+    android:background="@drawable/green_button"/>

@@ -11,5 +11,5 @@
         android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp"
         android:textColor="@color/white"
-        android:background="@drawable/pause_button"/>
+        android:background="@drawable/orange_button"/>
 

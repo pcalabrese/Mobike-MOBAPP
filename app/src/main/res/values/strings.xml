@@ -35,7 +35,7 @@
     <string-array name="event_types">
         <item>All Events</item>
         <item>My Events</item>
-        <item>Accepted</item>
+        <item>Invitations</item>
     </string-array>
     <string name="title_activity_event">Event</string>
     <string name="title_activity_route">Route</string>
@@ -63,5 +63,9 @@
     <string name="pick_route">Pick Route</string>
     <string name="title_activity_event_creation">Event Creation</string>
     <string name="event_start_location_hint">Start location</string>
+    <string name="load_more">Load more...</string>
+    <string name="account">Account</string>
+    <string name="edit">Edit</string>
+    <string name="new_review">Review this route!</string>
 
 </resources>

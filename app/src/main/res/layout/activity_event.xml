@@ -17,22 +17,6 @@
         <Button
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:id="@+id/accept_event"
-            android:layout_weight="1"
-            android:drawableLeft="@drawable/check_green_48dp"
-            android:drawableStart="@drawable/check_green_48dp"
-            android:text="@string/join"
-            android:background="@color/colorPrimary"
-            style="?android:attr/buttonBarButtonStyle"
-            android:textColor="@color/lime"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="8dp"/>
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
             android:id="@+id/decline_event"
             android:layout_weight="1"
             android:drawableLeft="@drawable/close_red_48dp"
@@ -41,6 +25,22 @@
             android:background="@color/colorPrimary"
             style="?android:attr/buttonBarButtonStyle"
             android:textColor="@color/red"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="8dp"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:id="@+id/accept_event"
+            android:layout_weight="1"
+            android:drawableLeft="@drawable/check_green_48dp"
+            android:drawableStart="@drawable/check_green_48dp"
+            android:text="@string/join"
+            android:background="@color/colorPrimary"
+            style="?android:attr/buttonBarButtonStyle"
+            android:textColor="@color/lime"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="10dp"

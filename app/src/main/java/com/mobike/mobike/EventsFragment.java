@@ -58,6 +58,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    public static final String EVENT = "com.mobike.mobike.EventsFragment.event";
     public static final String EVENT_NAME = "com.mobike.mobike.EventsFragment.event_name";
     public static final String EVENT_DATE = "com.mobike.mobike.EventsFragment.event_date";
     public static final String EVENT_CREATOR = "com.mobike.mobike.EventsFragment.event_creator";
@@ -81,7 +82,6 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String downloadAllEventsURL = "http://mobike.ddns.net/SRV/events/retrieveall";
     public static final String downloadUserEventsURL = "";
     public static final String downloadAcceptedEventsURL = "";
-    public static final String downloadRoutesURL = "http://mobike.ddns.net/SRV/routes/retrieveall";
 
     public static JSONArray eventRoutes;
     private ProgressDialog progressDialog;
@@ -241,6 +241,11 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 creator = jsonEvent.getInt("creatorId") + "";
                 description = jsonEvent.getString("description");
                 routeID = jsonEvent.getInt("routeId") + "";
+                /*ArrayList<String> invited = new ArrayList<>();
+                invited.add("Andrea Donati");
+                invited.add("Marco Esposito");
+                invited.add("Paolo Calabrese");
+                invited.add("Bruno Vispi"); */
                 String invited = "Andrea Donati\nMarco Esposito\nPaolo Calabrese\nBruno Vispi";
                 startLocation = jsonEvent.getString("startLocation");
                 creationDate = jsonEvent.getString("creationDate");

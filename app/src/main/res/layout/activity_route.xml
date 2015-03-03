@@ -15,6 +15,18 @@
         tools:context="com.mobike.mobike.RouteActivity"
         android:name="com.mobike.mobike.utils.CustomMapFragment" />
 
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="2dp"
+        android:layout_margin="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
     <!-- text view for the name of the event -->
     <TextView
         android:layout_width="match_parent"
@@ -172,5 +184,155 @@
         android:layout_marginStart="15dp"
         android:layout_marginBottom="15dp"/>
 
+</LinearLayout>
+    </android.support.v7.widget.CardView>
+
+    <!-- card for the rate of the user -->
+    <!--<android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="2dp"
+        android:layout_margin="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/rating_user"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:text="Rate the route"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"/>
+
+            <RatingBar
+                android:id="@+id/rating_bar_user"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="3dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:numStars="5"
+                android:rating="3.5"
+                android:secondaryTint="@color/black"
+                android:progressTint="@color/colorPrimary"
+                android:secondaryProgressTintMode="src_over"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView> -->
+
+    <!-- card for the global rating of the route -->
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="2dp"
+        android:layout_margin="10dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_margin="5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:textStyle="bold"
+                android:textSize="45sp"
+                android:textColor="@color/black"
+                android:text="3,5"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"/>
+
+            <RatingBar
+                android:id="@+id/rating_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:layout_marginStart="7dp"
+                android:layout_marginTop="4dp"
+                android:layout_toRightOf="@id/rating"
+                android:layout_toEndOf="@id/rating"
+                android:layout_alignParentTop="true"
+                android:numStars="5"
+                android:rating="3.5"
+                android:isIndicator="true"
+                style="?android:attr/ratingBarStyleIndicator"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="3dp"
+                android:layout_below="@id/rating_bar"
+                android:layout_toRightOf="@id/rating"
+                android:layout_toEndOf="@id/rating"
+                android:textStyle="italic"
+                android:text="200'000 reviews"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
+        xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        card_view:cardCornerRadius="5dp"
+        card_view:cardElevation="2dp"
+        android:layout_margin="10dp">
+
+        <LinearLayout
+            android:id="@+id/reviews_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <include layout="@layout/user_review_item" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_margin="10dp"
+                    android:background="@color/myGray" />
+
+                <include layout="@layout/review_item" />
+                <include layout="@layout/review_item" />
+                <include layout="@layout/review_item" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/load_more_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/load_more"
+                style="?android:attr/buttonBarButtonStyle"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.CardView>
 </LinearLayout>
 </ScrollView>

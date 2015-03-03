@@ -11,4 +11,4 @@
     android:layout_marginLeft="10dp"
     android:layout_marginStart="10dp"
     android:textColor="@color/white"
-    android:background="@drawable/stop_button"/>
+    android:background="@drawable/red_button"/>

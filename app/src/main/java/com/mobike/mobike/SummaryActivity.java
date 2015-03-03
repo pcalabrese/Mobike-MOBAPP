@@ -189,8 +189,8 @@ public class SummaryActivity extends ActionBarActivity {
             difficulty = routeDifficulty.getText().toString();
             bends = routeBends.getText().toString();
             type = routeType.getText().toString();
-            SharedPreferences sharedPref = getSharedPreferences(LoginActivity.ACCOUNT_NAME, Context.MODE_PRIVATE);
-            email = sharedPref.getString(LoginActivity.ACCOUNT_NAME, DEFAULT_ACCOUNT_NAME);
+            SharedPreferences sharedPref = getSharedPreferences(LoginActivity.EMAIL, Context.MODE_PRIVATE);
+            email = sharedPref.getString(LoginActivity.EMAIL, DEFAULT_ACCOUNT_NAME);
             Log.v(TAG, "email = " + email);
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();

@@ -129,7 +129,7 @@
                 android:layout_weight="0.5"
                 android:layout_margin="10dp"
                 android:textColor="@color/white"
-                android:background="@drawable/stop_button"
+                android:background="@drawable/red_button"
                 android:onClick="deleteRoute"/>
 
             <Button android:id="@+id/save_route_button"
@@ -139,7 +139,7 @@
                 android:layout_weight="0.5"
                 android:layout_margin="10dp"
                 android:textColor="@color/white"
-                android:background="@drawable/start_button"
+                android:background="@drawable/green_button"
                 android:onClick="saveRoute"/>
 
     </LinearLayout>

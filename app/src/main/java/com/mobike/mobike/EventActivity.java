@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.network.DownloadGpxTask;
 import com.mobike.mobike.network.DownloadRouteTask;
 import com.mobike.mobike.utils.CustomMapFragment;
+import com.mobike.mobike.utils.Event;
 import com.mobike.mobike.utils.Route;
 
 import java.io.IOException;
@@ -60,6 +61,15 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
         creationDate = (TextView) findViewById(R.id.creation_date);
 
         // displays event's details in textViews
+/*        Event event = (Event) bundle.getParcelable(EventsFragment.EVENT);
+        name.setText(event.getName());
+        date.setText(event.getDate());
+        creator.setText("Created by " + event.getCreator());
+        description.setText(event.getDescription());
+        invited.setText(event.getInvited().toString());
+        startLocation.setText("Start location: " + event.getStartLocation());
+        creationDate.setText("Created on " + event.getCreationDate()); */
+
         name.setText(bundle.getString(EventsFragment.EVENT_NAME));
         date.setText(bundle.getString(EventsFragment.EVENT_DATE));
         creator.setText("Created by " + bundle.getString(EventsFragment.EVENT_CREATOR));
@@ -187,6 +197,7 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
         bundle.putString(SearchFragment.ROUTE_DIFFICULTY, route.getDifficulty());
         bundle.putString(SearchFragment.ROUTE_BENDS, route.getBends());
         bundle.putString(SearchFragment.ROUTE_TYPE, route.getType());
+        bundle.putString(SearchFragment.ROUTE_ID, route.getID());
         intent.putExtras(bundle);
         startActivity(intent);
     }

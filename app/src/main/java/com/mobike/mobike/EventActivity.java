@@ -197,6 +197,7 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
         bundle.putString(SearchFragment.ROUTE_DIFFICULTY, route.getDifficulty());
         bundle.putString(SearchFragment.ROUTE_BENDS, route.getBends());
         bundle.putString(SearchFragment.ROUTE_TYPE, route.getType());
+        bundle.putString(SearchFragment.ROUTE_ID, route.getID());
         intent.putExtras(bundle);
         startActivity(intent);
     }

@@ -4,9 +4,12 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.TimePickerDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,12 +21,15 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.mobike.mobike.network.UploadEventTask;
+import com.mobike.mobike.utils.Event;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
 
 public class EventCreationActivity extends ActionBarActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+    private String routeID, startDate, startTime;
+    private static final String TAG = "EventCreationActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         ((Button) findViewById(R.id.cancel)).setOnClickListener(this);
         ((Button) findViewById(R.id.pick_date)).setOnClickListener(this);
         ((Button) findViewById(R.id.pick_time)).setOnClickListener(this);
+        ((Button) findViewById(R.id.create)).setOnClickListener(this);
 
         ArrayList<String> data=new ArrayList<String>();
         data.add("Andrea Donati");
@@ -53,8 +60,20 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 break;
             case R.id.create:
                 //create and send event
-                //new UploadEventTask(this, event).execute();
-                //finish();
+                String name, description, startLocation, invited;
+                name = ((TextView) findViewById(R.id.name)).getText().toString();
+                description = ((TextView) findViewById(R.id.description)).getText().toString();
+                startLocation = ((TextView) findViewById(R.id.start_location)).getText().toString();
+                invited = ((MultiAutoCompleteTextView) findViewById(R.id.invite)).getText().toString();
+                Log.v(TAG, "invited: " + invited);
+                invited = invited.replaceAll(", ", "\n");
+                Log.v(TAG, "invited: " + invited);
+                SharedPreferences sharedPref = getSharedPreferences(LoginActivity.ID, Context.MODE_PRIVATE);
+                String nickname = sharedPref.getString(LoginActivity.NICKNAME, "");
+
+            //    Event event = new Event(name, startDate + " " + startTime, "", nickname, description, routeID, startLocation, creationDate, invited);
+            //    new UploadEventTask(this, event).execute();
+                finish();
                 break;
             case R.id.pick_date:
                 //create PickDateDialog and display date in date text view
@@ -76,11 +95,13 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
     public void onDateSet(DatePicker view, int year, int month, int day) {
         TextView dateText = (TextView) findViewById(R.id.date);
         dateText.setText(String.format("%02d", day) + "/" + String.format("%02d", month+1) + "/" + String.format("%04d", year));
+        startDate = String.format("%02d", day) + "/" + String.format("%02d", month+1) + "/" + String.format("%04d", year);
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         TextView timeText = (TextView) findViewById(R.id.time);
         timeText.setText(String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute));
+        startTime = String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute);
     }
 
 /*    public void downloadUsers() {

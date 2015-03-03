@@ -66,5 +66,6 @@
     <string name="load_more">Load more...</string>
     <string name="account">Account</string>
     <string name="edit">Edit</string>
+    <string name="new_review">Review this route!</string>
 
 </resources>

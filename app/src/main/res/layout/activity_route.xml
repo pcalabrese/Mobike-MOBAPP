@@ -267,7 +267,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="7dp"
                 android:layout_marginStart="7dp"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="4dp"
                 android:layout_toRightOf="@id/rating"
                 android:layout_toEndOf="@id/rating"
                 android:layout_alignParentTop="true"
@@ -310,24 +310,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                    <FrameLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-                        <include layout="@layout/review_item" />
-                    </FrameLayout>
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:text="@string/edit"
-                        style="?android:attr/buttonBarButtonStyle"/>
-                </RelativeLayout>
+                <include layout="@layout/user_review_item" />
 
                 <View
                     android:layout_width="match_parent"

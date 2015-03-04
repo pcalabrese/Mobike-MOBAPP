@@ -39,7 +39,7 @@ public class DownloadEventsTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPreExecute() {
-        progressDialog = ProgressDialog.show(activity, "Downloading events...", "", true, false);
+        //progressDialog = ProgressDialog.show(activity, "Downloading events...", "", true, false);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class DownloadEventsTask extends AsyncTask<String, Void, String> {
         }catch(JSONException e)
         { e.printStackTrace();}
 
-        progressDialog.dismiss();
+        //progressDialog.dismiss();
     }
 
     private String HTTPGetEvents(String url){

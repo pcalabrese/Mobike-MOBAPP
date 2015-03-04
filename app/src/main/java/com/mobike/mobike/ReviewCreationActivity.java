@@ -1,0 +1,79 @@
+package com.mobike.mobike;
+
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
+import android.widget.Toast;
+
+import com.mobike.mobike.network.UploadNewReviewTask;
+
+
+public class ReviewCreationActivity extends ActionBarActivity implements View.OnClickListener {
+    private static final String TAG = "ReviewCreationActivity";
+    private String routeID;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getSupportActionBar().hide();
+        setContentView(R.layout.activity_review_creation);
+        getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        ((Button) findViewById(R.id.send)).setOnClickListener(this);
+
+        routeID = getIntent().getExtras().getString(SearchFragment.ROUTE_ID);
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_review_creation, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.send:
+                String comment = ((EditText) findViewById(R.id.comment)).getText().toString();
+                float rate = ((RatingBar) findViewById(R.id.rating_bar)).getRating();
+
+                // upload della nuova review
+                if (rate == 0) {
+                    Toast.makeText(this, "Please rate the route", Toast.LENGTH_SHORT).show();
+                } else if (comment.length() == 0) {
+                    Toast.makeText(this, "Please insert a comment", Toast.LENGTH_SHORT).show();
+                } else {
+                    //new UploadNewReviewTask(this, routeID, comment, rate).execute();
+                }
+
+                Log.v(TAG, "rate: " + rate + ", routeID: " + routeID);
+                break;
+        }
+    }
+}

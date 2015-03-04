@@ -8,17 +8,28 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingBottom="50dp"
         android:id="@+id/splash_logo"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:src="@drawable/splash_logo"/>
 
     <TextView
+        android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/logging_in"
         android:layout_alignParentBottom="true"
         android:gravity="center"
         android:layout_marginBottom="50dp"/>
+
+    <ProgressBar
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:layout_above="@+id/text"
+        android:layout_centerHorizontal="true"
+        android:indeterminate="true"
+        style="@android:style/Widget.DeviceDefault.ProgressBar"/>
 
 </RelativeLayout>

@@ -67,5 +67,9 @@
     <string name="account">Account</string>
     <string name="edit">Edit</string>
     <string name="new_review">Review this route!</string>
+    <string name="title_activity_review_creation">ReviewCreationActivity</string>
+    <string name="new_review_title">New Review</string>
+    <string name="review_comment_hint">Comment</string>
+    <string name="send">Send</string>
 
 </resources>

@@ -310,7 +310,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <include layout="@layout/user_review_item" />
+                <include layout="@layout/new_review_button" />
 
                 <View
                     android:layout_width="match_parent"

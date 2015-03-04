@@ -1,0 +1,50 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.mobike.mobike.EventCreationActivity"
+    android:orientation="vertical">
+
+    <TextView android:text="@string/new_review_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
+        android:padding="15dp"
+        android:gravity="center"/>
+
+    <!-- rating bar -->
+    <RatingBar
+        android:id="@+id/rating_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:rating="0"
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"/>
+
+    <!-- description -->
+    <EditText
+        android:id="@+id/comment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:hint="@string/review_comment_hint"
+        android:minLines="3"
+        android:maxLines="5"/>
+
+    <Button
+        android:id="@+id/send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send"
+        android:textColor="@color/white"
+        android:layout_gravity="end"
+        android:layout_margin="20dp"
+        android:background="@drawable/blue_button"/>
+
+</LinearLayout>

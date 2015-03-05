@@ -70,8 +70,13 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
         startLocation.setText("Start location: " + event.getStartLocation());
         creationDate.setText("Created on " + event.getCreationDate()); */
 
+        String[] work = bundle.getString(EventsFragment.EVENT_DATE).split(" ")[0].split("-");
+        String d = work[2] + "/" + work[1] + "/" + work[0];
+        work = bundle.getString(EventsFragment.EVENT_DATE).split(" ")[1].split(":");
+        String time = work[0] + ":" + work[1];
+
         name.setText(bundle.getString(EventsFragment.EVENT_NAME));
-        date.setText(bundle.getString(EventsFragment.EVENT_DATE));
+        date.setText(d + "  " + time);
         creator.setText("Created by " + bundle.getString(EventsFragment.EVENT_CREATOR));
         description.setText(bundle.getString(EventsFragment.EVENT_DESCRIPTION));
         invited.setText(bundle.getString(EventsFragment.EVENT_INVITED));

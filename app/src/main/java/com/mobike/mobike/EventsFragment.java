@@ -324,14 +324,21 @@ class ListAdapter extends ArrayAdapter<Event> {
 
             TextView tt = (TextView) v.findViewById(R.id.event_name);
             TextView tt1 = (TextView) v.findViewById(R.id.event_date);
+            TextView tt2 = (TextView) v.findViewById(R.id.event_time);
             TextView tt3 = (TextView) v.findViewById(R.id.event_creator);
 
             if (tt != null) {
                 tt.setText(p.getName());
             }
             if (tt1 != null) {
-
-                tt1.setText(p.getDate());
+                String[] work = p.getDate().split(" ")[0].split("-");
+                String date = work[2] + "/" + work[1] + "/" + work[0];
+                tt1.setText(date);
+            }
+            if (tt2 != null) {
+                String[] work = p.getDate().split(" ")[1].split(":");
+                String time = work[0] + ":" + work[1];
+                tt2.setText(time);
             }
             if (tt3 != null) {
 

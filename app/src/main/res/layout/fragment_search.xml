@@ -1,10 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<FrameLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical" >
 
+    <!--<RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <ImageButton
+        android:id="@+id/search_button"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/abc_ic_search_api_mtrl_alpha"
+        android:background="@color/colorAccent"/>
     <Spinner
+        android:id="@+id/route_types"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/search_button"/>
+
+
+
+    </RelativeLayout> -->
+
+     <Spinner
         android:id="@+id/route_types"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -36,3 +70,20 @@
         android:background="@color/colorAccent"/> -->
 
 </LinearLayout>
+
+
+
+        <com.mobike.mobike.utils.CircleButton
+            android:id="@+id/create_event"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/abc_ic_search_api_mtrl_alpha"
+            app:cb_color="@color/colorAccent"
+            app:cb_pressedRingWidth="8dip"
+            android:layout_margin="15dp"/>
+
+    </RelativeLayout>
+</FrameLayout>

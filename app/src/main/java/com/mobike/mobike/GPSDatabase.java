@@ -368,14 +368,6 @@ public class GPSDatabase
         Log.v(TAG, "array length: "+ array.length);
         for (int i = 0; i < array.length; i++) {
             if(array[i].startsWith("lat=") ){
-            /*    String lat = array[i].substring(
-                        array[i].indexOf("lat=", 0)+5,
-                        array[i].indexOf("lon=", 0)-2);
-
-                String lon = array[i].substring(
-                        array[i].indexOf("lon=", 0)+5,
-                        array[i].indexOf(">")-1); */
-
                 String lat = array[i].substring(array[i].indexOf("lat=")+5 , array[i].indexOf("lon=")-2);
                 String lon = array[i].substring(array[i].indexOf("lon=")+5, array[i].indexOf("lon=")+13);
 
@@ -411,7 +403,8 @@ public class GPSDatabase
             jsonObject.put("difficulty", difficulty);
             jsonObject.put("bends", bends);
             jsonObject.put("type", type);
-            jsonObject.put("thumbnail", getEncodedPolylineURL());
+            jsonObject.put("imgUrl", getEncodedPolylineURL());
+            Log.v(TAG, "imgUrl" + getEncodedPolylineURL());
         }
         catch(JSONException e){/*not implemented yet*/ }
         return jsonObject;

@@ -1,0 +1,58 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.mobike.mobike.EventCreationActivity"
+    android:orientation="vertical">
+
+    <TextView android:text="@string/nickname_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="24sp"
+        android:textColor="@color/white"
+        android:background="@color/colorPrimary"
+        android:padding="15dp"
+        android:gravity="center"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:textColor="@color/black"
+        android:text="@string/nickname_activity_string"/>
+
+    <!-- nickname -->
+    <EditText
+        android:id="@+id/nickname"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_margin="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:hint="@string/nickname_hint"
+        android:maxLines="2"/>
+
+    <!-- bike -->
+    <EditText
+        android:id="@+id/bike"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:hint="@string/bike_hint"
+        android:maxLines="2"/>
+
+    <Button
+        android:id="@+id/send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/send"
+        android:textColor="@color/white"
+        android:layout_gravity="end"
+        android:layout_margin="20dp"
+        android:background="@drawable/blue_button"/>
+
+</LinearLayout>

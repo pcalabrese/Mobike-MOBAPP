@@ -22,27 +22,29 @@
 
             <com.mobike.mobike.SquareImageView
                 android:id="@+id/route_image"
-                android:layout_width="105dp"
+                android:layout_width="115dp"
                 android:layout_height="105dp"
-                android:layout_margin="5dp"
+                android:layout_margin="0dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/staticmap"/>
 
             <!-- TextView with the name of the route -->
             <TextView
                 android:id="@+id/route_name"
-                android:layout_width="wrap_content"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@+id/route_image"
                 android:layout_toEndOf="@+id/route_image"
                 android:layout_alignParentTop="true"
                 android:textStyle="bold"
                 android:textSize="20sp"
-                android:textColor="@color/black"
+                android:textColor="@color/white"
+                android:background="#ff9c772b"
                 android:maxLines="1"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"/>
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                />
 
             <!-- TextView with the length of the route -->
             <TextView

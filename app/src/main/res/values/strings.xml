@@ -71,5 +71,11 @@
     <string name="new_review_title">New Review</string>
     <string name="review_comment_hint">Comment</string>
     <string name="send">Send</string>
+    <string name="title_activity_nickname">NicknameActivity</string>
+    <string name="nickname_title">Insert nickname</string>
+    <string name="nickname_hint">Nickname</string>
+    <string name="bike_hint">Bike model</string>
+    <string name="title_activity_account_details">AccountDetailsActivity</string>
+    <string name="nickname_activity_string">Welcome to MoBike!\nYou are not registered yet, insert your nickname and press SEND. The nickname will be displayed instead of your real name.</string>
 
 </resources>

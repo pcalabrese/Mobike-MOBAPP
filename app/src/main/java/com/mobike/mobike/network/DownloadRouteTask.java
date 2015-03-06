@@ -43,7 +43,7 @@ public class DownloadRouteTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPreExecute() {
-        progressDialog = ProgressDialog.show(activity, "Downloading route...", "", true, false);
+        //progressDialog = ProgressDialog.show(activity, "Downloading route...", "", true, false);
     }
 
     @Override
@@ -66,7 +66,7 @@ public class DownloadRouteTask extends AsyncTask<String, Void, String> {
         }catch(JSONException e){
             e.printStackTrace();
         }
-        progressDialog.dismiss();
+        //progressDialog.dismiss();
     }
 
     private String HTTPGetRoutes(String url) {

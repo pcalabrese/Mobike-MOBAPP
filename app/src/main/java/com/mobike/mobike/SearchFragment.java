@@ -107,7 +107,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     public void onStart() {
         super.onStart();
 
-        Spinner spinner = (Spinner) getView().findViewById(R.id.route_types);
+ /*       Spinner spinner = (Spinner) getView().findViewById(R.id.route_types);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.route_types, android.R.layout.simple_spinner_item);
@@ -115,7 +115,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+        spinner.setOnItemSelectedListener(this); */
 
         initialSpinner = true;
 
@@ -209,6 +209,21 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 arrayList.add(new Route(name, description, creator, length, duration, map, gpx, difficulty, bends, type, id));
             }
         }catch(JSONException e){e.printStackTrace();}
+
+        if (initialSpinner) {
+            View header = View.inflate(getActivity(), R.layout.spinner, null);
+            Spinner spinner = (Spinner) header.findViewById(R.id.types);
+            // Create an ArrayAdapter using the string array and a default spinner layout
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                    R.array.route_types, android.R.layout.simple_spinner_item);
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            // Apply the adapter to the spinner
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(this);
+            listView.addHeaderView(header);
+            initialSpinner = false;
+        }
 
         // creo il gridAdapter
         RouteAdapter routeAdapter = new RouteAdapter(getActivity(), R.layout.route_list_row, arrayList);

@@ -104,7 +104,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public void onStart() {
         super.onStart();
 
-        Spinner spinner = (Spinner) getView().findViewById(R.id.event_types);
+    /*    Spinner spinner = (Spinner) getView().findViewById(R.id.event_types);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.event_types, android.R.layout.simple_spinner_item);
@@ -112,7 +112,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+        spinner.setOnItemSelectedListener(this); */
 
         initialSpinner = true;
 
@@ -229,8 +229,24 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
             e.printStackTrace();
         }
 
-        ListAdapter listAdapter = new ListAdapter(getActivity(), R.layout.event_list_row, list);
         ListView listView = (ListView) getView().findViewById(R.id.list_view);
+
+        if (initialSpinner) {
+            View header = View.inflate(getActivity(), R.layout.spinner, null);
+            Spinner spinner = (Spinner) header.findViewById(R.id.types);
+            // Create an ArrayAdapter using the string array and a default spinner layout
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                    R.array.event_types, android.R.layout.simple_spinner_item);
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            // Apply the adapter to the spinner
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(this);
+            listView.addHeaderView(header);
+            initialSpinner = false;
+        }
+
+        ListAdapter listAdapter = new ListAdapter(getActivity(), R.layout.event_list_row, list);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

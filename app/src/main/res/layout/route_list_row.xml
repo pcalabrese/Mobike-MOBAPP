@@ -22,9 +22,8 @@
 
             <com.mobike.mobike.SquareImageView
                 android:id="@+id/route_image"
-                android:layout_width="115dp"
+                android:layout_width="110dp"
                 android:layout_height="105dp"
-                android:layout_margin="0dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/staticmap"/>
 
@@ -55,7 +54,7 @@
                 android:layout_below="@+id/route_name"
                 android:textStyle="italic"
                 android:textSize="15sp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="3dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"/>
 
@@ -69,7 +68,7 @@
                 android:layout_below="@+id/route_name"
                 android:textStyle="italic"
                 android:textSize="15sp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="3dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"/>
 
@@ -83,7 +82,7 @@
                 android:layout_below="@+id/route_length"
                 android:textStyle="italic"
                 android:textSize="15sp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="3dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"/>
 
@@ -97,7 +96,7 @@
                 android:layout_below="@+id/route_creator"
                 android:textStyle="italic"
                 android:textSize="15sp"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="3dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"/>
 

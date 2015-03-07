@@ -13,7 +13,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical">
 
-    <Spinner
+<!--    <Spinner
         android:id="@+id/event_types"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -22,7 +22,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/colorAccent" />
+        android:background="@color/colorAccent" /> -->
 
     <ListView
         android:id="@+id/list_view"

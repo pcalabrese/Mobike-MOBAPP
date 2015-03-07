@@ -38,17 +38,17 @@
 
     </RelativeLayout> -->
 
-     <Spinner
+<!--     <Spinner
         android:id="@+id/route_types"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"/>
+        android:layout_weight="1"/> -->
 
     <!-- divider -->
-    <View
+<!--    <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/colorAccent" />
+        android:background="@color/colorAccent" /> -->
 
     <ListView
         android:id="@+id/list_view"

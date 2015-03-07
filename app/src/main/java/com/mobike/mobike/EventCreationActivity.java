@@ -2,7 +2,6 @@ package com.mobike.mobike;
 
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,8 +9,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,16 +17,21 @@ import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.mobike.mobike.network.UploadEventTask;
-import com.mobike.mobike.utils.Event;
+import com.mobike.mobike.network.HttpGetTask;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
 
-public class EventCreationActivity extends ActionBarActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class EventCreationActivity extends ActionBarActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, HttpGetTask.HttpGet {
     private String routeID, startDate, startTime;
     private static final String TAG = "EventCreationActivity";
+
+    public static final String ALL_NICKNAMES_URL = "qualcosa";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,10 +106,24 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         startTime = String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute);
     }
 
-/*    public void downloadUsers() {
-        new DownloadUsersTask(this).execute();
+    public void downloadUsers() {
+        new HttpGetTask(this).execute(ALL_NICKNAMES_URL);
     }
-*/
+
+    public void setResult(String result) {
+        ArrayList<String> userList = new ArrayList<>();
+        try{
+            JSONArray array = new JSONArray(result);
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject user = array.getJSONObject(i);
+                String name = user.getString("nickname");
+                userList.add(name);
+                setUsersHints(userList);
+            }
+        }catch(JSONException e)
+        { e.printStackTrace();}
+    }
+
     public void setUsersHints(ArrayList<String> users) {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, users);
         MultiAutoCompleteTextView textView = (MultiAutoCompleteTextView) findViewById(R.id.invite);

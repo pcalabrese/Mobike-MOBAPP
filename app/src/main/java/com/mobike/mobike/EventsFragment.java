@@ -4,10 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -16,31 +13,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.mobike.mobike.network.DownloadEventsTask;
+import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.CircleButton;
 import com.mobike.mobike.utils.Event;
-import com.mobike.mobike.utils.Route;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -52,13 +37,12 @@ import java.util.List;
  * Use the {@link EventsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EventsFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class EventsFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener, HttpGetTask.HttpGet {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    public static final String EVENT = "com.mobike.mobike.EventsFragment.event";
     public static final String EVENT_NAME = "com.mobike.mobike.EventsFragment.event_name";
     public static final String EVENT_DATE = "com.mobike.mobike.EventsFragment.event_date";
     public static final String EVENT_CREATOR = "com.mobike.mobike.EventsFragment.event_creator";
@@ -68,23 +52,10 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String EVENT_START_LOCATION = "com.mobike.mobike.EventsFragment.event_start_location";
     public static final String EVENT_CREATION_DATE = "com.mobike.mobike.EventsFragment.event_creation_date";
 
-    public static final String EVENT_GPX = "com.mobike.mobike.EventsFragment.event_gpx";
-    public static final String ROUTE_NAME = "com.mobike.mobike.EventsFragment.route_name";
-    public static final String ROUTE_DESCRIPTION = "com.mobike.mobike.EventsFragment.route_description";
-    public static final String ROUTE_CREATOR = "com.mobike.mobike.EventsFragment.route_creator";
-    public static final String ROUTE_LENGTH = "com.mobike.mobike.EventsFragment.route_length";
-    public static final String ROUTE_DURATION = "com.mobike.mobike.EventsFragment.route_duration";
-    public static final String ROUTE_GPX = "com.mobike.mobike.EventsFragment.route_gpx";
-    public static final String ROUTE_DIFFICULTY = "com.mobike.mobike.EventsFragment.route_difficulty";
-    public static final String ROUTE_BENDS = "com.mobike.mobike.EventsFragment.route_bends";
-    public static final String ROUTE_TYPE = "com.mobike.mobike.EventsFragment.route_type";
-
     public static final String downloadAllEventsURL = "http://mobike.ddns.net/SRV/events/retrieveall";
     public static final String downloadUserEventsURL = "";
     public static final String downloadAcceptedEventsURL = "";
 
-    public static JSONArray eventRoutes;
-    private ProgressDialog progressDialog;
     private Boolean initialSpinner = true;
 
     private final String TAG = "EventsFragment";
@@ -201,7 +172,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     }
 
     private void downloadEvents(String url) {
-        new DownloadEventsTask(getActivity(), this).execute(url);
+        new HttpGetTask(this).execute(url);
         Log.v(TAG, "downloadEvents: " + url);
     }
 
@@ -226,15 +197,17 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         public void onFragmentInteraction(Uri uri);
     }
 
-    public void showEventsList(JSONArray json) {
+    public void setResult(String result) {
         // Initialization of the events list
         ArrayList<Event> list = new ArrayList<>();
 
         JSONObject jsonEvent;
+        JSONArray json;
         String name, date, creator, description, routeID, startLocation, creationDate;
 
-        for (int i = 0; i < json.length(); i++) {
-            try {
+        try {
+            json = new JSONArray(result);
+            for (int i = 0; i < json.length(); i++) {
                 jsonEvent = json.getJSONObject(i);
                 name = jsonEvent.getString("name");
                 date = jsonEvent.getString("startDate");
@@ -251,10 +224,9 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 creationDate = jsonEvent.getString("creationDate");
 
                 list.add(new Event(name, date, creator, description, routeID, startLocation, creationDate, invited));
-
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         ListAdapter listAdapter = new ListAdapter(getActivity(), R.layout.event_list_row, list);

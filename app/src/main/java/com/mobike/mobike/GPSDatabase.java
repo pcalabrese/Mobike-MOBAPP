@@ -377,7 +377,6 @@ public class GPSDatabase
                 list.add(couple);
             }
         }
-        Log.v(TAG, " "+list.get(0) + " "+list.get(1) + " "+list.get(list.size()-1));
 
         return list;
     }

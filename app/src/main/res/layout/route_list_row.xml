@@ -13,8 +13,8 @@
         android:layout_marginStart="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="4dp">
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -38,8 +38,7 @@
                 android:layout_alignParentTop="true"
                 android:textStyle="bold"
                 android:textSize="20sp"
-                android:textColor="@color/white"
-                android:background="#ff9c772b"
+                android:textColor="@color/black"
                 android:maxLines="1"
                 android:paddingTop="5dp"
                 android:paddingBottom="5dp"

@@ -1,5 +1,6 @@
 package com.mobike.mobike;
 
+import android.graphics.PorterDuff;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,7 @@ public class NicknameActivity extends ActionBarActivity implements View.OnClickL
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         ((Button) findViewById(R.id.send)).setOnClickListener(this);
+        //((EditText) findViewById(R.id.nickname)).getBackground().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
     }
 
 

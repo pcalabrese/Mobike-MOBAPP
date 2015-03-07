@@ -15,9 +15,10 @@
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="2dp">
 
-        <ImageView
+        <com.mobike.mobike.SquareImageView
+            android:id="@+id/image"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:src="@drawable/staticmap"/>
 
     </android.support.v7.widget.CardView>

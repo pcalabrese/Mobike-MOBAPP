@@ -48,6 +48,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     public static final String SURNAME = "com.mobike.mobike.surname";
     public static final String NICKNAME = "com.mobike.mobike.nickname";
     public static final String ID = "com.mobike.mobike.id";
+    public static final String IMAGEURL = "com.mobike.mobike.imageurl";
     private static final int MAPS_REQUEST = 1;
 
     private GoogleApiClient mGoogleApiClient;
@@ -179,6 +180,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         editor.putString(NAME, name);
         editor.putString(SURNAME, surname);
         //editor.putString(NICKNAME, nickname);
+        editor.putString(IMAGEURL, imageURL);
         editor.apply();
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

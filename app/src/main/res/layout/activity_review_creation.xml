@@ -35,7 +35,8 @@
         android:layout_marginBottom="20dp"
         android:hint="@string/review_comment_hint"
         android:minLines="3"
-        android:maxLines="5"/>
+        android:maxLines="5"
+        android:background="@drawable/abc_edit_text_material"/>
 
     <Button
         android:id="@+id/send"

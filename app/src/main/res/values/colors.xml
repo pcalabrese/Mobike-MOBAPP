@@ -32,4 +32,9 @@
 
     <color name="grigio_trasparente">#55000000</color>
 
+    <color name="routeMountain">#795548</color>
+    <color name="routeHill">#FFC107</color>
+    <color name="routeCoast">#2196F3</color>
+    <color name="routePlain">#4CAF50</color>
+
 </resources>

@@ -2,7 +2,6 @@ package com.mobike.mobike;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -21,7 +20,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.network.DownloadGpxTask;
-import com.mobike.mobike.network.DownloadReviewsTask;
+import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.CustomMapFragment;
 
 import org.json.JSONArray;
@@ -31,7 +30,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.GpxInterface, View.OnClickListener {
+public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.GpxInterface, View.OnClickListener, HttpGetTask.HttpGet {
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline routePoly; // the polyline of the route
@@ -73,7 +72,7 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
 
         routeID = bundle.getString(SearchFragment.ROUTE_ID);
         new DownloadGpxTask(this).execute(routeID);
-        //new DownloadReviewsTask(this).execute(routeID, userID); prendere lo userID dalle shared pref
+        //new HttpGetTask(this).execute(ALL_REVIEWS_URL + userID + routeID); //prendere lo userID dalle shared pref
     }
 
     // method to finish current activity at the pressure of top left back button
@@ -176,15 +175,18 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
         Log.v(TAG, "setGpx()");
     }
 
-    public void setReviews(JSONObject object) {
-        /* inflate di un eventuale recensione dell'utente (un file xml con la recensione, il bottone modifica e la linea di separazione
-            da aggiungere la linear layout con id "reviews_list"
-        if (user ha una review) {
-            JSONObject userReview = object.getJSONObject("user review");
-
-        */
-        String user, rate, message;
+    public void setResult(String result) {
+        JSONObject object;
         try {
+            object = new JSONObject(result);
+            /* inflate di un eventuale recensione dell'utente (un file xml con la recensione, il bottone modifica e la linea di separazione
+                da aggiungere la linear layout con id "reviews_list"
+            if (user ha una review) {
+                JSONObject userReview = object.getJSONObject("user review");
+
+            */
+            String user, rate, message;
+
             JSONArray array = object.getJSONArray("reviews");
             for (int i = 0; i < array.length(); i++) {
                 JSONObject review = array.getJSONObject(i);

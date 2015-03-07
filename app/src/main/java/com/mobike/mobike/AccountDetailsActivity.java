@@ -1,9 +1,14 @@
 package com.mobike.mobike;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+
+import com.squareup.picasso.Picasso;
 
 
 public class AccountDetailsActivity extends ActionBarActivity {
@@ -12,6 +17,13 @@ public class AccountDetailsActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_details);
+
+        ImageView imageView = (ImageView) findViewById(R.id.image);
+
+        SharedPreferences preferences = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
+        String imageUrl = preferences.getString(LoginActivity.IMAGEURL, "");
+
+        Picasso.with(this).load(imageUrl).into(imageView);
     }
 
 

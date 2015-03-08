@@ -75,7 +75,7 @@
     <string name="nickname_title">Insert nickname</string>
     <string name="nickname_hint">Nickname</string>
     <string name="bike_hint">Bike model</string>
-    <string name="title_activity_account_details">AccountDetailsActivity</string>
+    <string name="title_activity_account_details">Account Details</string>
     <string name="nickname_activity_string">Welcome to MoBike!\nYou are not registered yet, insert your nickname and press SEND. The nickname will be displayed instead of your real name.</string>
     <string name="review_after_upload_text">You can insert the first review of the route you just recorded!</string>
 

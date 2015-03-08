@@ -49,7 +49,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     public static final String NICKNAME = "com.mobike.mobike.nickname";
     public static final String ID = "com.mobike.mobike.id";
     public static final String IMAGEURL = "com.mobike.mobike.imageurl";
-    private static final int MAPS_REQUEST = 1;
+    public static final int MAPS_REQUEST = 1;
 
     private GoogleApiClient mGoogleApiClient;
     private ConnectionResult mConnectionResult;

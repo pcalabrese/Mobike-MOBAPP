@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
@@ -22,8 +23,18 @@ public class AccountDetailsActivity extends ActionBarActivity {
 
         SharedPreferences preferences = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
         String imageUrl = preferences.getString(LoginActivity.IMAGEURL, "");
+        String name = preferences.getString(LoginActivity.NAME, "") + " " + preferences.getString(LoginActivity.SURNAME, "");
+        //String nickname = preferences.getString(LoginActivity.NICKNAME, "");
+        String email = preferences.getString(LoginActivity.EMAIL, "");
+        //String bike = preferences.getString(LoginActivity.BIKE, "");
+
+        imageUrl = imageUrl.split("sz=")[0] + "sz=500";
 
         Picasso.with(this).load(imageUrl).into(imageView);
+        ((TextView) findViewById(R.id.name)).setText(name);
+        ((TextView) findViewById(R.id.nickname)).setText("nickname (under development)");
+        ((TextView) findViewById(R.id.email)).setText(email);
+        ((TextView) findViewById(R.id.bike)).setText("bike model (under development)");
     }
 
 

@@ -111,6 +111,9 @@
         <activity
             android:name=".AccountDetailsActivity"
             android:label="@string/title_activity_account_details" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mobike.mobike.MainActivity" />
         </activity>
     </application>
 

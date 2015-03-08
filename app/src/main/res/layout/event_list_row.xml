@@ -20,12 +20,26 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.mobike.mobike.SquareImageView
+   <!-- <com.mobike.mobike.SquareImageView
         android:id="@+id/icon"
         android:layout_width="85dp"
         android:layout_height="85dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/material_green_check48dp"/>
+        android:src="@drawable/material_green_check48dp"/> -->
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/icon"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/material_green_check48dp"
+        app:border_width="0dp"
+        app:border_color="#FF000000"/>
 
     <!-- TextView with the event's name -->
     <TextView
@@ -34,6 +48,8 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/icon"
         android:layout_toEndOf="@+id/icon"
+        android:layout_toLeftOf="@+id/arrow"
+        android:layout_toStartOf="@+id/arrow"
         android:layout_alignParentTop="true"
         android:textStyle="bold"
         android:textSize="20sp"
@@ -77,6 +93,8 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/icon"
         android:layout_toEndOf="@+id/icon"
+        android:layout_toLeftOf="@+id/arrow"
+        android:layout_toStartOf="@+id/arrow"
         android:layout_below="@+id/event_date"
         android:textStyle="italic"
         android:textSize="15sp"
@@ -87,6 +105,7 @@
 
     <!-- arrow image -->
     <ImageView
+        android:id="@+id/arrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"

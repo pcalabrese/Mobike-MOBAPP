@@ -119,6 +119,12 @@
         android:hint="@string/route_type_hint"
         android:background="@drawable/abc_edit_text_material"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="* fields are required"
+        android:layout_margin="15dp"/>
+
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/button_layout_summary"

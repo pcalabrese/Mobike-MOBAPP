@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +57,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String downloadUserEventsURL = "";
     public static final String downloadAcceptedEventsURL = "";
 
-    private Boolean initialSpinner = true;
+    private Boolean initialSpinner = true, firstTime;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private final String TAG = "EventsFragment";
 
@@ -97,6 +99,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         }
         downloadEvents(downloadAllEventsURL);
 
+        firstTime = true;
+
         Log.v(TAG, "onCreate()");
     }
 
@@ -113,6 +117,42 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this); */
+
+        ListView listView = (ListView) getView().findViewById(R.id.list_view);
+
+        if (firstTime) {
+            View header = View.inflate(getActivity(), R.layout.spinner, null);
+            final Spinner spinner = (Spinner) header.findViewById(R.id.types);
+            // Create an ArrayAdapter using the string array and a default spinner layout
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                    R.array.event_types, android.R.layout.simple_spinner_item);
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            // Apply the adapter to the spinner
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(this);
+            listView.addHeaderView(header);
+            firstTime = false;
+
+            mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh_layout);
+            mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    switch (spinner.getSelectedItemPosition()) {
+                        case 0:
+                            downloadEvents(downloadAllEventsURL);
+                            break;
+                        case 1:
+                            //downloadEvents(downloadUserEventsURL);
+                            break;
+                        case 2:
+                            //downloadEvents(downloadAcceptedEventsURL);
+                            break;
+                    }
+                }
+            });
+        }
 
         initialSpinner = true;
 
@@ -160,8 +200,10 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
             initialSpinner = false;
             return;
         }
+        //mSwipeRefreshLayout.setRefreshing(true);
         switch (position) {
             case 0:
+                mSwipeRefreshLayout.setRefreshing(true);
                 downloadEvents(downloadAllEventsURL);
                 break;
             case 1: //downloadEvents(downloadUserEventsURL);
@@ -231,21 +273,6 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
 
         ListView listView = (ListView) getView().findViewById(R.id.list_view);
 
-        if (initialSpinner) {
-            View header = View.inflate(getActivity(), R.layout.spinner, null);
-            Spinner spinner = (Spinner) header.findViewById(R.id.types);
-            // Create an ArrayAdapter using the string array and a default spinner layout
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                    R.array.event_types, android.R.layout.simple_spinner_item);
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            // Apply the adapter to the spinner
-            spinner.setAdapter(adapter);
-            spinner.setOnItemSelectedListener(this);
-            listView.addHeaderView(header);
-            initialSpinner = false;
-        }
-
         ListAdapter listAdapter = new ListAdapter(getActivity(), R.layout.event_list_row, list);
         listView.setAdapter(listAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -266,6 +293,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 startActivity(intent);
             }
         });
+
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
 

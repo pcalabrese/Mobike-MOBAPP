@@ -11,7 +11,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobike.mobike.network.UploadNewReviewTask;
@@ -31,6 +33,17 @@ public class ReviewCreationActivity extends ActionBarActivity implements View.On
         ((Button) findViewById(R.id.send)).setOnClickListener(this);
 
         routeID = getIntent().getExtras().getString(SearchFragment.ROUTE_ID);
+
+        if (getIntent().getExtras().getInt(SearchFragment.REQUEST_CODE) == SummaryActivity.REVIEW_REQUEST) {
+            TextView mTextView = ((TextView) findViewById(R.id.review_text_view));
+            mTextView.setText(getResources().getString(R.string.review_after_upload_text));
+            LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            int dpValue = 15; // margin in dips
+            float d = getResources().getDisplayMetrics().density;
+            int margin = (int)(dpValue * d); // margin in pixels
+            llp.setMargins(margin, margin, margin, margin); // llp.setMargins(left, top, right, bottom);
+            mTextView.setLayoutParams(llp);
+        }
     }
 
 

@@ -22,8 +22,8 @@
 
     <com.mobike.mobike.SquareImageView
         android:id="@+id/icon"
-        android:layout_width="88dp"
-        android:layout_height="88dp"
+        android:layout_width="85dp"
+        android:layout_height="85dp"
         android:scaleType="centerCrop"
         android:src="@drawable/material_green_check48dp"/>
 
@@ -66,7 +66,7 @@
         android:layout_below="@+id/event_name"
         android:textStyle="italic"
         android:textSize="15sp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="5dp"
         android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"/>
 
@@ -80,7 +80,7 @@
         android:layout_below="@+id/event_date"
         android:textStyle="italic"
         android:textSize="15sp"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="2dp"
         android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"
         android:layout_marginBottom="5dp"/>

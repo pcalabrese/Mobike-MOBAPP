@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -53,8 +54,10 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
     private OnFragmentInteractionListener mListener;
     private ProgressDialog progressDialog;
-    private Boolean initialSpinner = true;
+    private Boolean initialSpinner = true, firstTime;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    public static final String REQUEST_CODE = "com.mobike.mobike.SearchFragment.request_code";
     public static final String ROUTE_ID = "com.mobike.mobike.SearchFragment.route_id";
     public static final String ROUTE_NAME = "com.mobike.mobike.SearchFragment.route_name";
     public static final String ROUTE_DESCRIPTION = "com.mobike.mobike.SearchFragment.route_description";
@@ -98,6 +101,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        firstTime = true;
+
         downloadRoutes(downloadAllRoutesURL);
 
         Log.v(TAG, "onCreate()");
@@ -116,6 +121,38 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this); */
+
+        ListView listView = (ListView) getView().findViewById(R.id.list_view);
+
+        if (firstTime) {
+            View header = View.inflate(getActivity(), R.layout.spinner, null);
+            final Spinner spinner = (Spinner) header.findViewById(R.id.types);
+            // Create an ArrayAdapter using the string array and a default spinner layout
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                    R.array.route_types, android.R.layout.simple_spinner_item);
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            // Apply the adapter to the spinner
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(this);
+            listView.addHeaderView(header);
+            firstTime = false;
+
+            mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh_layout);
+            mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    switch (spinner.getSelectedItemPosition()) {
+                        case 0:
+                            downloadRoutes(downloadAllRoutesURL);
+                            break;
+                        case 1: //downloadRoutes(downloadUserRoutesURL);
+                            break;
+                    }
+                }
+            });
+        }
 
         initialSpinner = true;
 
@@ -161,10 +198,14 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
             initialSpinner = false;
             return;
         }
+        //mSwipeRefreshLayout.setRefreshing(true);
         switch (position) {
-            case 0: downloadRoutes(downloadAllRoutesURL);
+            case 0:
+                mSwipeRefreshLayout.setRefreshing(true);
+                downloadRoutes(downloadAllRoutesURL);
                 break;
-            case 1: //downloadRoutes(downloadUserRoutesURL);
+            case 1:
+                //downloadRoutes(downloadUserRoutesURL);
                 break;
         }
     }
@@ -210,21 +251,6 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
             }
         }catch(JSONException e){e.printStackTrace();}
 
-        if (initialSpinner) {
-            View header = View.inflate(getActivity(), R.layout.spinner, null);
-            Spinner spinner = (Spinner) header.findViewById(R.id.types);
-            // Create an ArrayAdapter using the string array and a default spinner layout
-            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-                    R.array.route_types, android.R.layout.simple_spinner_item);
-            // Specify the layout to use when the list of choices appears
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            // Apply the adapter to the spinner
-            spinner.setAdapter(adapter);
-            spinner.setOnItemSelectedListener(this);
-            listView.addHeaderView(header);
-            initialSpinner = false;
-        }
-
         // creo il gridAdapter
         RouteAdapter routeAdapter = new RouteAdapter(getActivity(), R.layout.route_list_row, arrayList);
         // imposto l'adapter
@@ -251,6 +277,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 startActivity(intent);
             }
         });
+
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     /**

@@ -15,6 +15,12 @@
         android:padding="15dp"
         android:gravity="center"/>
 
+    <TextView
+        android:id="@+id/review_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"/>
+
     <!-- rating bar -->
     <RatingBar
         android:id="@+id/rating_bar"

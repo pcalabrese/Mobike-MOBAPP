@@ -8,6 +8,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.mobike.mobike.GPSDatabase;
+import com.mobike.mobike.ReviewCreationActivity;
+import com.mobike.mobike.SearchFragment;
 import com.mobike.mobike.ShareActivity;
 import com.mobike.mobike.SummaryActivity;
 
@@ -81,9 +83,11 @@ public class UploadRouteTask extends AsyncTask<String, Void, String> {
                 routeID = br.readLine();
                 Log.v(TAG, routeID);
                 br.close();
-                Intent intent = new Intent(context, ShareActivity.class);
-                intent.putExtra(SummaryActivity.ROUTE_ID, routeID);
-                ((Activity) context).startActivityForResult(intent, SummaryActivity.SHARE_REQUEST);
+                ((SummaryActivity) context).setRoute(routeID);
+                Intent intent = new Intent(context, ReviewCreationActivity.class);
+                intent.putExtra(SearchFragment.ROUTE_ID, routeID);
+                intent.putExtra(SearchFragment.REQUEST_CODE, SummaryActivity.REVIEW_REQUEST);
+                ((Activity) context).startActivityForResult(intent, SummaryActivity.REVIEW_REQUEST);
                 return "Upload completed!";
             }
             else {

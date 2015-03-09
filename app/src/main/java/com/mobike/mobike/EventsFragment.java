@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -156,7 +158,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
 
         initialSpinner = true;
 
-        ((CircleButton) getView().findViewById(R.id.create_event)).setOnClickListener(this);
+        ((ImageButton) getView().findViewById(R.id.create_event)).setOnClickListener(this);
 
         Log.v(TAG, "onStart()");
     }

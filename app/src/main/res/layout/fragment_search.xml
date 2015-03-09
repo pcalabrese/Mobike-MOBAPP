@@ -79,17 +79,20 @@
 
 
 
-        <com.mobike.mobike.utils.CircleButton
+        <ImageButton
             android:id="@+id/create_event"
-            android:layout_width="70dp"
-            android:layout_height="70dp"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/abc_ic_search_api_mtrl_alpha"
-            app:cb_color="@color/colorAccent"
-            app:cb_pressedRingWidth="8dip"
-            android:layout_margin="15dp"/>
+            android:src="@drawable/ic_magnify_white_24dp"
+            android:background="@drawable/oval_button"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:elevation="@dimen/fab_elevation"
+            android:stateListAnimator="@anim/fab_animation"/>
 
     </RelativeLayout>
 </FrameLayout>

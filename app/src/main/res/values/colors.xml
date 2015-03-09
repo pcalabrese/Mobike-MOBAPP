@@ -22,6 +22,7 @@
     <color name="colorPrimary">#1E88E5</color>
     <color name="colorPrimaryDark">#1565C0</color>
     <color name="colorAccent">#FF9800</color>
+    <color name="colorAccentDark">#EF6C00</color>
     <color name="myGray">#8F8F8F</color>
     <color name="myLightBlue">#9849bfff</color>
     <color name="acceptedGreen">#00C100</color>

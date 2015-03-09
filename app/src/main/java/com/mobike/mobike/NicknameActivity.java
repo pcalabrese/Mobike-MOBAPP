@@ -20,6 +20,8 @@ public class NicknameActivity extends ActionBarActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nickname);
 
+        setFinishOnTouchOutside(false);
+
         getSupportActionBar().hide();
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 

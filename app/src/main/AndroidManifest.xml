@@ -28,6 +28,7 @@
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher_test"
         android:label="@string/app_name"
+        android:screenOrientation="portrait"
         android:theme="@style/CustomTheme" >
         <activity
             android:name=".LoginActivity"
@@ -87,7 +88,29 @@
         </activity>
         <activity
             android:name=".EventCreationActivity"
-            android:label="@string/title_activity_event_creation">
+            android:label="@string/title_activity_event_creation" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mobike.mobike.MainActivity" />
+        </activity>
+        <activity
+            android:name=".ReviewCreationActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_review_creation"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mobike.mobike.RouteActivity" />
+        </activity>
+        <activity
+            android:name=".NicknameActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_nickname"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" >
+        </activity>
+        <activity
+            android:name=".AccountDetailsActivity"
+            android:label="@string/title_activity_account_details" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobike.mobike.MainActivity" />

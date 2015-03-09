@@ -68,7 +68,8 @@
         android:layout_marginBottom="20dp"
         android:maxLines="1"
         android:hint="@string/route_name_hint"
-        android:textStyle="bold"/>
+        android:textStyle="bold"
+        android:background="@drawable/abc_edit_text_material"/>
 
     <EditText
         android:id="@+id/route_description_text"
@@ -79,7 +80,8 @@
         android:layout_marginBottom="20dp"
         android:hint="@string/route_description_hint"
         android:minLines="3"
-        android:maxLines="3"/>
+        android:maxLines="3"
+        android:background="@drawable/abc_edit_text_material"/>
 
     <!-- difficulty -->
     <EditText
@@ -90,7 +92,8 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:maxLines="1"
-        android:hint="@string/route_difficulty_hint"/>
+        android:hint="@string/route_difficulty_hint"
+        android:background="@drawable/abc_edit_text_material"/>
 
     <!-- bends -->
     <EditText
@@ -101,7 +104,8 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:maxLines="1"
-        android:hint="@string/route_bends_hint"/>
+        android:hint="@string/route_bends_hint"
+        android:background="@drawable/abc_edit_text_material"/>
 
     <!-- type -->
     <EditText
@@ -112,7 +116,14 @@
         android:layout_marginTop="20dp"
         android:layout_marginBottom="20dp"
         android:maxLines="1"
-        android:hint="@string/route_type_hint"/>
+        android:hint="@string/route_type_hint"
+        android:background="@drawable/abc_edit_text_material"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="* fields are required"
+        android:layout_margin="15dp"/>
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"

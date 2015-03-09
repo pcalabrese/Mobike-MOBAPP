@@ -3,7 +3,6 @@ package com.mobike.mobike;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -16,21 +15,23 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.network.DownloadGpxTask;
-import com.mobike.mobike.network.DownloadRouteTask;
+import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.CustomMapFragment;
-import com.mobike.mobike.utils.Event;
 import com.mobike.mobike.utils.Route;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class EventActivity extends ActionBarActivity implements DownloadGpxTask.GpxInterface {
+public class EventActivity extends ActionBarActivity implements DownloadGpxTask.GpxInterface, HttpGetTask.HttpGet {
+    public static final String ROUTE_URL = "http://mobike.ddns.net/SRV/routes/retrieve/";
 
     private TextView name, date, creator, description, invited, startLocation, creationDate;
     private Route route;
@@ -70,15 +71,20 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
         startLocation.setText("Start location: " + event.getStartLocation());
         creationDate.setText("Created on " + event.getCreationDate()); */
 
+        String[] work = bundle.getString(EventsFragment.EVENT_DATE).split(" ")[0].split("-");
+        String d = work[2] + "/" + work[1] + "/" + work[0];
+        work = bundle.getString(EventsFragment.EVENT_DATE).split(" ")[1].split(":");
+        String time = work[0] + ":" + work[1];
+
         name.setText(bundle.getString(EventsFragment.EVENT_NAME));
-        date.setText(bundle.getString(EventsFragment.EVENT_DATE));
+        date.setText(d + "  " + time);
         creator.setText("Created by " + bundle.getString(EventsFragment.EVENT_CREATOR));
         description.setText(bundle.getString(EventsFragment.EVENT_DESCRIPTION));
         invited.setText(bundle.getString(EventsFragment.EVENT_INVITED));
         startLocation.setText("Start location: " + bundle.getString(EventsFragment.EVENT_START_LOCATION));
         creationDate.setText("Created on " + bundle.getString(EventsFragment.EVENT_CREATION_DATE));
 
-        new DownloadRouteTask(this).execute(bundle.getString(EventsFragment.ROUTE_ID));
+        new HttpGetTask(this).execute(ROUTE_URL + bundle.getString(EventsFragment.ROUTE_ID));
         new DownloadGpxTask(this).execute(bundle.getString(EventsFragment.ROUTE_ID));
     }
 
@@ -105,8 +111,26 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
         Log.v(TAG, "setGpx()");
     }
 
-    public void setRoute(Route route) {
-        this.route = route;
+    // set Route
+    public void setResult(String result) {
+        try{
+            JSONObject jsonRoute = new JSONObject(result);
+            String name = jsonRoute.getString("name");
+            String description = jsonRoute.getString("description");
+            String creator = jsonRoute.getString("creatorEmail");
+            String length = jsonRoute.getDouble("length") + "";
+            String duration = jsonRoute.getInt("duration")+"";
+            Bitmap map = null;
+            //String gpx = jsonRoute.getString("url");
+            String gpx = "";
+            String difficulty = jsonRoute.getInt("difficulty") + "";
+            String bends = jsonRoute.getInt("bends") + "";
+            String type = "DefaultRouteType";
+            String id = jsonRoute.getInt("id") + "";
+            route = new Route(name, description, creator, length, duration, map, gpx, difficulty, bends, type, id);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
         Log.v(TAG, "setRoute()");
     }
 

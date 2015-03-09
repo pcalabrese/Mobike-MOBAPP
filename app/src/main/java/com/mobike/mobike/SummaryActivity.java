@@ -44,6 +44,7 @@ import java.util.List;
 public class SummaryActivity extends ActionBarActivity {
 
     public static final int SHARE_REQUEST = 1;
+    public static final int REVIEW_REQUEST = 2;
     private static final String TAG = "SummaryActivity";
     private static final String UploadURL = "http://mobike.ddns.net/SRV/routes/create";
     private static final String DEFAULT_ACCOUNT_NAME = "no account";
@@ -179,7 +180,13 @@ public class SummaryActivity extends ActionBarActivity {
         if (routeNameText.getText().toString().length() == 0) {
             Toast.makeText(this, "Insert a route name", Toast.LENGTH_SHORT).show();
             return;
-        } else if ((!(routeDifficulty.getText().toString().length() == 0) && (Integer.parseInt(routeDifficulty.getText().toString()) < 1 || Integer.parseInt(routeDifficulty.getText().toString()) > 10))
+        } else if (routeDifficulty.getText().toString().length() == 0) {
+            Toast.makeText(this, "Insert difficulty", Toast.LENGTH_SHORT).show();
+            return;
+        } else if(routeBends.getText().toString().length() == 0) {
+            Toast.makeText(this, "Insert bends", Toast.LENGTH_SHORT).show();
+            return;
+        }else if ((!(routeDifficulty.getText().toString().length() == 0) && (Integer.parseInt(routeDifficulty.getText().toString()) < 1 || Integer.parseInt(routeDifficulty.getText().toString()) > 10))
                 || (!(routeBends.getText().toString().length() == 0) && (Integer.parseInt(routeBends.getText().toString()) < 1 || Integer.parseInt(routeBends.getText().toString()) > 10))) {
             Toast.makeText(this, "Difficulty and Bends must be between 1 and 10", Toast.LENGTH_SHORT).show();
             return;
@@ -189,7 +196,7 @@ public class SummaryActivity extends ActionBarActivity {
             difficulty = routeDifficulty.getText().toString();
             bends = routeBends.getText().toString();
             type = routeType.getText().toString();
-            SharedPreferences sharedPref = getSharedPreferences(LoginActivity.EMAIL, Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
             email = sharedPref.getString(LoginActivity.EMAIL, DEFAULT_ACCOUNT_NAME);
             Log.v(TAG, "email = " + email);
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -208,65 +215,16 @@ public class SummaryActivity extends ActionBarActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.v(TAG, "onActivityResult()");
-        finish();
+        if (requestCode == SHARE_REQUEST)
+            finish();
+        else if (requestCode == REVIEW_REQUEST) {
+            Intent intent = new Intent(this, ShareActivity.class);
+            intent.putExtra(ROUTE_ID, routeID);
+            startActivityForResult(intent, SummaryActivity.SHARE_REQUEST);
+        }
     }
 
-
-    // AsyncTask that performs the upload of the route
-/*    private class UploadRouteTask extends AsyncTask<Context, Void, String> {
-
-        @Override
-        protected String doInBackground(Context... context) {
-            try {
-                return uploadRoute(context[0]);
-            } catch (IOException e) {
-                return "Unable to upload the route. URL may be invalid.";
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
-        }
-
-        private String uploadRoute(Context context) throws IOException {
-            HttpURLConnection urlConnection = null;
-            try {
-                URL u = new URL(UploadURL);
-                urlConnection = (HttpURLConnection) u.openConnection();
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setRequestProperty("Content-Type", "application/json");
-                urlConnection.setRequestProperty("Accept", "text/plain");
-                urlConnection.setReadTimeout(10000);
-                urlConnection.setConnectTimeout(15000);
-                urlConnection.setDoOutput(true);
-                urlConnection.setChunkedStreamingMode(0);
-                urlConnection.connect();
-                GPSDatabase db = new GPSDatabase(context);
-                OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
-                out.write(db.exportRouteInJson(email, routeName, routeDescription, difficulty, bends, type).toString());
-                out.close();
-                db.close();
-                int httpResult = urlConnection.getResponseCode();
-                if (httpResult == HttpURLConnection.HTTP_OK) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    routeID = br.readLine();
-                    Log.v(TAG, routeID);
-                    br.close();
-                    Intent intent = new Intent(context, ShareActivity.class);
-                    intent.putExtra(ROUTE_ID, routeID);
-                    startActivityForResult(intent, SHARE_REQUEST);
-                    return "Upload completed!";
-                }
-                else {
-                    // scrive un messaggio di errore con codice httpResult
-                    Log.v(TAG, " httpResult = " + httpResult);
-                    return "Error code: " + httpResult;
-                }
-            } finally {
-                if (urlConnection != null)
-                    urlConnection.disconnect();
-            }
-        }
-    } */
+    public void setRoute(String routeID) {
+        this.routeID = routeID;
+    }
 }

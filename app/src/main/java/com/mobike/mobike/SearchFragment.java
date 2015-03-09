@@ -7,9 +7,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,28 +17,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.mobike.mobike.network.DownloadRoutesTask;
+import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.Route;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,7 +41,7 @@ import java.util.List;
  * Use the {@link SearchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener {
+public class SearchFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener, HttpGetTask.HttpGet {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -64,8 +54,10 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
     private OnFragmentInteractionListener mListener;
     private ProgressDialog progressDialog;
-    private Boolean initialSpinner = true;
+    private Boolean initialSpinner = true, firstTime;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
+    public static final String REQUEST_CODE = "com.mobike.mobike.SearchFragment.request_code";
     public static final String ROUTE_ID = "com.mobike.mobike.SearchFragment.route_id";
     public static final String ROUTE_NAME = "com.mobike.mobike.SearchFragment.route_name";
     public static final String ROUTE_DESCRIPTION = "com.mobike.mobike.SearchFragment.route_description";
@@ -109,6 +101,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
+        firstTime = true;
+
         downloadRoutes(downloadAllRoutesURL);
 
         Log.v(TAG, "onCreate()");
@@ -118,7 +112,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     public void onStart() {
         super.onStart();
 
-        Spinner spinner = (Spinner) getView().findViewById(R.id.route_types);
+ /*       Spinner spinner = (Spinner) getView().findViewById(R.id.route_types);
         // Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
                 R.array.route_types, android.R.layout.simple_spinner_item);
@@ -126,7 +120,39 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(this);
+        spinner.setOnItemSelectedListener(this); */
+
+        ListView listView = (ListView) getView().findViewById(R.id.list_view);
+
+        if (firstTime) {
+            View header = View.inflate(getActivity(), R.layout.spinner, null);
+            final Spinner spinner = (Spinner) header.findViewById(R.id.types);
+            // Create an ArrayAdapter using the string array and a default spinner layout
+            ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                    R.array.route_types, android.R.layout.simple_spinner_item);
+            // Specify the layout to use when the list of choices appears
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            // Apply the adapter to the spinner
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(this);
+            listView.addHeaderView(header);
+            firstTime = false;
+
+            mSwipeRefreshLayout = (SwipeRefreshLayout) getView().findViewById(R.id.swipe_refresh_layout);
+            mSwipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimary);
+            mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    switch (spinner.getSelectedItemPosition()) {
+                        case 0:
+                            downloadRoutes(downloadAllRoutesURL);
+                            break;
+                        case 1: //downloadRoutes(downloadUserRoutesURL);
+                            break;
+                    }
+                }
+            });
+        }
 
         initialSpinner = true;
 
@@ -172,16 +198,20 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
             initialSpinner = false;
             return;
         }
+        //mSwipeRefreshLayout.setRefreshing(true);
         switch (position) {
-            case 0: downloadRoutes(downloadAllRoutesURL);
+            case 0:
+                mSwipeRefreshLayout.setRefreshing(true);
+                downloadRoutes(downloadAllRoutesURL);
                 break;
-            case 1: //downloadRoutes(downloadUserRoutesURL);
+            case 1:
+                //downloadRoutes(downloadUserRoutesURL);
                 break;
         }
     }
 
     private void downloadRoutes(String url) {
-        new DownloadRoutesTask(getActivity(), this).execute(url);
+        new HttpGetTask(this).execute(url);
         Log.v(TAG, "downloadRoutes: " + url);
     }
 
@@ -191,40 +221,40 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
     }
 
-    public void showRouteList(JSONArray json) {
+    public void setResult(String result) {
         // grid view
         ListView listView = (ListView) getView().findViewById(R.id.list_view);
         ArrayList<Route> arrayList = new ArrayList<>();
         // TODO popolo l'arrayList con i dati presi dal json
 
         JSONObject jsonRoute;
+        JSONArray json;
         String name, description, creator, duration, length, gpx, difficulty, bends, type; // ora type non c'è nel json
         Bitmap map;
 
-        for (int i = 0; i< json.length(); i++){
-            try{
+        try {
+            json = new JSONArray(result);
+            for (int i = 0; i< json.length(); i++) {
                 jsonRoute = json.getJSONObject(i);
                 name = jsonRoute.getString("name");
                 description = jsonRoute.getString("description");
                 creator = jsonRoute.getString("creatorEmail");
                 length = jsonRoute.getDouble("length") + "";
-                duration = jsonRoute.getInt("duration")+"";
-                map = BitmapFactory.decodeResource(getActivity().getResources(),R.drawable.staticmap);
+                duration = jsonRoute.getInt("duration") + "";
+                map = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.staticmap);
                 gpx = jsonRoute.getString("url");
                 difficulty = jsonRoute.getInt("difficulty") + "";
                 bends = jsonRoute.getInt("bends") + "";
                 type = "DefaultRouteType";
                 String id = jsonRoute.getInt("id") + "";
                 arrayList.add(new Route(name, description, creator, length, duration, map, gpx, difficulty, bends, type, id));
-
-            }catch(JSONException e){e.printStackTrace();}
-        }
-
+            }
+        }catch(JSONException e){e.printStackTrace();}
 
         // creo il gridAdapter
-        GridAdapter gridAdapter = new GridAdapter(getActivity(), R.layout.search_grid_item, arrayList);
+        RouteAdapter routeAdapter = new RouteAdapter(getActivity(), R.layout.route_list_row, arrayList);
         // imposto l'adapter
-        listView.setAdapter(gridAdapter);
+        listView.setAdapter(routeAdapter);
         // imposto il listener
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -247,6 +277,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 startActivity(intent);
             }
         });
+
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     /**
@@ -292,14 +324,16 @@ class SquareImageView extends ImageView {
 
 
 
-class GridAdapter extends ArrayAdapter<Route> {
+class RouteAdapter extends ArrayAdapter<Route> {
+    private Context context;
 
-    public GridAdapter(Context context, int textViewResourceId) {
+    public RouteAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
     }
 
-    public GridAdapter(Context context, int resource, List<Route> items) {
+    public RouteAdapter(Context context, int resource, List<Route> items) {
         super(context, resource, items);
+        this.context = context;
     }
 
     @Override
@@ -325,6 +359,8 @@ class GridAdapter extends ArrayAdapter<Route> {
             TextView creator = (TextView) v.findViewById(R.id.route_creator);
             TextView type = (TextView) v.findViewById(R.id.route_type);
             ImageView imageView = (ImageView) v.findViewById(R.id.route_image);
+
+            //Picasso.with(context).load(p.getMap()).into(imageView);
 
             if (name != null)
                 name.setText(p.getName());

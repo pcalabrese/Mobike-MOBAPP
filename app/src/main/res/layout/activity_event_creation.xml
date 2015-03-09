@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:text="Cancel"
+            android:text="@string/cancel"
             style="?android:attr/buttonBarButtonStyle"
             android:background="@color/colorPrimary"
             android:layout_alignParentLeft="true"
@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:text="Create"
+            android:text="@string/create"
             style="?android:attr/buttonBarButtonStyle"
             android:background="@color/colorPrimary"
             android:layout_alignParentRight="true"
@@ -115,7 +115,8 @@
         android:maxLines="1"
         android:hint="@string/event_name_hint"
         android:textStyle="bold"
-        android:textSize="20sp"/>
+        android:textSize="20sp"
+        android:background="@drawable/abc_edit_text_material"/>
 
     <!-- description -->
     <EditText
@@ -127,7 +128,8 @@
         android:layout_marginBottom="20dp"
         android:hint="@string/event_description_hint"
         android:minLines="2"
-        android:maxLines="2"/>
+        android:maxLines="2"
+        android:background="@drawable/abc_edit_text_material"/>
 
         <EditText
             android:id="@+id/start_location"
@@ -136,7 +138,8 @@
             android:layout_margin="10dp"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
-            android:hint="@string/event_start_location_hint"/>
+            android:hint="@string/event_start_location_hint"
+            android:background="@drawable/abc_edit_text_material"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -216,7 +219,8 @@
             android:layout_weight="1"
             android:minLines="1"
             android:maxLines="3"
-            android:hint="@string/invite_user_hint"/>
+            android:hint="@string/invite_user_hint"
+            android:background="@drawable/abc_edit_text_material"/>
 <!--
         <Button
             android:id="@+id/invite_button"

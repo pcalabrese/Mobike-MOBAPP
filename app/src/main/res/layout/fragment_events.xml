@@ -13,7 +13,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical">
 
-    <Spinner
+<!--    <Spinner
         android:id="@+id/event_types"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -22,7 +22,12 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/colorAccent" />
+        android:background="@color/colorAccent" /> -->
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
     <ListView
         android:id="@+id/list_view"
@@ -31,22 +36,29 @@
         android:layout_weight="9"
         android:cacheColorHint="#00000000"
         android:divider="@null"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
     <!-- android:divider="@drawable/list_divider"
         android:dividerHeight="0.5dp" -->
 
 </LinearLayout>
 
-        <com.mobike.mobike.utils.CircleButton
+        <ImageButton
             android:id="@+id/create_event"
-            android:layout_width="64dip"
-            android:layout_height="64dip"
+            android:layout_width="@dimen/fab_size"
+            android:layout_height="@dimen/fab_size"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/plus_circle_orange_dp"
-            app:cb_color="@color/colorPrimary"
-            app:cb_pressedRingWidth="8dip"
-            android:layout_margin="15dp"/>
+            android:src="@drawable/ic_plus_white_24dp"
+            android:background="@drawable/oval_button"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:layout_marginBottom="@dimen/fab_margin"
+            android:elevation="@dimen/fab_elevation"
+            android:stateListAnimator="@anim/fab_animation"/>
+        <!-- app:cb_color="@color/colorAccent"
+            app:cb_pressedRingWidth="5dip" -->
 
     </RelativeLayout>
 </FrameLayout>

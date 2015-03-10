@@ -83,6 +83,8 @@ public class ReviewCreationActivity extends ActionBarActivity implements View.On
                     Toast.makeText(this, "Please insert a comment", Toast.LENGTH_SHORT).show();
                 } else {
                     //new UploadNewReviewTask(this, routeID, comment, rate).execute();
+                    Toast.makeText(this, "Review creation is currently under development", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
 
                 Log.v(TAG, "rate: " + rate + ", routeID: " + routeID);

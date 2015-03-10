@@ -202,7 +202,6 @@ public class SummaryActivity extends ActionBarActivity {
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
-                //new UploadRouteTask().execute(this);
                 new UploadRouteTask(this, email, routeName, routeDescription, difficulty, bends, type).execute();
                 Toast.makeText(this, getResources().getString(R.string.uploading_toast), Toast.LENGTH_SHORT).show();
             } else {

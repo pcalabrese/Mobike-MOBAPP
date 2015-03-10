@@ -93,7 +93,7 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                 Intent intent = new Intent(context, NicknameActivity.class);
                 // uso startActivityForResult così se NicknameActivity termina esce dall'applicazione
                 // può terminare per due motivi, o termina la main activity o l'utente non inserisce il nickname
-                ((Activity) context).startActivityForResult(intent, LoginActivity.MAPS_REQUEST);
+                ((Activity) context).startActivityForResult(intent, LoginActivity.REGISTRATION_REQUEST);
                 return "Error code: " + httpResult;
             }
         } finally {

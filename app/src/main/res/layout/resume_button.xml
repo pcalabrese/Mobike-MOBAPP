@@ -10,5 +10,10 @@
     android:layout_weight="0.5"
     android:layout_marginRight="10dp"
     android:layout_marginEnd="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginBottom="20dp"
+    android:layout_marginTop="10dp"
     android:textColor="@color/white"
-    android:background="@drawable/green_button"/>
+    android:background="@drawable/green_button"
+    android:elevation="@dimen/default_elevation"
+    android:stateListAnimator="@anim/fab_animation"/>

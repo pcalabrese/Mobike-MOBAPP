@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.mobike.mobike.LoginActivity;
 import com.mobike.mobike.MainActivity;
+import com.mobike.mobike.utils.Crypter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,18 +26,19 @@ import java.net.URL;
  * Created by Andrea-PC on 08/03/2015.
  */
 public class RegisterUserTask extends AsyncTask<String, Void, String> {
-    private String name, surname, nickname, email, imageURL;
+    private String name, surname, nickname, email, imageURL, bike;
     private Context context;
     private static final String TAG = "RegisterUserTask";
     public static final String registerUserURL = "qualcosa";
 
-    public RegisterUserTask(Context context, String name, String surname, String nickname, String email, String imageURL) {
+    public RegisterUserTask(Context context, String name, String surname, String nickname, String email, String imageURL, String bike) {
         this.context = context;
         this.name = name;
         this.surname = surname;
         this.nickname = nickname;
         this.email = email;
         this.imageURL= imageURL;
+        this.bike = bike;
     }
 
     @Override
@@ -56,6 +58,7 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
     private String postUser() throws IOException {
         HttpURLConnection urlConnection = null;
         try {
+            Crypter crypter = new Crypter();
             URL u = new URL(registerUserURL);
             urlConnection = (HttpURLConnection) u.openConnection();
             urlConnection.setRequestMethod("POST");
@@ -66,17 +69,19 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
             urlConnection.setDoOutput(true);
             urlConnection.setChunkedStreamingMode(0);
             urlConnection.connect();
-            JSONObject jsonObject = new JSONObject();
+            JSONObject jsonObject = new JSONObject(), jsonObject1 = new JSONObject();
             try{
                 jsonObject.put("name", name);
                 jsonObject.put("surname", surname);
                 jsonObject.put("email", email);
                 jsonObject.put("imageURL", imageURL);
                 jsonObject.put("nickname", nickname);
+                jsonObject.put("bike", bike);
+                jsonObject1.put("token", crypter.encrypt(jsonObject.toString()));
             }
             catch(JSONException e){/*not implemented yet*/ }
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
-            out.write(jsonObject.toString());
+            out.write(jsonObject1.toString());
             out.close();
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {

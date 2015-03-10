@@ -31,7 +31,7 @@
     <color name="colorAccentOpacity">#96ff9800</color>
     <color name="colorPrimaryOpacity">#aa1e88e5</color>
 
-    <color name="grigio_trasparente">#55000000</color>
+    <color name="grigio_trasparente">#47000000</color>
 
     <color name="routeMountain">#795548</color>
     <color name="routeHill">#FFC107</color>

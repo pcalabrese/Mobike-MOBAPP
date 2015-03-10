@@ -80,7 +80,7 @@
 
 
         <ImageButton
-            android:id="@+id/create_event"
+            android:id="@+id/route_search"
             android:layout_width="@dimen/fab_size"
             android:layout_height="@dimen/fab_size"
             android:layout_alignParentBottom="true"

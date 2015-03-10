@@ -48,14 +48,12 @@ public class HttpGetTask extends AsyncTask<String, Void, String> {
             urlConnection.setRequestProperty("Accept", "application/json");
             urlConnection.setReadTimeout(10000 /* milliseconds */);
             urlConnection.setConnectTimeout(15000 /* milliseconds */);
-            InputStream in = urlConnection.getInputStream();
-            if (in != null)
-                result = convertInputStreamToString(in);
-
             int httpResult = urlConnection.getResponseCode();
-            if (httpResult == HttpURLConnection.HTTP_OK)
-                Log.v(TAG, "ok");
-            else {
+            if (httpResult == HttpURLConnection.HTTP_OK) {
+                InputStream in = urlConnection.getInputStream();
+                if (in != null)
+                    result = convertInputStreamToString(in);
+            } else {
                 // scrive un messaggio di errore con codice httpResult
                 BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));
                 String r;

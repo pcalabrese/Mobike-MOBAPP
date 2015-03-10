@@ -202,10 +202,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
             initialSpinner = false;
             return;
         }
-        //mSwipeRefreshLayout.setRefreshing(true);
         switch (position) {
             case 0:
-                mSwipeRefreshLayout.setRefreshing(true);
                 downloadEvents(downloadAllEventsURL);
                 break;
             case 1: //downloadEvents(downloadUserEventsURL);
@@ -216,6 +214,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     }
 
     private void downloadEvents(String url) {
+        if (mSwipeRefreshLayout != null)
+            mSwipeRefreshLayout.setRefreshing(true);
         new HttpGetTask(this).execute(url);
         Log.v(TAG, "downloadEvents: " + url);
     }

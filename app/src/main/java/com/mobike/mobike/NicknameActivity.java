@@ -1,5 +1,7 @@
 package com.mobike.mobike;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.PorterDuff;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -11,6 +13,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.mobike.mobike.network.RegisterUserTask;
 
 
 public class NicknameActivity extends ActionBarActivity implements View.OnClickListener {
@@ -65,9 +69,20 @@ public class NicknameActivity extends ActionBarActivity implements View.OnClickL
                 } else if (bike.length() == 0) {
                     Toast.makeText(this, "Please insert a bike model", Toast.LENGTH_SHORT).show();
                 } else {
-                    //new SignInTask(this, nickname, bike).execute();
+                    SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.USER, MODE_PRIVATE);
+                    String name = sharedPreferences.getString(LoginActivity.NAME, "");
+                    String surname = sharedPreferences.getString(LoginActivity.SURNAME, "");
+                    String email = sharedPreferences.getString(LoginActivity.EMAIL, "");
+                    String imageUrl = sharedPreferences.getString(LoginActivity.IMAGEURL, "");
+                    new RegisterUserTask(this, name, surname, nickname, email, imageUrl, bike).execute();
                 }
                 break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == LoginActivity.MAPS_REQUEST)
+            finish();
     }
 }

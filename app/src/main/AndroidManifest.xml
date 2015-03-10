@@ -115,6 +115,12 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobike.mobike.MainActivity" />
         </activity>
+        <activity
+            android:name=".RouteSearchActivity"
+            android:label="@string/title_activity_route_search"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.AppCompat.Light.Dialog">
+        </activity>
     </application>
 
 </manifest>

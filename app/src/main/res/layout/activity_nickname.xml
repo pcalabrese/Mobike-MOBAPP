@@ -5,7 +5,7 @@
     tools:context="com.mobike.mobike.EventCreationActivity"
     android:orientation="vertical">
 
-    <TextView android:text="@string/nickname_title"
+    <TextView android:text="@string/user_registration"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textStyle="bold"

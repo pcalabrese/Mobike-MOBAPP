@@ -7,7 +7,8 @@
     <com.mobike.mobike.tabs.SlidingTabLayout
         android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/default_elevation"/>
     
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"

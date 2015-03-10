@@ -23,8 +23,7 @@
         <com.mobike.mobike.SquareImageView
             android:id="@+id/image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/staticmap"/>
+            android:layout_height="wrap_content"/>
 
     </android.support.v7.widget.CardView>
 
@@ -38,14 +37,31 @@
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="2dp">
 
-        <TextView
-            android:id="@+id/name"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:layout_margin="10dp"/>
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/name_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:padding="20dp"
+                android:text="@string/name"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/name_textview"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:layout_margin="20dp"/>
+
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 
@@ -59,14 +75,31 @@
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="2dp">
 
-        <TextView
-            android:id="@+id/nickname"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:layout_margin="10dp"/>
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/nickname_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:padding="20dp"
+                android:text="@string/nickname"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/nickname"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/nickname_textview"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:layout_margin="20dp"/>
+
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 
@@ -80,14 +113,31 @@
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="2dp">
 
-    <TextView
-        android:id="@+id/email"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="italic"
-        android:textSize="17sp"
-        android:textColor="@color/black"
-        android:layout_margin="10dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/email_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:padding="20dp"
+                android:text="@string/email"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/email_textview"
+                android:textStyle="italic"
+                android:textSize="17sp"
+                android:textColor="@color/black"
+                android:layout_margin="20dp"/>
+
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 
@@ -101,14 +151,31 @@
         card_view:cardCornerRadius="5dp"
         card_view:cardElevation="2dp">
 
-        <TextView
-            android:id="@+id/bike"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textStyle="italic"
-            android:textSize="17sp"
-            android:textColor="@color/black"
-            android:layout_margin="10dp"/>
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/bike_textview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:padding="20dp"
+                android:text="@string/bike"
+                android:textSize="20sp"/>
+
+            <TextView
+                android:id="@+id/bike"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/bike_textview"
+                android:textStyle="italic"
+                android:textSize="17sp"
+                android:textColor="@color/black"
+                android:layout_margin="20dp"/>
+
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 

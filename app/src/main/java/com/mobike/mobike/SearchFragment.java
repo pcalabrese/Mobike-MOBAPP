@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -41,7 +42,7 @@ import java.util.List;
  * Use the {@link SearchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SearchFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener, HttpGetTask.HttpGet {
+public class SearchFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener, HttpGetTask.HttpGet, View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -122,6 +123,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         spinner.setAdapter(adapter);
         spinner.setOnItemSelectedListener(this); */
 
+        ((ImageButton) getView().findViewById(R.id.route_search)).setOnClickListener(this);
+
         ListView listView = (ListView) getView().findViewById(R.id.list_view);
 
         if (firstTime) {
@@ -198,10 +201,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
             initialSpinner = false;
             return;
         }
-        //mSwipeRefreshLayout.setRefreshing(true);
         switch (position) {
             case 0:
-                mSwipeRefreshLayout.setRefreshing(true);
                 downloadRoutes(downloadAllRoutesURL);
                 break;
             case 1:
@@ -211,6 +212,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     }
 
     private void downloadRoutes(String url) {
+        if (mSwipeRefreshLayout != null)
+            mSwipeRefreshLayout.setRefreshing(true);
         new HttpGetTask(this).execute(url);
         Log.v(TAG, "downloadRoutes: " + url);
     }
@@ -281,6 +284,15 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         mSwipeRefreshLayout.setRefreshing(false);
     }
 
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.route_search:
+                Intent intent = new Intent(getActivity(), RouteSearchActivity.class);
+                startActivity(intent);
+                break;
+        }
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -295,10 +307,6 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
-
-
-
-
 }
 
 // custom class for square images

@@ -90,7 +90,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="10dp"
-            android:src="@drawable/staticmap"/>
+            android:src="@drawable/mountain"/>
 
         <com.mobike.mobike.SquareImageView
             android:id="@+id/hill_icon"
@@ -98,7 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginRight="10dp"
-            android:src="@drawable/staticmap"/>
+            android:src="@drawable/hill"/>
 
         <com.mobike.mobike.SquareImageView
             android:id="@+id/plain_icon"
@@ -106,7 +106,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginRight="10dp"
-            android:src="@drawable/staticmap"/>
+            android:src="@drawable/plain"/>
 
     <!--    <com.mobike.mobike.SquareImageView
             android:layout_width="0dp"
@@ -121,7 +121,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginRight="20dp"
-            android:src="@drawable/staticmap"/>
+            android:src="@drawable/coast"/>
 
     </LinearLayout>
 

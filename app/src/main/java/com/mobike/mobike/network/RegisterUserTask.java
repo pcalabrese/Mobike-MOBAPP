@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -77,7 +78,7 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
                 jsonObject.put("imageURL", imageURL);
                 jsonObject.put("nickname", nickname);
                 jsonObject.put("bike", bike);
-                jsonObject1.put("token", crypter.encrypt(jsonObject.toString()));
+                jsonObject1.put("user", crypter.encrypt(jsonObject.toString()));
             }
             catch(JSONException e){/*not implemented yet*/ }
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
@@ -85,13 +86,18 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
             out.close();
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                String userID = br.readLine();
-                Log.v(TAG, "userID: " + userID);
-                br.close();
+                String response = convertInputStreamToString(urlConnection.getInputStream());
+                String userID = "none", nickname = "none";
+                JSONObject json;
+                try {
+                    json = new JSONObject(crypter.decrypt((new JSONObject(response)).getString("user")));
+                    userID = json.getInt("userId") + "";
+                    nickname = json.getString("nickname");
+                } catch (JSONException e) {}
                 SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt(LoginActivity.ID, Integer.parseInt(userID));
+                editor.putString(LoginActivity.NICKNAME, nickname);
                 editor.apply();
                 Intent intent = new Intent(context, MainActivity.class);
                 ((Activity) context).startActivityForResult(intent, LoginActivity.MAPS_REQUEST);
@@ -106,5 +112,16 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
             if (urlConnection != null)
                 urlConnection.disconnect();
         }
+    }
+
+    private String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while ((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
     }
 }

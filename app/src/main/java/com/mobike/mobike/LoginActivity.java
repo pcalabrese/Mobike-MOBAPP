@@ -180,7 +180,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         editor.putString(EMAIL, email);
         editor.putString(NAME, name);
         editor.putString(SURNAME, surname);
-        //editor.putString(NICKNAME, nickname);
         editor.putString(IMAGEURL, imageURL);
         editor.apply();
 

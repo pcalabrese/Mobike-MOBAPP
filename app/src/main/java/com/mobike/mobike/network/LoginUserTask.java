@@ -72,7 +72,7 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                 String userID = "none", nickname = "none";
                 JSONObject json;
                 try {
-                    json = new JSONObject(crypter.decrypt((new JSONObject(response)).getString("token")));
+                    json = new JSONObject(crypter.decrypt((new JSONObject(response)).getString("user")));
                     userID = json.getInt("userId") + "";
                     nickname = json.getString("nickname");
                 } catch (JSONException e) {}
@@ -111,6 +111,5 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
 
         inputStream.close();
         return result;
-
     }
 }

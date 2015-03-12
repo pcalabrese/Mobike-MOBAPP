@@ -30,7 +30,7 @@ import java.net.URL;
 public class LoginUserTask extends AsyncTask<String, Void, String> {
     private String name, email;
     private Context context;
-    public static final String loginUserURL = "qualcosa";
+    public static final String loginUserURL = "http://mobike.ddns.net/SRV/users/auth";
     private final static String TAG = "LoginUserTask";
 
     public LoginUserTask(Context context, String name, String email) {

@@ -30,7 +30,7 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
     private String name, surname, nickname, email, imageURL, bike;
     private Context context;
     private static final String TAG = "RegisterUserTask";
-    public static final String registerUserURL = "qualcosa";
+    public static final String registerUserURL = "http://mobike.ddns.net/SRV/users/create";
 
     public RegisterUserTask(Context context, String name, String surname, String nickname, String email, String imageURL, String bike) {
         this.context = context;

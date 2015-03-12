@@ -85,5 +85,7 @@
     <string name="title_activity_route_search">Route Search</string>
     <string name="start">Start</string>
     <string name="destination">Destination</string>
+    <string name="pick_this_route">Pick this route</string>
+    <string name="title_activity_fragment">FragmentActivity</string>
 
 </resources>

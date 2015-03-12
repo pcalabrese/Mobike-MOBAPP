@@ -9,6 +9,12 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/pick_button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"></LinearLayout>
+
     <!-- map whit the route associated with the event -->
     <fragment android:layout_width="match_parent"
         android:layout_height="300dp" android:id="@+id/map"
@@ -300,17 +306,25 @@
         android:layout_margin="10dp">
 
         <LinearLayout
-            android:id="@+id/reviews_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
+                android:id="@+id/user_review_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
                 <include layout="@layout/new_review_button" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/reviews_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <View
                     android:layout_width="match_parent"

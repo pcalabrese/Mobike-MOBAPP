@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Button xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/pick_this_route_button"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:text="@string/pick_this_route"
+    android:padding="10dp"
+    android:background="@color/colorPrimary"
+    android:textColor="@color/white"
+    android:layout_gravity="center"/>

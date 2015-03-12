@@ -1,6 +1,7 @@
 package com.mobike.mobike;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -8,6 +9,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -38,6 +41,7 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
 
     private TextView name, description, creator, length, duration, difficulty, bends, type;
     private String gpx, routeID;
+    private boolean pickingRoute;
 
     private static final String TAG = "RouteActivity";
 
@@ -49,6 +53,15 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
 
         ((Button) findViewById(R.id.new_review_button)).setOnClickListener(this);
 
+        pickingRoute = getIntent().getExtras().getInt(SearchFragment.REQUEST_CODE) == EventCreationActivity.ROUTE_REQUEST;
+
+        // inflate del bottone "PICK THIS ROUTE" in un linear layout vuoto, che chiama setResult(RESULT_OK, intent)
+        if (pickingRoute) {
+            LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.pick_button_layout);
+            buttonLayout.addView(getLayoutInflater().inflate(R.layout.pick_this_route_button, buttonLayout, false));
+            ((Button) findViewById(R.id.pick_this_route_button)).setOnClickListener(this);
+        }
+
         // get data from bundle and displays in textViews
         Bundle bundle = getIntent().getExtras();
         name = (TextView) findViewById(R.id.route_name);
@@ -59,6 +72,8 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
         difficulty = (TextView) findViewById(R.id.route_difficulty);
         bends = (TextView) findViewById(R.id.route_bends);
         type = (TextView) findViewById(R.id.route_type);
+
+
 
         name.setText(bundle.getString(SearchFragment.ROUTE_NAME));
         description.setText(bundle.getString(SearchFragment.ROUTE_DESCRIPTION));
@@ -175,7 +190,10 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
         Log.v(TAG, "setGpx()");
     }
 
+
     public void setResult(String result) {
+        SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.USER, MODE_PRIVATE);
+        String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
         JSONObject object;
         try {
             object = new JSONObject(result);
@@ -186,6 +204,8 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
 
             */
             String user, rate, message;
+            LinearLayout reviewsLayout = (LinearLayout) findViewById(R.id.reviews_list);
+            boolean found = false;
 
             JSONArray array = object.getJSONArray("reviews");
             for (int i = 0; i < array.length(); i++) {
@@ -194,8 +214,30 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
                 rate = review.getString("rate");
                 message = review.getString("message");
 
-                // aggiungi review al linear layout "reviews_list"
-                // inflate del file "review_item.xml" con i campi popolati
+                 //aggiungi review al linear layout "reviews_list"
+                 //inflate del file "review_item.xml" con i campi popolati
+                if (! user.equals(nickname)) {
+                    View view = getLayoutInflater().inflate(R.layout.review_item, reviewsLayout, false);
+                    ((TextView) view.findViewById(R.id.user)).setText(user);
+                    ((RatingBar) view.findViewById(R.id.rating_bar)).setRating(Float.parseFloat(rate));
+                    ((TextView) view.findViewById(R.id.review)).setText(message);
+                    reviewsLayout.addView(view);
+                } else {
+                    //inflate della recensione dell'utente
+                    found = true;
+                    LinearLayout userReviewLayout = (LinearLayout) findViewById(R.id.user_review_layout);
+                    View view = getLayoutInflater().inflate(R.layout.user_review_item, userReviewLayout, false);
+                    ((TextView) view.findViewById(R.id.user)).setText(user);
+                    ((RatingBar) view.findViewById(R.id.rating_bar)).setRating(Float.parseFloat(rate));
+                    ((TextView) view.findViewById(R.id.review)).setText(message);
+                    userReviewLayout.addView(view);
+                }
+            }
+            if (!found) {
+                LinearLayout userReviewLayout = (LinearLayout) findViewById(R.id.user_review_layout);
+                View view = getLayoutInflater().inflate(R.layout.new_review_button, userReviewLayout, false);
+                view.setOnClickListener(this);
+                userReviewLayout.addView(view);
             }
         } catch (JSONException e) {}
     }
@@ -209,6 +251,23 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
                 bundle.putString(SearchFragment.ROUTE_ID, routeID);
                 intent.putExtras(bundle);
                 startActivity(intent);
+                break;
+            case R.id.pick_this_route_button:
+                Intent data = new Intent();
+                Bundle b = new Bundle();
+                b.putInt(SearchFragment.ROUTE_ID, Integer.parseInt(routeID));
+                b.putString(SearchFragment.ROUTE_NAME, name.getText().toString());
+                b.putString(SearchFragment.ROUTE_LENGTH, length.getText().toString());
+                b.putString(SearchFragment.ROUTE_DURATION, duration.getText().toString());
+                b.putString(SearchFragment.ROUTE_CREATOR, creator.getText().toString());
+                b.putString(SearchFragment.ROUTE_TYPE, type.getText().toString());
+                data.putExtras(b);
+                setResult(RESULT_OK, data);
+                Log.v(TAG, "pick this route button pressed");
+                finish();
+                break;
+            case R.id.edit_review:
+                //modifica la review esistente
                 break;
         }
     }

@@ -185,9 +185,10 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected())
+        if (networkInfo != null && networkInfo.isConnected()) {
+            // new LoginUserTask(this, name, email).execute();
             new LoginPostTask().execute();
-        else
+        } else
             Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
 
     }

@@ -4,20 +4,27 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.BitmapFactory;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.mobike.mobike.network.HttpGetTask;
+import com.mobike.mobike.utils.Event;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,10 +35,13 @@ import java.util.Calendar;
 
 
 public class EventCreationActivity extends ActionBarActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, HttpGetTask.HttpGet {
-    private String routeID, startDate, startTime;
+    private String startDate, startTime;
+    private int routeID;
+    private boolean picked = false;
     private static final String TAG = "EventCreationActivity";
 
-    public static final String ALL_NICKNAMES_URL = "qualcosa";
+    public static final String ALL_NICKNAMES_URL = "http://mobike.ddns.net/SRV/users/retrieveall";
+    public static final int ROUTE_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +55,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         ((Button) findViewById(R.id.pick_date)).setOnClickListener(this);
         ((Button) findViewById(R.id.pick_time)).setOnClickListener(this);
         ((Button) findViewById(R.id.create)).setOnClickListener(this);
+        ((Button) findViewById(R.id.pick_route)).setOnClickListener(this);
 
         ArrayList<String> data=new ArrayList<String>();
         data.add("Andrea Donati");
@@ -73,7 +84,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 SharedPreferences sharedPref = getSharedPreferences(LoginActivity.ID, Context.MODE_PRIVATE);
                 String nickname = sharedPref.getString(LoginActivity.NICKNAME, "");
 
-            //    Event event = new Event(name, startDate + " " + startTime, "", nickname, description, routeID, startLocation, creationDate, invited);
+                //Event event = new Event(name, startDate + " " + startTime, nickname, description, routeID, startLocation, creationDate, invited);
             //    new UploadEventTask(this, event).execute();
                 finish();
                 break;
@@ -89,7 +100,18 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 timeDialog.show(getSupportFragmentManager(), "timePicker");
                 break;
             case R.id.pick_route:
+                if (picked) {
+                    ((LinearLayout) findViewById(R.id.route_picked)).removeView(findViewById(R.id.route_list_element));
+                    picked = false;
+                    Log.v(TAG, "removing route");
+                }
                 //choose a route and save the ID
+                Intent intent = new Intent(this, FragmentActivity.class);
+                Bundle bundle = new Bundle();
+                bundle.putInt(SearchFragment.REQUEST_CODE, ROUTE_REQUEST);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, ROUTE_REQUEST);
+                Log.v(TAG, "pickRoute button pressed");
                 break;
         }
     }
@@ -125,7 +147,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
     }
 
     public void setUsersHints(ArrayList<String> users) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, users);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, users);
         MultiAutoCompleteTextView textView = (MultiAutoCompleteTextView) findViewById(R.id.invite);
 
         MultiAutoCompleteTextView.CommaTokenizer tokenizer=new MultiAutoCompleteTextView.CommaTokenizer();
@@ -134,6 +156,27 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         textView.setTokenizer(tokenizer);
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == ROUTE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                picked = true;
+                routeID = intent.getExtras().getInt(SearchFragment.ROUTE_ID);
+                Log.v(TAG, "pickRoute, routeID: " + routeID);
+
+                // set the route (magari prendo l'item della lista dei percorsi e lo visualizzo
+                LinearLayout routeLayout = (LinearLayout) findViewById(R.id.route_picked);
+                routeLayout.addView(getLayoutInflater().inflate(R.layout.route_list_row, routeLayout, false));
+                Bundle bundle = intent.getExtras();
+                ((TextView) findViewById(R.id.route_name)).setText(bundle.getString(SearchFragment.ROUTE_NAME));
+                ((TextView) findViewById(R.id.route_length)).setText(bundle.getString(SearchFragment.ROUTE_LENGTH));
+                ((TextView) findViewById(R.id.route_duration)).setText(bundle.getString(SearchFragment.ROUTE_DURATION));
+                ((TextView) findViewById(R.id.route_creator)).setText(bundle.getString(SearchFragment.ROUTE_CREATOR).split("by ")[1]);
+                ((TextView) findViewById(R.id.route_type)).setText(bundle.getString(SearchFragment.ROUTE_TYPE).split(": ")[1]);
+                ((ImageView) findViewById(R.id.route_image)).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.staticmap));
+                Log.v(TAG, "route name: " + bundle.getString(SearchFragment.ROUTE_NAME));
+            }
+        }
+    }
 
 
 
@@ -145,6 +188,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
             this.listener = listener;
         }
 
+        @NonNull
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current date as the default date in the picker
             final Calendar c = Calendar.getInstance();
@@ -165,6 +209,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
             this.listener = listener;
         }
 
+        @NonNull
         public Dialog onCreateDialog(Bundle savedInstanceState) {
             // Use the current time as the default values for the picker
             final Calendar c = Calendar.getInstance();

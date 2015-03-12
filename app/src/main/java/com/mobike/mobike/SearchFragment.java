@@ -57,6 +57,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     private ProgressDialog progressDialog;
     private Boolean initialSpinner = true, firstTime;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private boolean pickingRoute;
 
     public static final String REQUEST_CODE = "com.mobike.mobike.SearchFragment.request_code";
     public static final String ROUTE_ID = "com.mobike.mobike.SearchFragment.route_id";
@@ -72,6 +73,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
     public static final String downloadAllRoutesURL = "http://mobike.ddns.net/SRV/routes/retrieveall";
     public static final String downloadUserRoutesURL = "qualcosa";
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -101,6 +103,11 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        if (getActivity().getIntent().getExtras() != null)
+            pickingRoute = getActivity().getIntent().getExtras().getInt(REQUEST_CODE) == EventCreationActivity.ROUTE_REQUEST;
+
+        Log.v(TAG, "pickingRoute: " + pickingRoute);
 
         firstTime = true;
 
@@ -276,8 +283,14 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 bundle.putString(ROUTE_DIFFICULTY, route.getDifficulty());
                 bundle.putString(ROUTE_BENDS, route.getBends());
                 bundle.putString(ROUTE_TYPE, route.getType());
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (pickingRoute) {
+                    bundle.putInt(REQUEST_CODE, EventCreationActivity.ROUTE_REQUEST);
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, EventCreationActivity.ROUTE_REQUEST);
+                } else {
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -290,6 +303,15 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 Intent intent = new Intent(getActivity(), RouteSearchActivity.class);
                 startActivity(intent);
                 break;
+        }
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == EventCreationActivity.ROUTE_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
+            }
         }
     }
 

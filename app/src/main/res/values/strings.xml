@@ -86,6 +86,7 @@
     <string name="start">Start</string>
     <string name="destination">Destination</string>
     <string name="pick_this_route">Pick this route</string>
-    <string name="title_activity_fragment">FragmentActivity</string>
+    <string name="title_activity_fragment">Select a route</string>
+    <string name="search">Search</string>
 
 </resources>

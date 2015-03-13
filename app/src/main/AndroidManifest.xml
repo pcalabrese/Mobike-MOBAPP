@@ -29,7 +29,7 @@
         android:icon="@drawable/ic_launcher_test"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
-        android:theme="@style/CustomTheme" >
+        android:theme="@style/AppTheme.Base" >
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
@@ -54,11 +54,13 @@
         <activity
             android:name=".SummaryActivity"
             android:label="@string/title_activity_summary"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.ActionBarShadow">
         </activity>
         <activity
             android:name=".ShareActivity"
-            android:label="@string/title_activity_share" >
+            android:label="@string/title_activity_share"
+            android:theme="@style/AppTheme.ActionBarShadow">
         </activity>
 
         <service
@@ -81,7 +83,8 @@
         </activity>
         <activity
             android:name=".RouteActivity"
-            android:label="@string/title_activity_route" >
+            android:label="@string/title_activity_route"
+            android:theme="@style/AppTheme.ActionBarShadow">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobike.mobike.MainActivity" />

@@ -3,14 +3,20 @@ package com.mobike.mobike;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
+import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -57,9 +63,9 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
 
         // inflate del bottone "PICK THIS ROUTE" in un linear layout vuoto, che chiama setResult(RESULT_OK, intent)
         if (pickingRoute) {
-            LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.pick_button_layout);
+            RelativeLayout buttonLayout = (RelativeLayout) findViewById(R.id.pick_button_layout);
             buttonLayout.addView(getLayoutInflater().inflate(R.layout.pick_this_route_button, buttonLayout, false));
-            ((Button) findViewById(R.id.pick_this_route_button)).setOnClickListener(this);
+            ((ImageButton) findViewById(R.id.pick_this_route_button)).setOnClickListener(this);
         }
 
         // get data from bundle and displays in textViews

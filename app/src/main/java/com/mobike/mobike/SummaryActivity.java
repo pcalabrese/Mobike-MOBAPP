@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -35,6 +38,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This activity displays the route that has just been recorded and gives
@@ -49,10 +53,10 @@ public class SummaryActivity extends ActionBarActivity {
     private static final String UploadURL = "http://mobike.ddns.net/SRV/routes/create";
     private static final String DEFAULT_ACCOUNT_NAME = "no account";
     public static final String ROUTE_ID = "com.mobike.mobike.ROUTE_ID";
-    private  EditText routeNameText, routeDescriptionText, routeDifficulty, routeBends, routeType;
+    private  EditText routeNameText, routeDescriptionText, routeDifficulty, routeBends, routeType, routeStartLocation, routeEndLocation;
     private TextView length, duration;
     private long durationInSeconds;
-    private String routeName, routeDescription, email, routeID, difficulty, bends, type;
+    private String routeName, routeDescription, email, routeID, difficulty, bends, type, startLocation, endLocation;
     private Context context = this;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline route; // the recorded route
@@ -69,17 +73,25 @@ public class SummaryActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
         setUpMapIfNeeded();
+
         route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         GPSDatabase db = new GPSDatabase(this);
         db.open();
         points = db.getAllLocations();
         db.close();
         route.setPoints(points);
+
+        // request of start and end location
+        new GeocoderTask(this, 0).execute(points.get(0));
+        new GeocoderTask(this, 1).execute(points.get(points.size() - 1));
+
         routeNameText = (EditText) findViewById(R.id.route_name_text);
         routeDescriptionText = (EditText) findViewById(R.id.route_description_text);
         routeDifficulty = (EditText) findViewById(R.id.route_difficulty);
         routeBends = (EditText) findViewById(R.id.route_bends);
         routeType = (EditText) findViewById(R.id.route_type);
+        routeStartLocation = (EditText) findViewById(R.id.start_location);
+        routeEndLocation = (EditText) findViewById(R.id.end_location);
 
         //set length and duration text views
         GPSDatabase db2 = new GPSDatabase(this);
@@ -196,18 +208,29 @@ public class SummaryActivity extends ActionBarActivity {
             difficulty = routeDifficulty.getText().toString();
             bends = routeBends.getText().toString();
             type = routeType.getText().toString();
+            startLocation = routeStartLocation.getText().toString();
+            endLocation = routeEndLocation.getText().toString();
+
             SharedPreferences sharedPref = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
             email = sharedPref.getString(LoginActivity.EMAIL, DEFAULT_ACCOUNT_NAME);
             Log.v(TAG, "email = " + email);
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
-                new UploadRouteTask(this, email, routeName, routeDescription, difficulty, bends, type).execute();
+                new UploadRouteTask(this, email, routeName, routeDescription, difficulty, bends, type, startLocation, endLocation).execute();
                 Toast.makeText(this, getResources().getString(R.string.uploading_toast), Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void setStartLocation(String text) {
+        routeStartLocation.setText(text);
+    }
+
+    public void setEndLocation(String text) {
+        routeEndLocation.setText(text);
     }
 
     // Method called when ShareActivity finishes, returns to MapsActivity
@@ -225,5 +248,45 @@ public class SummaryActivity extends ActionBarActivity {
 
     public void setRoute(String routeID) {
         this.routeID = routeID;
+    }
+}
+
+
+
+
+class GeocoderTask extends AsyncTask<LatLng, Void, String> {
+    private Context context;
+    private int request;
+    private static final String TAG = "GeocoderTask";
+
+    public GeocoderTask(Context context, int request) {
+        this.context = context;
+        this.request = request;
+    }
+
+    @Override
+    protected String doInBackground(LatLng... locations) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        String result = "";
+        try {
+            List<Address> list = geocoder.getFromLocation(locations[0].latitude, locations[0].longitude, 1);
+            if (list != null && list.size() > 0) {
+                Address address = list.get(0);
+                // sending back first address line and locality
+                result = address.getLocality();
+                Log.v(TAG, "location found: " + result);
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Impossible to connect to Geocoder", e);
+        }
+        return result;
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        if (request == 0)
+            ((SummaryActivity) context).setStartLocation(result);
+        else
+            ((SummaryActivity) context).setEndLocation(result);
     }
 }

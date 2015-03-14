@@ -101,7 +101,7 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
                 editor.apply();
                 Intent intent = new Intent(context, MainActivity.class);
                 ((Activity) context).startActivityForResult(intent, LoginActivity.MAPS_REQUEST);
-                return "Welcome " + name + "!";
+                return "Welcome " + name.substring(0,1).toUpperCase() + name.substring(1) + "!";
             }
             else {
                 // scrive un messaggio di errore con codice httpResult

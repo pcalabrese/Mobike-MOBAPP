@@ -26,13 +26,13 @@ import java.net.URL;
 // AsyncTask that performs the upload of the route
 public class UploadRouteTask extends AsyncTask<String, Void, String> {
     private Context context;
-    private String email, name, description, difficulty, bends, type;
+    private String email, name, description, difficulty, bends, type, startLocation, endLocation;
     private GPSDatabase db;
 
     private final static String UploadRouteURL = "http://mobike.ddns.net/SRV/routes/create";
     private final static String TAG = "UploadRouteTask";
 
-    public UploadRouteTask(Context context, String email, String name, String description, String difficulty, String bends, String type) {
+    public UploadRouteTask(Context context, String email, String name, String description, String difficulty, String bends, String type, String startLocation, String endLocation) {
         this.context = context;
         this.email = email;
         this.name = name;
@@ -40,6 +40,8 @@ public class UploadRouteTask extends AsyncTask<String, Void, String> {
         this.difficulty = difficulty;
         this.bends = bends;
         this.type = type;
+        this.startLocation = startLocation;
+        this.endLocation = endLocation;
     }
 
     @Override
@@ -72,9 +74,9 @@ public class UploadRouteTask extends AsyncTask<String, Void, String> {
             urlConnection.connect();
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
             GPSDatabase db = new GPSDatabase(context);
-            out.write(db.exportRouteInJson(email, name, description, difficulty, bends, type).toString());
+            out.write(db.exportRouteInJson(email, name, description, difficulty, bends, type, startLocation, endLocation).toString());
             out.close();
-            Log.v(TAG, "json sent: "+ db.exportRouteInJson(email, name, description, difficulty, bends, type).toString());
+            Log.v(TAG, "json sent: "+ db.exportRouteInJson(email, name, description, difficulty, bends, type, startLocation, endLocation).toString());
             db.close();
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {

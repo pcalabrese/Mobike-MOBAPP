@@ -390,7 +390,7 @@ public class GPSDatabase
      * @param description the description the user gave to the route
      * @return the JSONObject containing all the informations on the route.
      */
-    public JSONObject exportRouteInJson(String email, String name, String description, String difficulty, String bends, String type){
+    public JSONObject exportRouteInJson(String email, String name, String description, String difficulty, String bends, String type, String startLocation, String endLocation){
         JSONObject jsonObject = new JSONObject();
         try{
             jsonObject.put("creatorEmail", email);
@@ -403,6 +403,8 @@ public class GPSDatabase
             jsonObject.put("bends", bends);
             jsonObject.put("type", type);
             jsonObject.put("imgUrl", getEncodedPolylineURL());
+            jsonObject.put("startLocation", startLocation);
+            jsonObject.put("endLocation", endLocation);
             Log.v(TAG, "imgUrl" + getEncodedPolylineURL());
         }
         catch(JSONException e){/*not implemented yet*/ }

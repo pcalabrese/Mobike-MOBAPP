@@ -311,7 +311,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     editor.apply();
                     Intent intent = new Intent(context, MainActivity.class);
                     startActivityForResult(intent, MAPS_REQUEST);
-                    return "Welcome " + name + "!";
+                    return "Welcome " + name.substring(0,1).toUpperCase() + name.substring(1) + "!";
                 }
                 else {
                     // scrive un messaggio di errore con codice httpResult

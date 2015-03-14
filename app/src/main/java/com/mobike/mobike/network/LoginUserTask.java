@@ -84,7 +84,7 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                 editor.apply();
                 Intent intent = new Intent(context, MainActivity.class);
                 ((Activity) context).startActivityForResult(intent, LoginActivity.MAPS_REQUEST);
-                Toast.makeText(context, "Welcome " + name + "!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Welcome  back" + name.substring(0,1).toUpperCase() + name.substring(1) + "!", Toast.LENGTH_SHORT).show();
                 return "";
             }
             else {

@@ -28,7 +28,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -254,6 +257,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
             for (int i = 0; i < json.length(); i++) {
                 jsonEvent = json.getJSONObject(i);
                 name = jsonEvent.getString("name");
+                name = name.substring(0,1).toUpperCase() + name.substring(1);
                 date = jsonEvent.getString("startDate");
                 creator = jsonEvent.getInt("creatorId") + "";
                 description = jsonEvent.getString("description");
@@ -350,9 +354,12 @@ class ListAdapter extends ArrayAdapter<Event> {
                 tt.setText(p.getName());
             }
             if (tt1 != null) {
-                String[] work = p.getDate().split(" ")[0].split("-");
-                String date = work[2] + "/" + work[1] + "/" + work[0];
-                tt1.setText(date);
+                Date mDate = null, mDateCreation = null;
+                SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                try {
+                    mDate = s1.parse(p.getDate());
+                } catch (ParseException e ) { }
+                tt1.setText(new SimpleDateFormat("EEEE, d/MM/yyyy").format(mDate));
             }
             if (tt2 != null) {
                 String[] work = p.getDate().split(" ")[1].split(":");

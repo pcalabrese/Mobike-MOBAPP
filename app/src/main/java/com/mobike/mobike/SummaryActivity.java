@@ -171,17 +171,20 @@ public class SummaryActivity extends ActionBarActivity {
             mMap.addMarker(new MarkerOptions().position(end).title("End"));
 
             // Zooming on the route
-/*            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
-                    MapsFragment.CAMERA_ZOOM_VALUE - 5);
-            mMap.animateCamera(update); */
-
-            LatLngBounds.Builder boundsBuilder = LatLngBounds.builder();
-            for (LatLng point : points) {
-                boundsBuilder.include(point);
+            if (points.size() > 1) {
+                LatLngBounds.Builder boundsBuilder = LatLngBounds.builder();
+                for (LatLng point : points) {
+                    boundsBuilder.include(point);
+                }
+                Log.v(TAG, "numero punti: " + points.size());
+                LatLngBounds bounds = boundsBuilder.build();
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10);
+                mMap.animateCamera(cameraUpdate);
+            } else {
+                CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
+                            MapsFragment.CAMERA_ZOOM_VALUE - 5);
+                mMap.animateCamera(update);
             }
-            LatLngBounds bounds = boundsBuilder.build();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10);
-            mMap.animateCamera(cameraUpdate);
         }
 
         db.close();

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.Tag;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -58,6 +59,8 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
         setContentView(R.layout.activity_route);
         setUpMapIfNeeded();
 
+        getSupportActionBar().hide();
+
         ((Button) findViewById(R.id.new_review_button)).setOnClickListener(this);
 
         pickingRoute = getIntent().getExtras().getInt(SearchFragment.REQUEST_CODE) == EventCreationActivity.ROUTE_REQUEST;
@@ -84,13 +87,13 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
 
         name.setText(bundle.getString(SearchFragment.ROUTE_NAME));
         description.setText(bundle.getString(SearchFragment.ROUTE_DESCRIPTION));
-        creator.setText("Created by " + bundle.getString(SearchFragment.ROUTE_CREATOR));
+        creator.setText(bundle.getString(SearchFragment.ROUTE_CREATOR));
         length.setText(String.format("%.01f", Float.parseFloat(bundle.getString(SearchFragment.ROUTE_LENGTH))/1000) + " km");
         int durationInSeconds = Integer.parseInt(bundle.getString(SearchFragment.ROUTE_DURATION));
         duration.setText(String.valueOf(durationInSeconds/3600) + " h " + String.valueOf((durationInSeconds/60)%60) + " m " + String.valueOf(durationInSeconds%60) + " s");
-        difficulty.setText("Difficulty: " + bundle.getString(SearchFragment.ROUTE_DIFFICULTY));
-        bends.setText("Bends: " + bundle.getString(SearchFragment.ROUTE_BENDS));
-        type.setText("Type: " + bundle.getString(SearchFragment.ROUTE_TYPE));
+        difficulty.setText(bundle.getString(SearchFragment.ROUTE_DIFFICULTY));
+        bends.setText(bundle.getString(SearchFragment.ROUTE_BENDS));
+        type.setText(bundle.getString(SearchFragment.ROUTE_TYPE));
 
         routeID = bundle.getString(SearchFragment.ROUTE_ID);
         new DownloadGpxTask(this).execute(routeID);

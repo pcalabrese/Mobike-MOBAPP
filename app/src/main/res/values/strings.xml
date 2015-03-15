@@ -88,8 +88,14 @@
     <string name="pick_this_route">Pick this route</string>
     <string name="title_activity_fragment">Select a route</string>
     <string name="search">Search</string>
-    <string name="start_location">Start Location: </string>
-    <string name="end_location">End Location: </string>
+    <string name="start_location">Start Location:</string>
+    <string name="end_location">End Location:</string>
     <string name="required_fields">* fields are required</string>
+    <string name="view_route_details">View Route Details</string>
+    <string name="created_on">Created on</string>
+    <string name="created_by">Created by</string>
+    <string name="difficulty">Difficulty:</string>
+    <string name="bends">Bends:</string>
+    <string name="type">Type:</string>
 
 </resources>

@@ -18,12 +18,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/asdpick_button_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"></LinearLayout>
-
                 <!-- map whit the route associated with the event -->
                 <fragment
                     android:id="@+id/map"
@@ -31,6 +25,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     tools:context="com.mobike.mobike.RouteActivity" />
+
+                <TextView
+                    android:id="@+id/route_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:paddingBottom="25dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:paddingTop="20dp"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
 
                 <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
@@ -44,7 +51,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
                         <!-- text view for the name of the event -->
-                        <TextView
+                        <!--<TextView
                             android:id="@+id/route_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -59,31 +66,13 @@
                             android:textSize="20sp"
                             android:textStyle="bold" />
 
-                        <include layout="@layout/divider" />
-
-                        <!-- text view for the date of the event -->
-                        <TextView
-                            android:id="@+id/route_creator"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="15dp"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginTop="15dp"
-                            android:drawableLeft="@drawable/account_grey_24dp"
-                            android:drawablePadding="15dp"
-                            android:drawableStart="@drawable/account_grey_24dp"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
-
-                        <include layout="@layout/divider" />
+                        <include layout="@layout/divider" /> -->
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal">
-                            <!-- text view for the creator of the event -->
+                            <!-- text view for the length of the route -->
                             <TextView
                                 android:id="@+id/route_length"
                                 android:layout_width="0dp"
@@ -96,6 +85,7 @@
                                 android:drawableLeft="@drawable/car_grey_24dp"
                                 android:drawablePadding="15dp"
                                 android:drawableStart="@drawable/car_grey_24dp"
+                                android:gravity="center_vertical"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
@@ -117,6 +107,7 @@
                                 android:drawableLeft="@drawable/clock_grey_24dp"
                                 android:drawablePadding="15dp"
                                 android:drawableStart="@drawable/clock_grey_24dp"
+                                android:gravity="center_vertical"
                                 android:textColor="@color/black"
                                 android:textSize="15sp"
                                 android:textStyle="bold" />
@@ -124,7 +115,7 @@
 
                         <include layout="@layout/divider" />
 
-                        <!-- text view for the description of the event -->
+                        <!-- text view for the description of the route -->
                         <TextView
                             android:id="@+id/route_description"
                             android:layout_width="match_parent"
@@ -140,47 +131,140 @@
                         <include layout="@layout/divider" />
 
                         <!-- text view for the difficulty of the route -->
-                        <TextView
-                            android:id="@+id/route_difficulty"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="15dp"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginTop="15dp"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="15dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginTop="15dp"
+                                android:text="@string/difficulty"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/route_difficulty"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="15dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="15dp"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
                         <include layout="@layout/divider" />
 
                         <!-- text view for the bends of the route -->
-                        <TextView
-                            android:id="@+id/route_bends"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="15dp"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginTop="15dp"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="15dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginTop="15dp"
+                                android:text="@string/bends"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/route_bends"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="15dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="15dp"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
                         <include layout="@layout/divider" />
 
                         <!-- text view for the type of the route -->
-                        <TextView
-                            android:id="@+id/route_type"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="15dp"
-                            android:layout_marginLeft="15dp"
-                            android:layout_marginStart="15dp"
-                            android:layout_marginTop="15dp"
-                            android:textColor="@color/black"
-                            android:textSize="15sp"
-                            android:textStyle="bold" />
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="15dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginTop="15dp"
+                                android:text="@string/type"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/route_type"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="15dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="15dp"
+                                android:layout_marginEnd="15dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="15dp"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <include layout="@layout/divider" />
+
+                        <!-- text view for the creator of the route -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginBottom="15dp"
+                                android:layout_marginLeft="15dp"
+                                android:layout_marginStart="15dp"
+                                android:layout_marginTop="15dp"
+                                android:drawableLeft="@drawable/account_grey_24dp"
+                                android:drawablePadding="15dp"
+                                android:drawableStart="@drawable/account_grey_24dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/created_by"
+                                android:textColor="@color/black"
+                                android:textSize="15sp" />
+
+                            <TextView
+                                android:id="@+id/route_creator"
+                                android:layout_width="fill_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center_vertical"
+                                android:layout_marginBottom="15dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="15dp"
+                                android:layout_marginEnd="15dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginTop="15dp"
+                                android:textColor="@color/black"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
 
                     </LinearLayout>
                 </android.support.v7.widget.CardView>

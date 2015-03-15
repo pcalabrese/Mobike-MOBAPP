@@ -249,6 +249,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
             for (int i = 0; i< json.length(); i++) {
                 jsonRoute = json.getJSONObject(i);
                 name = jsonRoute.getString("name");
+                name = name.substring(0,1).toUpperCase() + name.substring(1);
                 description = jsonRoute.getString("description");
                 creator = jsonRoute.getString("creatorEmail");
                 length = jsonRoute.getDouble("length") + "";

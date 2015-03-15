@@ -29,7 +29,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 public class EventActivity extends ActionBarActivity implements DownloadGpxTask.GpxInterface, HttpGetTask.HttpGet {
     public static final String ROUTE_URL = "http://mobike.ddns.net/SRV/routes/retrieve/";
@@ -72,18 +76,20 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
         startLocation.setText("Start location: " + event.getStartLocation());
         creationDate.setText("Created on " + event.getCreationDate()); */
 
-        String[] work = bundle.getString(EventsFragment.EVENT_DATE).split(" ")[0].split("-");
-        String d = work[2] + "/" + work[1] + "/" + work[0];
-        work = bundle.getString(EventsFragment.EVENT_DATE).split(" ")[1].split(":");
-        String time = work[0] + ":" + work[1];
+        Date mDate = null, mDateCreation = null;
+        SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            mDate = s1.parse(bundle.getString(EventsFragment.EVENT_DATE));
+            mDateCreation = s1.parse(bundle.getString(EventsFragment.EVENT_CREATION_DATE));
+        } catch (ParseException e ) { }
 
         name.setText(bundle.getString(EventsFragment.EVENT_NAME));
-        date.setText(d + "  " + time);
-        creator.setText("Created by " + bundle.getString(EventsFragment.EVENT_CREATOR));
+        date.setText(new SimpleDateFormat("EEEE, d MMMM yyyy\nkk:mm").format(mDate));
+        creator.setText(bundle.getString(EventsFragment.EVENT_CREATOR));
         description.setText(bundle.getString(EventsFragment.EVENT_DESCRIPTION));
         invited.setText(bundle.getString(EventsFragment.EVENT_INVITED));
-        startLocation.setText("Start location: " + bundle.getString(EventsFragment.EVENT_START_LOCATION));
-        creationDate.setText("Created on " + bundle.getString(EventsFragment.EVENT_CREATION_DATE));
+        startLocation.setText(bundle.getString(EventsFragment.EVENT_START_LOCATION));
+        creationDate.setText(new SimpleDateFormat("EEEE, d MMMM yyyy").format(mDateCreation));
 
         new HttpGetTask(this).execute(ROUTE_URL + bundle.getString(EventsFragment.ROUTE_ID));
         new DownloadGpxTask(this).execute(bundle.getString(EventsFragment.ROUTE_ID));

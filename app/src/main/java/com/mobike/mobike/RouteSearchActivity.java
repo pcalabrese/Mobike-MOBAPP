@@ -1,6 +1,8 @@
 package com.mobike.mobike;
 
+import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,11 +16,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.RangeSeekBar;
 
 
 public class RouteSearchActivity extends ActionBarActivity implements View.OnClickListener {
     private static final String TAG = "RouteSearchActivity";
+    public static final String ROUTE_SEARCH_URL = "com.mobike.mobike.route_search_url";
+
     private ImageView mountain, hill, plain, coast;
     private Boolean[] selected = new Boolean[4];
 
@@ -136,8 +141,14 @@ public class RouteSearchActivity extends ActionBarActivity implements View.OnCli
                 } else if (destination.length() == 0) {
                     Toast.makeText(this, "Please insert the destination", Toast.LENGTH_SHORT).show();
                 } else {
-                    // build url and GET to server (HttpGetTask)
+                    //build url and returns it to SearchFragment
+                    Intent intent = new Intent();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(ROUTE_SEARCH_URL, "http://mobike.ddns.net/SRV/routes/retrieveall");
+                    intent.putExtras(bundle);
+                    setResult(RESULT_OK, intent);
                     Toast.makeText(this, "Route search is currently under development", Toast.LENGTH_SHORT).show();
+                    finish();
                 }
                 break;
         }

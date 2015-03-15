@@ -26,6 +26,7 @@ public class HttpGetTask extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... url) {
         try {
+            Log.v(TAG, "starting HttpGetTask");
             return downloadJSON(url[0]);
         } catch (IOException e) {
             Log.v(TAG, "exception  message: " + e.getMessage() + " exception class: " + e.getClass());

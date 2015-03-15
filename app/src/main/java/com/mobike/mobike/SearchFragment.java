@@ -59,6 +59,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private boolean pickingRoute;
 
+    public static final int SEARCH_REQUEST = 3;
+
     public static final String REQUEST_CODE = "com.mobike.mobike.SearchFragment.request_code";
     public static final String ROUTE_ID = "com.mobike.mobike.SearchFragment.route_id";
     public static final String ROUTE_NAME = "com.mobike.mobike.SearchFragment.route_name";
@@ -301,7 +303,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         switch (view.getId()) {
             case R.id.route_search:
                 Intent intent = new Intent(getActivity(), RouteSearchActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, SEARCH_REQUEST);
                 break;
         }
     }
@@ -312,6 +314,11 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 getActivity().setResult(Activity.RESULT_OK, intent);
                 getActivity().finish();
             }
+        } else if (requestCode == SearchFragment.SEARCH_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                downloadRoutes(intent.getExtras().getString(RouteSearchActivity.ROUTE_SEARCH_URL));
+            }
+
         }
     }
 

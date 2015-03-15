@@ -25,6 +25,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -167,9 +168,17 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
             mMap.addMarker(new MarkerOptions().position(start).title("Start"));
             mMap.addMarker(new MarkerOptions().position(end).title("End"));
             // Zooming on the route
-            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
+            /*CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
                     MapsFragment.CAMERA_ZOOM_VALUE - 5);
-            mMap.animateCamera(update);
+            mMap.animateCamera(update); */
+
+            LatLngBounds.Builder boundsBuilder = LatLngBounds.builder();
+            for (LatLng point : points) {
+                boundsBuilder.include(point);
+            }
+            LatLngBounds bounds = boundsBuilder.build();
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10);
+            mMap.animateCamera(cameraUpdate);
         }
     }
 

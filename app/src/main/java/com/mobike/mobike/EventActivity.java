@@ -54,6 +54,8 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
         setContentView(R.layout.activity_event);
         setUpMapIfNeeded();
 
+        getSupportActionBar().hide();
+
         /* get event and route details from the bundle, route details will be used to visualize the route
          in a new RouteActivity (at the pressure of a button)
          */

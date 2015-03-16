@@ -10,10 +10,15 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarStyle">@style/MyActionBar</item>
+        <item name="android:actionButtonStyle">@style/MyActionButton</item>
     </style>
 
     <style name="MyActionBar" parent="Widget.AppCompat.Light.ActionBar.Solid">
         <item name="elevation">@null</item>
+    </style>
+
+    <style name="MyActionButton" parent="Widget.AppCompat.ActionButton">
+        <item name="android:padding">20dp</item>
     </style>
 
     <style name="AppTheme.ActionBarShadow" parent="Theme.AppCompat.Light.DarkActionBar">
@@ -21,6 +26,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="elevation">@dimen/default_elevation</item>
+        <item name="android:actionButtonStyle">@style/MyActionButton</item>
     </style>
 
 </resources>

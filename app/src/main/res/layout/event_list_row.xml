@@ -28,6 +28,7 @@
         android:scaleType="centerCrop"
         android:src="@drawable/material_green_check48dp"/> -->
 
+    <!-- prima era 60x60-->
     <de.hdodenhof.circleimageview.CircleImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/icon"
@@ -68,8 +69,8 @@
         android:layout_toEndOf="@+id/icon"
         android:layout_below="@+id/event_name"
         android:textStyle="italic"
-        android:textSize="15sp"
-        android:layout_marginTop="5dp"
+        android:textSize="13sp"
+        android:layout_marginTop="2dp"
         android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"/>
 
@@ -82,8 +83,25 @@
         android:layout_toEndOf="@+id/event_date"
         android:layout_below="@+id/event_name"
         android:textStyle="italic"
-        android:textSize="15sp"
-        android:layout_marginTop="5dp"
+        android:textSize="13sp"
+        android:layout_marginTop="2dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginStart="15dp"/>
+
+    <!-- TextView with the event's location -->
+    <TextView
+        android:id="@+id/event_location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/icon"
+        android:layout_toEndOf="@+id/icon"
+        android:layout_toLeftOf="@+id/arrow"
+        android:layout_toStartOf="@+id/arrow"
+        android:layout_below="@+id/event_date"
+        android:textStyle="italic"
+        android:textSize="13sp"
+        android:text="Rome, Boccea"
+        android:layout_marginTop="2dp"
         android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"/>
 
@@ -96,9 +114,9 @@
         android:layout_toEndOf="@+id/icon"
         android:layout_toLeftOf="@+id/arrow"
         android:layout_toStartOf="@+id/arrow"
-        android:layout_below="@+id/event_date"
+        android:layout_below="@+id/event_location"
         android:textStyle="italic"
-        android:textSize="15sp"
+        android:textSize="13sp"
         android:layout_marginTop="2dp"
         android:layout_marginLeft="15dp"
         android:layout_marginStart="15dp"

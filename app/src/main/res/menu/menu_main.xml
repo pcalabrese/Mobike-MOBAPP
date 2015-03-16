@@ -4,6 +4,10 @@
     <!--<item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" /> -->
 
-    <item android:id="@+id/action_account" android:title="@string/account"
-        app:showAsAction="never" android:orderInCategory="1"/>
+    <item android:id="@+id/action_account"
+        android:title="@string/account"
+        android:icon="@drawable/ic_account_white_36dp"
+        app:showAsAction="ifRoom"
+        android:orderInCategory="1"/>
+
 </menu>

@@ -28,7 +28,7 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
 
         // resetting the database
         GPSDatabase db = new GPSDatabase(this);

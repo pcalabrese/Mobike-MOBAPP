@@ -22,10 +22,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <!-- 110x105 -->
             <com.mobike.mobike.SquareImageView
                 android:id="@+id/route_image"
-                android:layout_width="110dp"
-                android:layout_height="105dp"
+                android:layout_width="96dp"
+                android:layout_height="96dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/staticmap"/>
 
@@ -42,7 +43,6 @@
                 android:textColor="@color/black"
                 android:maxLines="1"
                 android:paddingTop="5dp"
-                android:paddingBottom="5dp"
                 android:paddingLeft="10dp"
                 />
 
@@ -55,9 +55,9 @@
                 android:layout_toEndOf="@+id/route_image"
                 android:layout_below="@+id/route_name"
                 android:textStyle="italic"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:maxLines="1"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginStart="10dp"/>
 
@@ -70,9 +70,9 @@
                 android:layout_toEndOf="@+id/route_length"
                 android:layout_below="@+id/route_name"
                 android:textStyle="italic"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:maxLines="1"
-                android:layout_marginTop="3dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginStart="20dp"/>
 
@@ -85,7 +85,7 @@
                 android:layout_toEndOf="@+id/route_image"
                 android:layout_below="@+id/route_length"
                 android:textStyle="italic"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:maxLines="1"
                 android:layout_marginTop="2dp"
                 android:layout_marginLeft="10dp"
@@ -100,11 +100,12 @@
                 android:layout_toEndOf="@+id/route_image"
                 android:layout_below="@+id/route_creator"
                 android:textStyle="italic"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:maxLines="1"
                 android:layout_marginTop="2dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginStart="10dp"/>
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="5dp"/>
 
         </RelativeLayout>
     </android.support.v7.widget.CardView>

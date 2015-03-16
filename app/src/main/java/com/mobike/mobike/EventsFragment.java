@@ -27,6 +27,7 @@ import com.mobike.mobike.utils.Event;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -349,6 +350,7 @@ class ListAdapter extends ArrayAdapter<Event> {
             TextView tt1 = (TextView) v.findViewById(R.id.event_date);
             TextView tt2 = (TextView) v.findViewById(R.id.event_time);
             TextView tt3 = (TextView) v.findViewById(R.id.event_creator);
+            TextView tt4 = (TextView) v.findViewById(R.id.event_location);
 
             if (tt != null) {
                 tt.setText(p.getName());
@@ -359,7 +361,8 @@ class ListAdapter extends ArrayAdapter<Event> {
                 try {
                     mDate = s1.parse(p.getDate());
                 } catch (ParseException e ) { }
-                tt1.setText(new SimpleDateFormat("EEEE, d/MM/yyyy").format(mDate));
+                String date = new SimpleDateFormat("EEEE, d/MM/yyyy").format(mDate);
+                tt1.setText(date.substring(0,1).toUpperCase() + date.substring(1));
             }
             if (tt2 != null) {
                 String[] work = p.getDate().split(" ")[1].split(":");
@@ -367,9 +370,10 @@ class ListAdapter extends ArrayAdapter<Event> {
                 tt2.setText(time);
             }
             if (tt3 != null) {
-
                 tt3.setText("Created by " + p.getCreator());
             }
+            if (tt4 != null)
+                tt4.setText(p.getStartLocation());
         }
 
         return v;

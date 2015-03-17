@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -245,10 +246,12 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      * This method updates the map, adding the last known location to the route drawn on it.
      * @param location the last known location.
      */
-    private void updateUIRoute(Location location){
+    private void updateUIRoute(Location location, float length, long duration){
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         points.add(latLng);
         route.setPoints(points);
+        ((TextView) getActivity().findViewById(R.id.current_length)).setText(String.format("%.01f", length/1000) + " km");
+        ((TextView) getActivity().findViewById(R.id.current_duration)).setText(String.valueOf(duration/3600) + " h " + String.valueOf((duration/60)%60) + " m " + String.valueOf(duration%60) + " s");
     }
 
 
@@ -441,13 +444,13 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      * to be added to the route to be added on the map.
      * @param location The last location updated.
      */
-    public void onNewLocation(Location location){
+    public void onNewLocation(Location location, float length, long duration){
         if (location != null) {
             Log.v(TAG, "Location accuracy: " + String.valueOf(location.getAccuracy()));
         //    Toast.makeText(getActivity(), "Location accuracy: " + String.valueOf(location.getAccuracy()), Toast.LENGTH_SHORT).show();
         }
         updateCamera(location);
-        updateUIRoute(location);
+        updateUIRoute(location, length, duration);
         mCurrentLocation = location;
     }
     public void setRegistered(){registered = true;}
@@ -483,7 +486,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
  * a reference to a MapsActivity object, which implements NewLocationListener [see GPSService]
  */
 interface NewLocationListener {
-    public void onNewLocation(Location location);
+    public void onNewLocation(Location location, float length, long duration);
     public void updateCamera(Location location);
     public void setRegistered();
 }

@@ -22,7 +22,7 @@
         <!--android:layout_weight="6" -->
     </FrameLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <!--<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/button_layout"
         android:layout_width="match_parent"
@@ -31,18 +31,86 @@
         android:layout_marginRight="10dp"
         android:layout_alignParentBottom="true"
         android:gravity="center"
-        android:orientation="horizontal">
+        android:orientation="horizontal"> -->
     <!--android:layout_weight="1" -->
 
+
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/current_length_duration_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        card_view:cardCornerRadius="@dimen/cardview_default_radius"
+        card_view:cardElevation="@dimen/cardview_default_elevation">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:background="@color/colorPrimary">
+            <TextView
+                android:id="@+id/current_length"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
+                android:text="@string/initial_length"
+                android:textSize="20sp"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:drawableLeft="@drawable/ic_car_white_24dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_car_white_24dp"
+                android:gravity="center_vertical"/>
+
+            <TextView
+                android:id="@+id/current_duration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginRight="20dp"
+                android:layout_marginEnd="20dp"
+                android:text="@string/initial_duration"
+                android:textSize="20sp"
+                android:background="@color/colorPrimary"
+                android:textColor="@color/white"
+                android:drawableLeft="@drawable/ic_clock_white_24dp"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/ic_clock_white_24dp"
+                android:gravity="center_vertical"/>
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+
+    <!-- margin left and right 10dp -->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/button_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_above="@id/current_length_duration_card">
+
+        <!-- margin left and right 70dp, bottom 20dp -->
         <Button android:id="@+id/start_button"
             android:text="@string/start_button"
             android:layout_height="48dp"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_marginLeft="70dp"
-            android:layout_marginRight="70dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
             android:textColor="@color/white"
             android:background="@drawable/green_button"
             android:elevation="@dimen/default_elevation"

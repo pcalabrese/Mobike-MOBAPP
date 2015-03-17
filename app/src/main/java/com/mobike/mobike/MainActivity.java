@@ -1,5 +1,7 @@
 package com.mobike.mobike;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,10 +17,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.tabs.SlidingTabLayout;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 
-public class MainActivity extends ActionBarActivity {
+
+public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpGet {
 
     private ViewPager mPager;
     private SlidingTabLayout mTabs;
@@ -29,6 +35,8 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         //getSupportActionBar().hide();
+
+        //new HttpGetTask(this).execute(EventsFragment.downloadInvitedEventsURL);
 
         // resetting the database
         GPSDatabase db = new GPSDatabase(this);
@@ -73,6 +81,24 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    public void setResult(String result) {
+        try {
+            JSONArray jsonArray = new JSONArray(result);
+            if (jsonArray.length() > 0) {
+                new AlertDialog.Builder(this)
+                        .setTitle(getResources().getString(R.string.stop))
+                        .setMessage(getResources().getString(R.string.stop_registration))
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        } catch (JSONException e) {}
+    }
 
 
     class MyPagerAdapter extends FragmentPagerAdapter {

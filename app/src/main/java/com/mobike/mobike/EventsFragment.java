@@ -61,7 +61,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
 
     public static final String downloadAllEventsURL = "http://mobike.ddns.net/SRV/events/retrieveall";
     public static final String downloadUserEventsURL = "";
-    public static final String downloadAcceptedEventsURL = "";
+    public static final String downloadInvitedEventsURL = "";
 
     private Boolean initialSpinner = true, firstTime;
     private SwipeRefreshLayout mSwipeRefreshLayout;

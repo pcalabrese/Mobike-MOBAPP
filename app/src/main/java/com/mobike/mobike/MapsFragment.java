@@ -283,7 +283,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     public void startButtonPressed(View view) {
         if (view.getId() == R.id.start_button) {
             /*if (!mGoogleApiClient.isConnected()){mGoogleApiClient.connect(); }*/
-            start.setVisibility(View.GONE);
+            ((Button) view).setVisibility(View.GONE);
             pause = (Button) getActivity().getLayoutInflater().inflate(R.layout.pause_button, buttonLayout, false);
             stop = (Button) getActivity().getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
             buttonLayout.addView(pause);

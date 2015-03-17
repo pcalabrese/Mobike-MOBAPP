@@ -3,7 +3,8 @@
 <!-- file xml del bottone pause che verrà aggiunto al linear layout della MapsActivity -->
 
 <!--  bottom 20dp -->
-<Button android:id="@+id/pause_button"
+<Button
+    android:id="@+id/pause_button"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:text="@string/pause_button"
     android:layout_height="match_parent"
@@ -17,5 +18,11 @@
     android:textColor="@color/white"
     android:background="@drawable/orange_button"
     android:elevation="@dimen/default_elevation"
-    android:stateListAnimator="@anim/fab_animation"/>
+    android:stateListAnimator="@anim/fab_animation"
+    android:drawableLeft="@drawable/ic_pause_white_24dp"
+    android:drawableStart="@drawable/ic_pause_white_24dp"
+    android:drawablePadding="15dp"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto" />
 

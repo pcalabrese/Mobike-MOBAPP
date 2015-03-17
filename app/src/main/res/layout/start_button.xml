@@ -16,4 +16,9 @@
     android:textColor="@color/white"
     android:background="@drawable/green_button"
     android:elevation="@dimen/default_elevation"
-    android:stateListAnimator="@anim/fab_animation"/>
+    android:stateListAnimator="@anim/fab_animation"
+    android:drawableLeft="@drawable/ic_checkbox_blank_circle_white_24dp"
+    android:drawableStart="@drawable/ic_checkbox_blank_circle_white_24dp"
+    android:drawablePadding="15dp"
+    android:paddingLeft="120dp"
+    android:paddingRight="120dp"/>

@@ -395,7 +395,7 @@ class RouteAdapter extends ArrayAdapter<Route> {
             TextView length = (TextView) v.findViewById(R.id.route_length);
             TextView duration = (TextView) v.findViewById(R.id.route_duration);
             TextView creator = (TextView) v.findViewById(R.id.route_creator);
-            TextView type = (TextView) v.findViewById(R.id.route_type);
+            //TextView type = (TextView) v.findViewById(R.id.route_type);
             ImageView imageView = (ImageView) v.findViewById(R.id.route_image);
 
             //Picasso.with(context).load(p.getMap()).into(imageView);
@@ -410,8 +410,8 @@ class RouteAdapter extends ArrayAdapter<Route> {
             }
             if (creator != null)
                 creator.setText(p.getCreator());
-            if (type != null)
-                type.setText(p.getType());
+            //if (type != null)
+                //type.setText(p.getType());
             if (imageView != null)
                 imageView.setImageBitmap(p.getMap());
         }

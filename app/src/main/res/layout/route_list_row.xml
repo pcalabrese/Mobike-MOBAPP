@@ -23,7 +23,7 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:id="@+id/type"
+                android:id="@+id/route_type"
                 android:layout_width="10dp"
                 android:layout_height="96dp"
                 android:layout_alignParentRight="true"

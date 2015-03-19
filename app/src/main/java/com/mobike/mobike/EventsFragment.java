@@ -251,7 +251,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
 
         JSONObject jsonEvent;
         JSONArray json;
-        String name, date, creator, description, routeID, startLocation, creationDate;
+        String name, id, date, creator, routeID, startLocation, creationDate;
+        int acceptedSize, invitedSize, refusedSize, state;
 
         try {
             json = new JSONArray(result);
@@ -259,20 +260,17 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 jsonEvent = json.getJSONObject(i);
                 name = jsonEvent.getString("name");
                 name = name.substring(0,1).toUpperCase() + name.substring(1);
+                id = jsonEvent.getInt("eventID") + "";
+                creator = jsonEvent.getJSONObject("owner").getString("nickname");
                 date = jsonEvent.getString("startDate");
-                creator = jsonEvent.getInt("creatorId") + "";
-                description = jsonEvent.getString("description");
-                routeID = jsonEvent.getInt("routeId") + "";
-                /*ArrayList<String> invited = new ArrayList<>();
-                invited.add("Andrea Donati");
-                invited.add("Marco Esposito");
-                invited.add("Paolo Calabrese");
-                invited.add("Bruno Vispi"); */
-                String invited = "Andrea Donati\nMarco Esposito\nPaolo Calabrese\nBruno Vispi";
                 startLocation = jsonEvent.getString("startLocation");
-                creationDate = jsonEvent.getString("creationDate");
+                routeID = jsonEvent.getInt("routeId") + "";
+                acceptedSize = jsonEvent.getInt("acceptedSize");
+                invitedSize = jsonEvent.getInt("invitedSize");
+                refusedSize = jsonEvent.getInt("refusedSize");
+                state = jsonEvent.getInt("userState");
 
-                list.add(new Event(name, date, creator, description, routeID, startLocation, creationDate, invited));
+                list.add(new Event(name, id, date, creator, routeID, startLocation, acceptedSize, invitedSize, refusedSize, state));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -289,13 +287,10 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 Intent intent = new Intent(getActivity(), EventActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putString(EVENT_NAME, event.getName());
-                bundle.putString(EVENT_DATE, event.getDate());
+                bundle.putString(EVENT_DATE, event.getStartDate());
                 bundle.putString(EVENT_CREATOR, event.getCreator());
-                bundle.putString(EVENT_DESCRIPTION, event.getDescription());
-                bundle.putString(EVENT_INVITED, event.getInvited());
                 bundle.putString(ROUTE_ID, event.getRouteID());
                 bundle.putString(EVENT_START_LOCATION, event.getStartLocation());
-                bundle.putString(EVENT_CREATION_DATE, event.getCreationDate());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -346,34 +341,47 @@ class ListAdapter extends ArrayAdapter<Event> {
 
         if (p != null) {
 
-            TextView tt = (TextView) v.findViewById(R.id.event_name);
-            TextView tt1 = (TextView) v.findViewById(R.id.event_date);
-            TextView tt2 = (TextView) v.findViewById(R.id.event_time);
-            TextView tt3 = (TextView) v.findViewById(R.id.event_creator);
-            TextView tt4 = (TextView) v.findViewById(R.id.event_location);
+            TextView name = (TextView) v.findViewById(R.id.event_name);
+            TextView date = (TextView) v.findViewById(R.id.event_date);
+            TextView time = (TextView) v.findViewById(R.id.event_time);
+            TextView creator = (TextView) v.findViewById(R.id.event_creator);
+            TextView location = (TextView) v.findViewById(R.id.event_location);
+            ImageView state = (ImageView) v.findViewById(R.id.event_state);
+            TextView accepted = (TextView) v.findViewById(R.id.event_accepted);
+            TextView invited = (TextView) v.findViewById(R.id.event_invited);
+            TextView refused = (TextView) v.findViewById(R.id.event_refused);
 
-            if (tt != null) {
-                tt.setText(p.getName());
+
+            if (name != null) {
+                name.setText(p.getName());
             }
-            if (tt1 != null) {
+            if (date != null) {
                 Date mDate = null, mDateCreation = null;
                 SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 try {
-                    mDate = s1.parse(p.getDate());
+                    mDate = s1.parse(p.getStartDate());
                 } catch (ParseException e ) { }
-                String date = new SimpleDateFormat("EEEE, d/MM/yyyy").format(mDate);
-                tt1.setText(date.substring(0,1).toUpperCase() + date.substring(1));
+                String dateString = new SimpleDateFormat("EEEE, d/MM/yyyy").format(mDate);
+                date.setText(dateString.substring(0,1).toUpperCase() + dateString.substring(1));
             }
-            if (tt2 != null) {
-                String[] work = p.getDate().split(" ")[1].split(":");
-                String time = work[0] + ":" + work[1];
-                tt2.setText(time);
+            if (time != null) {
+                String[] work = p.getStartDate().split(" ")[1].split(":");
+                String timeString = work[0] + ":" + work[1];
+                time.setText(timeString);
             }
-            if (tt3 != null) {
-                tt3.setText("Created by " + p.getCreator());
+            if (creator != null) {
+                creator.setText("Created by " + p.getCreator());
             }
-            if (tt4 != null)
-                tt4.setText(p.getStartLocation());
+            if (location != null)
+                location.setText(p.getStartLocation());
+            if (state != null)
+                state.setImageResource(p.getColorState());
+            if (accepted != null)
+                accepted.setText(p.getAcceptedSize());
+            if (invited != null)
+                invited.setText(p.getInvitedSize());
+            if (refused != null)
+                refused.setText(p.getRefusedSize());
         }
 
         return v;

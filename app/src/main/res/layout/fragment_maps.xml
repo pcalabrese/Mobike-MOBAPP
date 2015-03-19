@@ -65,9 +65,9 @@
                 android:textSize="20sp"
                 android:background="@color/colorPrimary"
                 android:textColor="@color/white"
-                android:drawableLeft="@drawable/ic_bike_white_24dp"
+                android:drawableLeft="@drawable/ic_car_white_24dp"
                 android:drawablePadding="10dp"
-                android:drawableStart="@drawable/ic_bike_white_24dp"
+                android:drawableStart="@drawable/ic_car_white_24dp"
                 android:gravity="center_vertical"/>
 
             <TextView
@@ -115,11 +115,11 @@
             android:background="@drawable/green_button"
             android:elevation="@dimen/default_elevation"
             android:stateListAnimator="@anim/fab_animation"
-            android:drawableLeft="@drawable/ic_checkbox_blank_circle_white_24dp"
-            android:drawableStart="@drawable/ic_checkbox_blank_circle_white_24dp"
+            android:drawableLeft="@drawable/ic_play_white_24dp"
+            android:drawableStart="@drawable/ic_play_white_24dp"
             android:drawablePadding="15dp"
             android:paddingLeft="120dp"
-            android:paddingRight="100dp"/>
+            android:paddingRight="120dp"/>
 
     </LinearLayout>
 </RelativeLayout>

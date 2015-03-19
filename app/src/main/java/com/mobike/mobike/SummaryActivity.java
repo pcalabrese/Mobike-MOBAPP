@@ -54,6 +54,8 @@ public class SummaryActivity extends ActionBarActivity {
     private static final String UploadURL = "http://mobike.ddns.net/SRV/routes/create";
     private static final String DEFAULT_ACCOUNT_NAME = "no account";
     public static final String ROUTE_ID = "com.mobike.mobike.ROUTE_ID";
+    public static final String ROUTE_NAME = "com.mobike.mobike.route_name";
+    public static final String ROUTE_LOCATION = "com.mobike.mobike.route_location";
     private  EditText routeNameText, routeDescriptionText, routeDifficulty, routeBends, routeType, routeStartLocation, routeEndLocation;
     private TextView length, duration;
     private long durationInSeconds;
@@ -253,7 +255,11 @@ public class SummaryActivity extends ActionBarActivity {
             finish();
         else if (requestCode == REVIEW_REQUEST) {
             Intent intent = new Intent(this, ShareActivity.class);
-            intent.putExtra(ROUTE_ID, routeID);
+            Bundle bundle = new Bundle();
+            bundle.putString(ROUTE_ID, routeID);
+            bundle.putString(ROUTE_NAME, routeName);
+            bundle.putString(ROUTE_LOCATION, endLocation);
+            intent.putExtras(bundle);
             startActivityForResult(intent, SummaryActivity.SHARE_REQUEST);
         }
     }

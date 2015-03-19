@@ -46,7 +46,7 @@ public class GPSDatabase
             FIELD_LAT+" VARCHAR NOT NULL, "+ FIELD_LNG+" VARCHAR NOT NULL, "+FIELD_ALT +" VARCHAR, " +
             FIELD_TIME+" INTEGER, " + FIELD_DIST + " REAL);";
 
-    private final String staticMapURL = "https://maps.googleapis.com/maps/api/staticmap?size=100x100&path=weight:5%7Ccolor:0xff0000ff%7Cenc:";
+    private final String staticMapURL = "https://maps.googleapis.com/maps/api/staticmap?&path=weight:5%7Ccolor:0xff0000ff%7Cenc:";
     private final int maxEncodedPoints = 100;
     private final String TAG = "GPSDatabase";
 
@@ -451,6 +451,6 @@ public class GPSDatabase
                     result.add(input.get(i));
             }
         }
-        return staticMapURL + PolyUtil.encode(result);
+        return staticMapURL + PolyUtil.encode(result) + "&size=100x100";
     }
 }

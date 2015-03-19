@@ -6,16 +6,31 @@
 
     <!-- i bottoni facebook e google+ sono indicativi, sono da sostituire -->
 
+    <Button
+        android:id="@+id/facebook_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="60dp"
+        android:padding="5dp"
+        android:text="Facebook"
+        android:textColor="@color/white"
+        android:layout_centerInParent="true"
+        android:drawableLeft="@drawable/com_facebook_inverse_icon"
+        android:drawableStart="@drawable/com_facebook_inverse_icon"
+        android:drawablePadding="10dp"
+        android:background="@drawable/com_facebook_button_like_background"
+        android:gravity="center_vertical"/>
+
     <Button android:text="@string/share"
         android:id="@+id/share_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:layout_marginTop="50dp"
+        android:layout_margin="20dp"
         android:paddingRight="20dp"
         android:paddingLeft="20dp"
-        android:layout_centerInParent="true"
-        android:onClick="buttonPressed"
+        android:layout_below="@+id/facebook_share"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/blue_button"/>
 
     <TextView
@@ -24,7 +39,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:autoLink="web"
-        android:layout_above="@id/share_button"
+        android:layout_above="@id/facebook_share"
         android:layout_margin="10dp"/>
 
     <TextView
@@ -38,13 +53,14 @@
         android:textColor="@color/black"
         android:layout_above="@id/url_textview"/>
 
-    <Button android:text="@string/record_new_route"
+    <Button
+        android:id="@+id/new_route_button"
+        android:text="@string/record_new_route"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:textColor="@color/white"
         android:layout_alignParentBottom="true"
-        android:onClick="recordNewRoute"
         android:background="@drawable/blue_button"/>
 
 </RelativeLayout>

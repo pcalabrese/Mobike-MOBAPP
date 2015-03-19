@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.Route;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -241,7 +242,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
         JSONObject jsonRoute;
         JSONArray json;
-        String name, description, creator, duration, length, gpx, difficulty, bends, type; // ora type non c'è nel json
+        String name, id, description, creator, duration, length, difficulty, bends, type, thumbnailURL, startLocation, endLocation; // ora type non c'è nel json
+        int rating, ratingNumber;
         Bitmap map;
 
         try {
@@ -250,17 +252,21 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 jsonRoute = json.getJSONObject(i);
                 name = jsonRoute.getString("name");
                 name = name.substring(0,1).toUpperCase() + name.substring(1);
+                id = jsonRoute.getInt("routeId") + "";
                 description = jsonRoute.getString("description");
-                creator = jsonRoute.getString("creatorEmail");
+                creator = jsonRoute.getJSONObject("owner").getString("nickname");
                 length = jsonRoute.getDouble("length") + "";
                 duration = jsonRoute.getInt("duration") + "";
-                map = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.staticmap);
-                gpx = jsonRoute.getString("url");
                 difficulty = jsonRoute.getInt("difficulty") + "";
                 bends = jsonRoute.getInt("bends") + "";
-                type = "DefaultRouteType";
-                String id = jsonRoute.getInt("id") + "";
-                arrayList.add(new Route(name, description, creator, length, duration, map, gpx, difficulty, bends, type, id));
+                type = jsonRoute.getString("type");
+                rating = jsonRoute.getInt("rating");
+                ratingNumber = jsonRoute.getInt("ratingNumber");
+                thumbnailURL = jsonRoute.getString("imgUrl");
+                startLocation = jsonRoute.getString("startLocation");
+                endLocation = jsonRoute.getString("endLocation");
+
+                arrayList.add(new Route(name, id, description, creator, length, duration, difficulty, bends, type, thumbnailURL, startLocation, endLocation, rating, ratingNumber));
             }
         }catch(JSONException e){e.printStackTrace();}
 
@@ -282,7 +288,6 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 bundle.putString(ROUTE_CREATOR, route.getCreator());
                 bundle.putString(ROUTE_LENGTH, route.getLength());
                 bundle.putString(ROUTE_DURATION, route.getDuration());
-                bundle.putString(ROUTE_GPX, route.getGpx());
                 bundle.putString(ROUTE_DIFFICULTY, route.getDifficulty());
                 bundle.putString(ROUTE_BENDS, route.getBends());
                 bundle.putString(ROUTE_TYPE, route.getType());
@@ -395,8 +400,8 @@ class RouteAdapter extends ArrayAdapter<Route> {
             TextView length = (TextView) v.findViewById(R.id.route_length);
             TextView duration = (TextView) v.findViewById(R.id.route_duration);
             TextView creator = (TextView) v.findViewById(R.id.route_creator);
-            //TextView type = (TextView) v.findViewById(R.id.route_type);
-            ImageView imageView = (ImageView) v.findViewById(R.id.route_image);
+            ImageView type = (ImageView) v.findViewById(R.id.route_type);
+            ImageView thumbnailView = (ImageView) v.findViewById(R.id.route_image);
 
             //Picasso.with(context).load(p.getMap()).into(imageView);
 
@@ -410,10 +415,10 @@ class RouteAdapter extends ArrayAdapter<Route> {
             }
             if (creator != null)
                 creator.setText(p.getCreator());
-            //if (type != null)
-                //type.setText(p.getType());
-            if (imageView != null)
-                imageView.setImageBitmap(p.getMap());
+            if (type != null)
+                type.setImageResource(p.getTypeColor());
+            if (thumbnailView != null)
+                Picasso.with(context).load(p.getThumbnailURL()).into(thumbnailView);
         }
 
         return v;

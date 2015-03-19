@@ -3,16 +3,24 @@ package com.mobike.mobike;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
+import com.facebook.UiLifecycleHelper;
+import com.facebook.widget.FacebookDialog;
 
-public class ShareActivity extends ActionBarActivity {
 
-    private String shareURL;
+public class ShareActivity extends ActionBarActivity implements View.OnClickListener {
+
+    private String shareURL, routeName, location;
     private TextView urlTextView;
+    private UiLifecycleHelper uiHelper;
+
+    private static final String TAG = "ShareActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +28,20 @@ public class ShareActivity extends ActionBarActivity {
         setContentView(R.layout.activity_share);
         urlTextView = (TextView) findViewById(R.id.url_textview);
 
-        Intent intent = getIntent();
-        shareURL = "http://mobike.ddns.net/WAPP/itineraries/" + intent.getStringExtra(SummaryActivity.ROUTE_ID);
+        Bundle bundle = getIntent().getExtras();
+        shareURL = "http://mobike.ddns.net/WAPP/itineraries/" + bundle.getString(SummaryActivity.ROUTE_ID);
+        routeName = bundle.getString(SummaryActivity.ROUTE_NAME);
+        location = bundle.getString(SummaryActivity.ROUTE_LOCATION);
 
         urlTextView.setText(shareURL);
+
+        ((Button) findViewById(R.id.share_button)).setOnClickListener(this);
+        ((Button) findViewById(R.id.facebook_share)).setOnClickListener(this);
+        ((Button) findViewById(R.id.new_route_button)).setOnClickListener(this);
+
+        //facebook share dialog callbacks
+        uiHelper = new UiLifecycleHelper(this, null);
+        uiHelper.onCreate(savedInstanceState);
     }
 
 
@@ -49,16 +67,89 @@ public class ShareActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.new_route_button:
+                recordNewRoute(view);
+                break;
+            case R.id.share_button:
+                share(view);
+                break;
+            case R.id.facebook_share:
+                facebookShareDialog();
+                break;
+        }
+    }
+
     // return to MapsActivity to record a new route
     public void recordNewRoute(View view) {
         finish();
     }
 
-    public void buttonPressed(View view) {
+    public void share(View view) {
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.shared_message) + " " + shareURL);
         startActivity(Intent.createChooser(intent, "Share"));
+    }
+
+    public void facebookShareDialog() {
+        GPSDatabase db = new GPSDatabase(this);
+        String thumbnailURL = db.getEncodedPolylineURL();
+        thumbnailURL = thumbnailURL.substring(0, thumbnailURL.length() - 7) + "400x400";
+        Log.v(TAG, "thumbnail facebook: " + thumbnailURL);
+        FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(this)
+                .setLink(shareURL)
+                .setPicture(thumbnailURL)
+                .setName(routeName)
+                .setCaption("MoBike")
+                .setDescription(getResources().getString(R.string.shared_message))
+                .setPlace(location)
+                .build();
+        uiHelper.trackPendingDialogCall(shareDialog.present());
+        db.close();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        uiHelper.onActivityResult(requestCode, resultCode, data, new FacebookDialog.Callback() {
+            @Override
+            public void onError(FacebookDialog.PendingCall pendingCall, Exception error, Bundle data) {
+                Log.e(TAG, String.format("Error: %s", error.toString()));
+            }
+
+            @Override
+            public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data) {
+                Log.i(TAG, "Success!");
+            }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        uiHelper.onResume();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        uiHelper.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        uiHelper.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        uiHelper.onDestroy();
     }
 }

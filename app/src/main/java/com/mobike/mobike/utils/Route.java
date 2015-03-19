@@ -2,25 +2,34 @@ package com.mobike.mobike.utils;
 
 import android.graphics.Bitmap;
 
+import com.mobike.mobike.R;
+
 /**
  * Created by Andrea-PC on 07/02/2015.
  */
 public class Route {
-    private String name, description, creator, length, duration, gpx, difficulty, bends, type, id;
-    private Bitmap map;
+    private String name, id, description, creator, length, duration, gpx, difficulty, bends, type, thumbnailURL, startLocation, endLocation;
+    private int rating, ratingNumber;
+    public static final String MOUNTAIN = "mountain";
+    public static final String PLAIN = "plain";
+    public static final String COAST = "coast";
+    public static final String HILL = "hill";
 
-    public Route(String name, String description, String creator, String length, String duration, Bitmap map, String gpx, String difficulty, String bends, String type, String id) {
+    public Route(String name, String id, String description, String creator, String length, String duration, String difficulty, String bends, String type, String thumbnailURL, String startLocation, String endLocation, int rating, int ratingNumber) {
         this.name = name;
+        this.id = id;
         this.description = description;
         this.creator = creator;
         this.length = length;
         this.duration = duration;
-        this.map = map;
-        this.gpx = gpx;
         this.difficulty = difficulty;
         this.bends = bends;
         this.type = type;
-        this.id = id;
+        this.thumbnailURL = thumbnailURL;
+        this.startLocation = startLocation;
+        this.endLocation = endLocation;
+        this.rating = rating;
+        this.ratingNumber = ratingNumber;
     }
 
     public String getName() { return name; }
@@ -33,9 +42,7 @@ public class Route {
 
     public String getDuration() { return duration; }
 
-    public Bitmap getMap() { return map; }
-
-    public String getGpx() { return gpx; }
+    public String getThumbnailURL() { return thumbnailURL; }
 
     public String getDifficulty() { return difficulty; }
 
@@ -43,9 +50,28 @@ public class Route {
 
     public String getType() { return type; }
 
+    public int getTypeColor() {
+        String t = type.toLowerCase();
+
+        if (t.equals(MOUNTAIN))
+            return R.color.routeMountain;
+        else if (t.equals(PLAIN))
+            return R.color.routePlain;
+        else if (t.equals(HILL))
+            return R.color.routeHill;
+        else if (t.equals(COAST))
+            return R.color.routeCoast;
+
+        return R.color.routePlain;
+    }
+
     public String getID() { return id; }
 
-    public void setID(String id) {
-        this.id = id;
-    }
+    public String getStartLocation() { return startLocation; }
+
+    public String getEndLocation() { return endLocation; }
+
+    public int getRating() { return rating; }
+
+    public int getRatingNumber() { return ratingNumber; }
 }

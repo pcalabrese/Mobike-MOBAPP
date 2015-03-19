@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="facebook_app_id">613824922094851</string>
 
     <string name="app_name">MoBike</string>
     <string name="action_settings">Settings</string>
@@ -13,9 +14,9 @@
     <string name="save">Save</string>
     <string name="title_activity_share">Share</string>
     <string name="record_new_route">Record new route</string>
-    <string name="share">Share the route!</string>
+    <string name="share">Share</string>
     <string name="share_textview">You can visualize the route at this URL:</string>
-    <string name="shared_message">Hey! Look at motorcyle trip I just had at </string>
+    <string name="shared_message">Hey! Look at motorcyle trip I just had </string>
     <string name="uploading_toast">Uplaoding...</string>
     <string name="logging_in">Logging in...</string>
     <string name="title_activity_main">Mobike</string>

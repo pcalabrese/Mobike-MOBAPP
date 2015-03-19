@@ -35,6 +35,7 @@
     <color name="material_green_dark">#2E7D32</color>
     <color name="material_red">#F44336</color>
     <color name="material_red_dark">#C62828</color>
+    <color name="material_grey">#9E9E9E</color>
 
     <color name="grigio_trasparente">#47000000</color>
 

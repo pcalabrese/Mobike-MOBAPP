@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/declined_event_textview"
+    android:text="Declined"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:textStyle="bold"
+    android:textSize="24sp"
+    android:textColor="@color/white"
+    android:background="@color/colorPrimary"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:paddingRight="40dp"
+    android:paddingLeft="40dp"
+    android:gravity="center"
+    android:drawableLeft="@drawable/material_red_close48dp"/>

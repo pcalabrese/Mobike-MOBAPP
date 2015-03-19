@@ -2,6 +2,7 @@ package com.mobike.mobike;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -355,12 +356,9 @@ public class GPSDatabase
      * This method gets a gpx file and returns the list of the TrackPoints in that file.
      * @param gpxString A string representing a gpx file.
      * @return A list of LatLng objects.
-     * @throws IOException when there is something wrong.
      */
-    public ArrayList<LatLng> gpxToMapPoints(String gpxString) throws IOException {
+    public ArrayList<LatLng> gpxToMapPoints(String gpxString) {
         ArrayList<LatLng> list = new ArrayList<>();
-        BufferedReader bufReader = new BufferedReader(new StringReader(gpxString));
-        String line;
         double latitude;
         double longitude;
         LatLng couple;
@@ -393,18 +391,28 @@ public class GPSDatabase
     public JSONObject exportRouteInJson(String email, String name, String description, String difficulty, String bends, String type, String startLocation, String endLocation){
         JSONObject jsonObject = new JSONObject();
         try{
-            jsonObject.put("creatorEmail", email);
-            jsonObject.put("description", description);
-            jsonObject.put("duration", getTotalDuration());
-            jsonObject.put("length", getTotalLength());
             jsonObject.put("name", name);
-            jsonObject.put("gpxString", getTableInGPX(email, name, description));
+            jsonObject.put("description", description);
+            SharedPreferences sharedPreferences = context.getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
+            String id = sharedPreferences.getString(LoginActivity.ID, "");
+            String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
+            JSONObject creator = new JSONObject();
+            creator.put("ID", id);
+            creator.put("nickname", nickname);
+            jsonObject.put("creator", creator);
+            //creation date
+            String creationDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+            jsonObject.put("creationDate", creationDate);
+            jsonObject.put("length", getTotalLength());
+            jsonObject.put("duration", getTotalDuration());
             jsonObject.put("difficulty", difficulty);
             jsonObject.put("bends", bends);
             jsonObject.put("type", type);
-            jsonObject.put("imgUrl", getEncodedPolylineURL());
             jsonObject.put("startLocation", startLocation);
             jsonObject.put("endLocation", endLocation);
+            jsonObject.put("imgUrl", getEncodedPolylineURL());
+            jsonObject.put("gpxString", getTableInGPX(email, name, description));
+
             Log.v(TAG, "imgUrl" + getEncodedPolylineURL());
         }
         catch(JSONException e){/*not implemented yet*/ }

@@ -23,7 +23,7 @@ public class UploadEventTask extends AsyncTask<String, Void, String> {
     private Event event;
     private Context context;
 
-    private final static String UploadEventURL = "qualcosa";
+    private final static String UploadEventURL = "http://mobike.ddns.net/SRV/events/create";
     private final static String TAG = "UploadEventTask";
 
     public UploadEventTask(Context context, Event event) {

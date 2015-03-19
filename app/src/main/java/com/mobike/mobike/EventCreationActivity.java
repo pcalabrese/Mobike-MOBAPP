@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
@@ -24,14 +25,18 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.mobike.mobike.network.HttpGetTask;
+import com.mobike.mobike.network.UploadEventTask;
 import com.mobike.mobike.utils.Event;
+import com.mobike.mobike.utils.Route;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 
 public class EventCreationActivity extends ActionBarActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, HttpGetTask.HttpGet {
@@ -73,20 +78,17 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 break;
             case R.id.create:
                 //create and send event
-                String name, description, startLocation, invited;
-                name = ((TextView) findViewById(R.id.name)).getText().toString();
-                description = ((TextView) findViewById(R.id.description)).getText().toString();
-                startLocation = ((TextView) findViewById(R.id.start_location)).getText().toString();
+                String name, description, startLocation, date, time, invited;
+                name = ((EditText) findViewById(R.id.name)).getText().toString();
+                description = ((EditText) findViewById(R.id.description)).getText().toString();
+                startLocation = ((EditText) findViewById(R.id.start_location)).getText().toString();
                 invited = ((MultiAutoCompleteTextView) findViewById(R.id.invite)).getText().toString();
-                Log.v(TAG, "invited: " + invited);
-                invited = invited.replaceAll(", ", "\n");
-                Log.v(TAG, "invited: " + invited);
-                SharedPreferences sharedPref = getSharedPreferences(LoginActivity.ID, Context.MODE_PRIVATE);
-                String nickname = sharedPref.getString(LoginActivity.NICKNAME, "");
+                date = ((TextView) findViewById(R.id.date)).getText().toString();
+                time = ((TextView) findViewById(R.id.time)).getText().toString();
 
-                //Event event = new Event(name, startDate + " " + startTime, nickname, description, routeID, startLocation, creationDate, invited);
-            //    new UploadEventTask(this, event).execute();
-                finish();
+                if (name.length() == 0 || description.length() == 0 || startLocation.length() == 0 || invited.length() == 0
+                        || date.length() == 0 || time.length() == 0)
+                    createEvent();
                 break;
             case R.id.pick_date:
                 //create PickDateDialog and display date in date text view
@@ -116,16 +118,34 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         }
     }
 
+    public void createEvent() {
+        String name, description, startLocation, invited, creationDate;
+        name = ((EditText) findViewById(R.id.name)).getText().toString();
+        description = ((EditText) findViewById(R.id.description)).getText().toString();
+        startLocation = ((EditText) findViewById(R.id.start_location)).getText().toString();
+        invited = ((MultiAutoCompleteTextView) findViewById(R.id.invite)).getText().toString();
+        Log.v(TAG, "invited: " + invited);
+        invited = invited.replaceAll(", ", "\n");
+        Log.v(TAG, "invited: " + invited);
+        SharedPreferences sharedPref = getSharedPreferences(LoginActivity.ID, Context.MODE_PRIVATE);
+        String nickname = sharedPref.getString(LoginActivity.NICKNAME, "");
+        creationDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+
+        Event event = new Event(name, description, nickname, startDate + " " + startTime, startLocation, creationDate, String.valueOf(routeID), invited);
+        new UploadEventTask(this, event).execute();
+        finish();
+    }
+
     public void onDateSet(DatePicker view, int year, int month, int day) {
         TextView dateText = (TextView) findViewById(R.id.date);
         dateText.setText(String.format("%02d", day) + "/" + String.format("%02d", month+1) + "/" + String.format("%04d", year));
-        startDate = String.format("%02d", day) + "/" + String.format("%02d", month+1) + "/" + String.format("%04d", year);
+        startDate = String.format("%04d", year) + "/" + String.format("%02d", month+1) + "/" + String.format("%02d", day);
     }
 
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         TextView timeText = (TextView) findViewById(R.id.time);
         timeText.setText(String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute));
-        startTime = String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute);
+        startTime = String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute) + ":00";
     }
 
     public void downloadUsers() {
@@ -140,8 +160,8 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 JSONObject user = array.getJSONObject(i);
                 String name = user.getString("nickname");
                 userList.add(name);
-                setUsersHints(userList);
             }
+            setUsersHints(userList);
         }catch(JSONException e)
         { e.printStackTrace();}
     }
@@ -171,7 +191,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 ((TextView) findViewById(R.id.route_length)).setText(bundle.getString(SearchFragment.ROUTE_LENGTH));
                 ((TextView) findViewById(R.id.route_duration)).setText(bundle.getString(SearchFragment.ROUTE_DURATION));
                 ((TextView) findViewById(R.id.route_creator)).setText(bundle.getString(SearchFragment.ROUTE_CREATOR));
-                //((TextView) findViewById(R.id.route_type)).setText(bundle.getString(SearchFragment.ROUTE_TYPE));
+                ((ImageView) findViewById(R.id.route_type)).setImageResource(Route.getStaticTypeColor(bundle.getString(SearchFragment.ROUTE_TYPE)));
                 ((ImageView) findViewById(R.id.route_image)).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.staticmap));
                 Log.v(TAG, "route name: " + bundle.getString(SearchFragment.ROUTE_NAME));
             }

@@ -74,4 +74,19 @@ public class Route {
     public int getRating() { return rating; }
 
     public int getRatingNumber() { return ratingNumber; }
+
+    public static int getStaticTypeColor(String type) {
+        String t = type.toLowerCase();
+
+        if (t.equals(MOUNTAIN))
+            return R.color.routeMountain;
+        else if (t.equals(PLAIN))
+            return R.color.routePlain;
+        else if (t.equals(HILL))
+            return R.color.routeHill;
+        else if (t.equals(COAST))
+            return R.color.routeCoast;
+
+        return R.color.routePlain;
+    }
 }

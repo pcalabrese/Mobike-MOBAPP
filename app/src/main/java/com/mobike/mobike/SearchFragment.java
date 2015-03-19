@@ -75,7 +75,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_TYPE = "com.mobike.mobike.SearchFragment.route_type";
 
     public static final String downloadAllRoutesURL = "http://mobike.ddns.net/SRV/routes/retrieveall";
-    public static final String downloadUserRoutesURL = "qualcosa";
+    public static final String downloadUserRoutesURL = "http://mobike.ddns.net/SRV/routes/retrieve";
 
     /**
      * Use this factory method to create a new instance of
@@ -314,6 +314,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         }
     }
 
+    @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == EventCreationActivity.ROUTE_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {

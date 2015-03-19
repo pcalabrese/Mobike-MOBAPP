@@ -50,6 +50,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    public static final String EVENT_ID = "com.mobike.mobike.EevntsFragment.event_id";
+    public static final String EVENT_STATE = "com.mobike.mobike.EevntsFragment.event_state";
     public static final String EVENT_NAME = "com.mobike.mobike.EventsFragment.event_name";
     public static final String EVENT_DATE = "com.mobike.mobike.EventsFragment.event_date";
     public static final String EVENT_CREATOR = "com.mobike.mobike.EventsFragment.event_creator";
@@ -60,7 +62,7 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String EVENT_CREATION_DATE = "com.mobike.mobike.EventsFragment.event_creation_date";
 
     public static final String downloadAllEventsURL = "http://mobike.ddns.net/SRV/events/retrieveall";
-    public static final String downloadUserEventsURL = "";
+    public static final String downloadUserEventsURL = "http://mobike.ddns.net/SRV/events/retrieve";
     public static final String downloadInvitedEventsURL = "";
 
     private Boolean initialSpinner = true, firstTime;
@@ -286,11 +288,9 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 Event event = (Event) adapterView.getAdapter().getItem(position);
                 Intent intent = new Intent(getActivity(), EventActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString(EVENT_NAME, event.getName());
-                bundle.putString(EVENT_DATE, event.getStartDate());
-                bundle.putString(EVENT_CREATOR, event.getCreator());
+                bundle.putString(EVENT_ID, event.getId());
+                bundle.putInt(EVENT_STATE, event.getState());
                 bundle.putString(ROUTE_ID, event.getRouteID());
-                bundle.putString(EVENT_START_LOCATION, event.getStartLocation());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }

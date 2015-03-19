@@ -8,6 +8,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -23,7 +26,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.network.DownloadGpxTask;
 import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.CustomMapFragment;
+import com.mobike.mobike.utils.Event;
 import com.mobike.mobike.utils.Route;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,12 +40,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class EventActivity extends ActionBarActivity implements DownloadGpxTask.GpxInterface, HttpGetTask.HttpGet {
-    public static final String ROUTE_URL = "http://mobike.ddns.net/SRV/routes/retrieve/";
+public class EventActivity extends ActionBarActivity implements HttpGetTask.HttpGet, View.OnClickListener {
+    public static final String EVENT_URL = "http://mobike.ddns.net/SRV/events/retrieve/";
 
-    private TextView name, date, creator, description, invited, startLocation, creationDate;
+    private TextView mName, mDate, mCreator, mDescription, mInvited, mStartLocation, mCreationDate;
+    private ImageView mThumbnail;
     private Route route;
-    private String gpx;
+    private String gpx, id, routeID;
+    private int state;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline routePoly; // the route
@@ -52,7 +59,7 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event);
-        setUpMapIfNeeded();
+        //setUpMapIfNeeded();
 
         getSupportActionBar().hide();
 
@@ -60,44 +67,80 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
          in a new RouteActivity (at the pressure of a button)
          */
         Bundle bundle = getIntent().getExtras();
-        name = (TextView) findViewById(R.id.event_name);
-        date = (TextView) findViewById(R.id.event_date);
-        creator = (TextView) findViewById(R.id.event_creator);
-        description = (TextView) findViewById(R.id.event_description);
-        invited = (TextView) findViewById(R.id.event_invited);
-        startLocation = (TextView) findViewById(R.id.start_location);
-        creationDate = (TextView) findViewById(R.id.creation_date);
+        mName = (TextView) findViewById(R.id.event_name);
+        mDate = (TextView) findViewById(R.id.event_date);
+        mCreator = (TextView) findViewById(R.id.event_creator);
+        mDescription = (TextView) findViewById(R.id.event_description);
+        mInvited = (TextView) findViewById(R.id.event_invited);
+        mStartLocation = (TextView) findViewById(R.id.start_location);
+        mCreationDate = (TextView) findViewById(R.id.creation_date);
+        mThumbnail = (ImageView) findViewById(R.id.event_map);
 
-        // displays event's details in textViews
-/*        Event event = (Event) bundle.getParcelable(EventsFragment.EVENT);
-        name.setText(event.getName());
-        date.setText(event.getDate());
-        creator.setText("Created by " + event.getCreator());
-        description.setText(event.getDescription());
-        invited.setText(event.getInvited().toString());
-        startLocation.setText("Start location: " + event.getStartLocation());
-        creationDate.setText("Created on " + event.getCreationDate()); */
+        state = bundle.getInt(EventsFragment.EVENT_STATE);
+        id = bundle.getString(EventsFragment.EVENT_ID);
+        routeID = bundle.getString(EventsFragment.ROUTE_ID);
 
-        Date mDate = null, mDateCreation = null;
-        SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        try {
-            mDate = s1.parse(bundle.getString(EventsFragment.EVENT_DATE));
-            mDateCreation = s1.parse(bundle.getString(EventsFragment.EVENT_CREATION_DATE));
-        } catch (ParseException e ) { }
+        //new HttpGetTask(this).execute(ROUTE_URL + bundle.getString(EventsFragment.ROUTE_ID));
+        //new DownloadGpxTask(this).execute(bundle.getString(EventsFragment.ROUTE_ID));
+        new HttpGetTask(this).execute(EVENT_URL + id);
 
-        name.setText(bundle.getString(EventsFragment.EVENT_NAME));
-        date.setText(new SimpleDateFormat("EEEE, d MMMM yyyy\nkk:mm").format(mDate));
-        creator.setText(bundle.getString(EventsFragment.EVENT_CREATOR));
-        description.setText(bundle.getString(EventsFragment.EVENT_DESCRIPTION));
-        invited.setText(bundle.getString(EventsFragment.EVENT_INVITED));
-        startLocation.setText(bundle.getString(EventsFragment.EVENT_START_LOCATION));
-        creationDate.setText(new SimpleDateFormat("EEEE, d MMMM yyyy").format(mDateCreation));
+        //inflate dei giusto button per accettare o declinare l'invito
+        LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.button_layout);
 
-        new HttpGetTask(this).execute(ROUTE_URL + bundle.getString(EventsFragment.ROUTE_ID));
-        new DownloadGpxTask(this).execute(bundle.getString(EventsFragment.ROUTE_ID));
+        if (state == Event.INVITED) {
+            Button accept = (Button) getLayoutInflater().inflate(R.layout.accept_button, buttonLayout, false);
+            Button decline = (Button) getLayoutInflater().inflate(R.layout.decline_button, buttonLayout, false);
+            buttonLayout.addView(accept);
+            buttonLayout.addView(decline);
+            accept.setOnClickListener(this);
+            decline.setOnClickListener(this);
+        } else if (state == Event.ACCEPTED) {
+            TextView accepted = (TextView) getLayoutInflater().inflate(R.layout.accepted_textview, buttonLayout, false);
+            buttonLayout.addView(accepted);
+        } else if (state == Event.REFUSED) {
+            TextView declined = (TextView) getLayoutInflater().inflate(R.layout.declined_textview, buttonLayout, false);
+            buttonLayout.addView(declined);
+        }
+
     }
 
-    @Override
+
+    public void setResult(String result) {
+        String name="", date="", creator="", description="", accepted="", invited="", refused="", startLocation="", creationDate="", thumbnailURL="";
+        JSONObject jsonEvent;
+
+        try {
+            jsonEvent = new JSONObject(result);
+            name = jsonEvent.getString("name");
+            name = name.substring(0,1).toUpperCase() + name.substring(1);
+            date = jsonEvent.getString("startDate");
+            creator = jsonEvent.getJSONObject("owner").getString("nickname");
+            description = jsonEvent.getString("description");
+            startLocation = jsonEvent.getString("startLocation");
+            creationDate = jsonEvent.getString("creationDate");
+            thumbnailURL = jsonEvent.getString("route imgUrl");
+        } catch (JSONException e) {}
+
+
+        Date eventDate = null, mDateCreation = null;
+        SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            eventDate = s1.parse(date);
+            mDateCreation = s1.parse(creationDate);
+        } catch (ParseException e ) { }
+
+        mName.setText(name);
+        mDate.setText(new SimpleDateFormat("EEEE, d MMMM yyyy\nkk:mm").format(eventDate));
+        mCreator.setText(creator);
+        mDescription.setText(description);
+        mInvited.setText(invited);
+        mStartLocation.setText(startLocation);
+        mCreationDate.setText(new SimpleDateFormat("EEEE, d MMMM yyyy").format(mDateCreation));
+        Picasso.with(this).load(thumbnailURL).into(mThumbnail);
+    }
+
+
+    /*@Override
     public void setGpx(String gpx) {
         this.gpx = gpx;
 
@@ -118,10 +161,10 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
         Log.v(TAG, "points size = " + points.size());
         Log.v(TAG, "setGpx(), gpx: " + gpx);
         Log.v(TAG, "setGpx()");
-    }
+    } */
 
     // set Route
-    public void setResult(String result) {
+    /*public void setResult(String result) {
         try{
             JSONObject jsonRoute = new JSONObject(result);
             String name = jsonRoute.getString("name");
@@ -141,7 +184,7 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
             e.printStackTrace();
         }
         Log.v(TAG, "setRoute()");
-    }
+    } */
 
     // method to finish current activity at the pressure of top left back button
     @Override
@@ -158,7 +201,7 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
     @Override
     protected void onResume() {
         super.onResume();
-        setUpMapIfNeeded();
+        //setUpMapIfNeeded();
     }
 
     /**
@@ -230,16 +273,42 @@ public class EventActivity extends ActionBarActivity implements DownloadGpxTask.
     public void displayRoute(View view) {
         Intent intent = new Intent(this, RouteActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString(SearchFragment.ROUTE_NAME, route.getName());
+        /*bundle.putString(SearchFragment.ROUTE_NAME, route.getName());
         bundle.putString(SearchFragment.ROUTE_DESCRIPTION, route.getDescription());
         bundle.putString(SearchFragment.ROUTE_CREATOR, route.getCreator());
         bundle.putString(SearchFragment.ROUTE_LENGTH, route.getLength());
         bundle.putString(SearchFragment.ROUTE_DURATION, route.getDuration());
         bundle.putString(SearchFragment.ROUTE_DIFFICULTY, route.getDifficulty());
         bundle.putString(SearchFragment.ROUTE_BENDS, route.getBends());
-        bundle.putString(SearchFragment.ROUTE_TYPE, route.getType());
-        bundle.putString(SearchFragment.ROUTE_ID, route.getID());
+        bundle.putString(SearchFragment.ROUTE_TYPE, route.getType()); */
+        bundle.putString(SearchFragment.ROUTE_ID, routeID);
         intent.putExtras(bundle);
         startActivity(intent);
+    }
+
+    @Override
+    public void onClick(View view) {
+        LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.button_layout);
+        switch (view.getId()) {
+            case R.id.accept_event_button:
+                // post per accettare l'invito
+
+                removeButtons();
+                TextView accepted = (TextView) getLayoutInflater().inflate(R.layout.accepted_textview, buttonLayout, false);
+                buttonLayout.addView(accepted);
+                break;
+            case R.id.decline_event_button:
+                // post per declinare l'invito
+
+                removeButtons();
+                TextView declined = (TextView) getLayoutInflater().inflate(R.layout.declined_textview, buttonLayout, false);
+                buttonLayout.addView(declined);
+                break;
+        }
+    }
+
+    private void removeButtons() {
+        ((Button) findViewById(R.id.accept_event_button)).setVisibility(View.GONE);
+        ((Button) findViewById(R.id.decline_event_button)).setVisibility(View.GONE);
     }
 }

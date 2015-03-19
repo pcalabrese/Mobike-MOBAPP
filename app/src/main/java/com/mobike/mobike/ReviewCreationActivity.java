@@ -32,9 +32,10 @@ public class ReviewCreationActivity extends ActionBarActivity implements View.On
 
         ((Button) findViewById(R.id.send)).setOnClickListener(this);
 
-        routeID = getIntent().getExtras().getString(SearchFragment.ROUTE_ID);
+        Bundle bundle = getIntent().getExtras();
+        routeID = bundle.getString(SearchFragment.ROUTE_ID);
 
-        if (getIntent().getExtras().getInt(SearchFragment.REQUEST_CODE) == SummaryActivity.REVIEW_REQUEST) {
+        if (bundle.getInt(SearchFragment.REQUEST_CODE) == SummaryActivity.REVIEW_REQUEST) {
             TextView mTextView = ((TextView) findViewById(R.id.review_text_view));
             mTextView.setText(getResources().getString(R.string.review_after_upload_text));
             LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -43,6 +44,11 @@ public class ReviewCreationActivity extends ActionBarActivity implements View.On
             int margin = (int)(dpValue * d); // margin in pixels
             llp.setMargins(margin, margin, margin, margin); // llp.setMargins(left, top, right, bottom);
             mTextView.setLayoutParams(llp);
+        }
+
+        if (bundle.getInt(SearchFragment.REQUEST_CODE) == RouteActivity.EDIT_REVIEW_REQUEST) {
+            ((RatingBar) findViewById(R.id.rating_bar)).setRating(Float.parseFloat(bundle.getString(RouteActivity.USER_RATE)));
+            ((EditText) findViewById(R.id.comment)).setText(bundle.getString(RouteActivity.USER_MESSAGE));
         }
     }
 

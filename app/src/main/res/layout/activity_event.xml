@@ -19,25 +19,27 @@
                 android:orientation="vertical">
 
                 <LinearLayout
+                    android:id="@+id/button_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:gravity="center">
 
-                    <Button
+                    <!--<Button
                         android:id="@+id/decline_event"
                         style="?android:attr/buttonBarButtonStyle"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@color/colorPrimary"
-                        android:drawableLeft="@drawable/close_red_48dp"
-                        android:drawableStart="@drawable/close_red_48dp"
+                        android:drawableLeft="@drawable/material_red_close48dp"
+                        android:drawableStart="@drawable/material_red_close48dp"
                         android:paddingBottom="8dp"
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
                         android:paddingTop="10dp"
                         android:text="@string/decline"
-                        android:textColor="@color/red" />
+                        android:textColor="@color/white" />
 
                     <Button
                         android:id="@+id/accept_event"
@@ -46,14 +48,14 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@color/colorPrimary"
-                        android:drawableLeft="@drawable/check_green_48dp"
-                        android:drawableStart="@drawable/check_green_48dp"
+                        android:drawableLeft="@drawable/material_green_check48dp"
+                        android:drawableStart="@drawable/material_green_check48dp"
                         android:paddingBottom="8dp"
                         android:paddingLeft="20dp"
                         android:paddingRight="20dp"
                         android:paddingTop="10dp"
                         android:text="@string/join"
-                        android:textColor="@color/lime" />
+                        android:textColor="@color/white" /> -->
 
                 </LinearLayout>
 
@@ -250,12 +252,17 @@
                     android:textStyle="italic" />
 
                 <!-- map whit the route associated with the event -->
-                <fragment
+                <!--<fragment
                     android:id="@+id/map"
                     android:name="com.mobike.mobike.utils.CustomMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
-                    tools:context="com.mobike.mobike.EventActivity" />
+                    tools:context="com.mobike.mobike.EventActivity" /> -->
+
+                <ImageView
+                    android:id="@+id/event_map"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp" />
 
             </LinearLayout>
 

@@ -41,14 +41,20 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.GpxInterface, View.OnClickListener, HttpGetTask.HttpGet {
+public class RouteActivity extends ActionBarActivity implements View.OnClickListener, HttpGetTask.HttpGet {
+    public static final String ROUTE_URL = "http://mobike.ddns.net/SRV/routes/retrieve/";
+
+    public static final String USER_RATE = "com.mobike.mobike.RouteActivity.user_rate";
+    public static final String USER_MESSAGE = "com.mobike.mobike.RouteActivity.user_message";
+    public static final int EDIT_REVIEW_REQUEST = 1;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline routePoly; // the polyline of the route
     private ArrayList<LatLng> points; // the points of the route
 
-    private TextView name, description, creator, length, duration, difficulty, bends, type;
-    private String gpx, routeID;
+    private TextView mName, mDescription, mCreator, mLength, mDuration, mDifficulty, mBends, mType, mRating, mRatingNumber;
+    private RatingBar mRatingBar;
+    private String routeID, userRate, userMessage;
     private boolean pickingRoute;
 
     private static final String TAG = "RouteActivity";
@@ -74,30 +80,23 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
 
         // get data from bundle and displays in textViews
         Bundle bundle = getIntent().getExtras();
-        name = (TextView) findViewById(R.id.route_name);
-        description = (TextView) findViewById(R.id.route_description);
-        creator = (TextView) findViewById(R.id.route_creator);
-        length = (TextView) findViewById(R.id.route_length);
-        duration = (TextView) findViewById(R.id.route_duration);
-        difficulty = (TextView) findViewById(R.id.route_difficulty);
-        bends = (TextView) findViewById(R.id.route_bends);
-        type = (TextView) findViewById(R.id.route_type);
-
-
-
-        name.setText(bundle.getString(SearchFragment.ROUTE_NAME));
-        description.setText(bundle.getString(SearchFragment.ROUTE_DESCRIPTION));
-        creator.setText(bundle.getString(SearchFragment.ROUTE_CREATOR));
-        length.setText(String.format("%.01f", Float.parseFloat(bundle.getString(SearchFragment.ROUTE_LENGTH))/1000) + " km");
-        int durationInSeconds = Integer.parseInt(bundle.getString(SearchFragment.ROUTE_DURATION));
-        duration.setText(String.valueOf(durationInSeconds/3600) + " h " + String.valueOf((durationInSeconds/60)%60) + " m " + String.valueOf(durationInSeconds%60) + " s");
-        difficulty.setText(bundle.getString(SearchFragment.ROUTE_DIFFICULTY));
-        bends.setText(bundle.getString(SearchFragment.ROUTE_BENDS));
-        type.setText(bundle.getString(SearchFragment.ROUTE_TYPE));
+        mName = (TextView) findViewById(R.id.route_name);
+        mDescription = (TextView) findViewById(R.id.route_description);
+        mCreator = (TextView) findViewById(R.id.route_creator);
+        mLength = (TextView) findViewById(R.id.route_length);
+        mDuration = (TextView) findViewById(R.id.route_duration);
+        mDifficulty = (TextView) findViewById(R.id.route_difficulty);
+        mBends = (TextView) findViewById(R.id.route_bends);
+        mType = (TextView) findViewById(R.id.route_type);
+        mRatingBar = (RatingBar) findViewById(R.id.rating_bar);
+        mRating = (TextView) findViewById(R.id.rating);
+        mRatingNumber = (TextView) findViewById(R.id.rating_number);
 
         routeID = bundle.getString(SearchFragment.ROUTE_ID);
-        new DownloadGpxTask(this).execute(routeID);
+
+        //new DownloadGpxTask(this).execute(routeID);
         //new HttpGetTask(this).execute(ALL_REVIEWS_URL + userID + routeID); //prendere lo userID dalle shared pref
+        new HttpGetTask(this).execute(ROUTE_URL + routeID);
     }
 
     // method to finish current activity at the pressure of top left back button
@@ -185,17 +184,12 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
         }
     }
 
-    @Override
     public void setGpx(String gpx) {
-        this.gpx = gpx;
 
         // get points from route_gpx ,set up the map and finally add the polyline of the route
         GPSDatabase db = new GPSDatabase(this);
         db.open();
-        try {
-            points = db.gpxToMapPoints(gpx);
-        } catch (IOException e) {
-        }
+        points = db.gpxToMapPoints(gpx);
         db.close();
 
         setUpMap();
@@ -210,11 +204,55 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
 
 
     public void setResult(String result) {
+        String name="", description="", creator="", length="", duration="", difficulty="", bends="", type="", gpx="";
+        int ratingNumber = 0;
+        double rating = 0;
+        JSONArray reviews = null;
+        JSONObject jsonRoute;
+
+        try {
+            jsonRoute = new JSONObject(result);
+            name = jsonRoute.getString("name");
+            name = name.substring(0,1).toUpperCase() + name.substring(1);
+            description = jsonRoute.getString("description");
+            creator = jsonRoute.getJSONObject("owner").getString("nickname");
+            length = jsonRoute.getDouble("length") + "";
+            duration = jsonRoute.getInt("duration") + "";
+            difficulty = jsonRoute.getInt("difficulty") + "";
+            bends = jsonRoute.getInt("bends") + "";
+            type = jsonRoute.getString("type");
+            gpx = jsonRoute.getString("gpxString");
+            reviews = jsonRoute.getJSONArray("reviewList");
+            rating = jsonRoute.getDouble("rating");
+            ratingNumber = jsonRoute.getInt("ratingNumber");
+            //startLocation = jsonRoute.getString("startLocation");
+            //endLocation = jsonRoute.getString("endLocation");
+        } catch (JSONException e) {}
+
+
+        mName.setText(name);
+        mDescription.setText(description);
+        mCreator.setText(creator);
+        mLength.setText(String.format("%.01f", Float.parseFloat(length)/1000) + " km");
+        int durationInSeconds = Integer.parseInt(duration);
+        mDuration.setText(String.valueOf(durationInSeconds/3600) + " h " + String.valueOf((durationInSeconds/60)%60) + " m " + String.valueOf(durationInSeconds%60) + " s");
+        mDifficulty.setText(difficulty);
+        mBends.setText(bends);
+        mType.setText(type);
+        setReviews(reviews);
+        setGpx(gpx);
+        mRating.setText(String.format("%0.1f", rating));
+        mRatingNumber.setText(ratingNumber + " reviews");
+        mRatingBar.setRating(Float.parseFloat(String.valueOf(rating)));
+
+    }
+
+
+
+    public void setReviews(JSONArray reviews) {
         SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.USER, MODE_PRIVATE);
         String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
-        JSONObject object;
         try {
-            object = new JSONObject(result);
             /* inflate di un eventuale recensione dell'utente (un file xml con la recensione, il bottone modifica e la linea di separazione
                 da aggiungere la linear layout con id "reviews_list"
             if (user ha una review) {
@@ -225,10 +263,9 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
             LinearLayout reviewsLayout = (LinearLayout) findViewById(R.id.reviews_list);
             boolean found = false;
 
-            JSONArray array = object.getJSONArray("reviews");
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject review = array.getJSONObject(i);
-                user = review.getString("user");
+            for (int i = 0; i < reviews.length(); i++) {
+                JSONObject review = reviews.getJSONObject(i);
+                user = review.getJSONObject("owner").getString("nickanme");
                 rate = review.getString("rate");
                 message = review.getString("message");
 
@@ -243,11 +280,14 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
                 } else {
                     //inflate della recensione dell'utente
                     found = true;
+                    userRate = rate;
+                    userMessage = message;
                     LinearLayout userReviewLayout = (LinearLayout) findViewById(R.id.user_review_layout);
                     View view = getLayoutInflater().inflate(R.layout.user_review_item, userReviewLayout, false);
                     ((TextView) view.findViewById(R.id.user)).setText(user);
                     ((RatingBar) view.findViewById(R.id.rating_bar)).setRating(Float.parseFloat(rate));
                     ((TextView) view.findViewById(R.id.review)).setText(message);
+                    ((Button) view.findViewById(R.id.edit_review)).setOnClickListener(this);
                     userReviewLayout.addView(view);
                 }
             }
@@ -270,23 +310,41 @@ public class RouteActivity extends ActionBarActivity implements DownloadGpxTask.
                 intent.putExtras(bundle);
                 startActivity(intent);
                 break;
+
             case R.id.pick_this_route_button:
                 Intent data = new Intent();
                 Bundle b = new Bundle();
                 b.putInt(SearchFragment.ROUTE_ID, Integer.parseInt(routeID));
-                b.putString(SearchFragment.ROUTE_NAME, name.getText().toString());
-                b.putString(SearchFragment.ROUTE_LENGTH, length.getText().toString());
-                b.putString(SearchFragment.ROUTE_DURATION, duration.getText().toString());
-                b.putString(SearchFragment.ROUTE_CREATOR, creator.getText().toString());
-                b.putString(SearchFragment.ROUTE_TYPE, type.getText().toString());
+                b.putString(SearchFragment.ROUTE_NAME, mName.getText().toString());
+                b.putString(SearchFragment.ROUTE_LENGTH, mLength.getText().toString());
+                b.putString(SearchFragment.ROUTE_DURATION, mDuration.getText().toString());
+                b.putString(SearchFragment.ROUTE_CREATOR, mCreator.getText().toString());
+                b.putString(SearchFragment.ROUTE_TYPE, mType.getText().toString());
                 data.putExtras(b);
                 setResult(RESULT_OK, data);
                 Log.v(TAG, "pick this route button pressed");
                 finish();
                 break;
+
             case R.id.edit_review:
                 //modifica la review esistente
+                View v = findViewById(R.id.user_review_item);
+
+                Intent ii = new Intent(this, ReviewCreationActivity.class);
+                Bundle bb = new Bundle();
+                bb.putString(SearchFragment.ROUTE_ID, routeID);
+                bb.putString(USER_RATE, userRate);
+                bb.putString(USER_MESSAGE, userMessage);
+                bb.putInt(SearchFragment.REQUEST_CODE, EDIT_REVIEW_REQUEST);
+                ii.putExtras(bb);
+                startActivityForResult(ii, EDIT_REVIEW_REQUEST);
                 break;
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == EDIT_REVIEW_REQUEST)
+            new HttpGetTask(this).execute(ROUTE_URL + routeID);
     }
 }

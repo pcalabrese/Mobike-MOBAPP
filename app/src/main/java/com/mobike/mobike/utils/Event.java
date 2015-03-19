@@ -40,6 +40,7 @@ public class Event {
         this.state = state;
     }
 
+    //costruttore per l'upload del nuovo evento
     public Event(String name, String description, String creator, String startDate, String startLocation, String creationDate, String routeID, String participants) {
         this.name = name;
         this.description = description;

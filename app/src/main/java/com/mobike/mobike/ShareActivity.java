@@ -1,6 +1,7 @@
 package com.mobike.mobike;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
+import com.google.android.gms.plus.PlusShare;
 
 
 public class ShareActivity extends ActionBarActivity implements View.OnClickListener {
@@ -37,6 +39,7 @@ public class ShareActivity extends ActionBarActivity implements View.OnClickList
 
         ((Button) findViewById(R.id.share_button)).setOnClickListener(this);
         ((Button) findViewById(R.id.facebook_share)).setOnClickListener(this);
+        ((Button) findViewById(R.id.google_plus_share)).setOnClickListener(this);
         ((Button) findViewById(R.id.new_route_button)).setOnClickListener(this);
 
         //facebook share dialog callbacks
@@ -79,6 +82,9 @@ public class ShareActivity extends ActionBarActivity implements View.OnClickList
             case R.id.facebook_share:
                 facebookShareDialog();
                 break;
+            case R.id.google_plus_share:
+                googleShareDialog();
+                break;
         }
     }
 
@@ -110,6 +116,20 @@ public class ShareActivity extends ActionBarActivity implements View.OnClickList
                 .build();
         uiHelper.trackPendingDialogCall(shareDialog.present());
         db.close();
+    }
+
+    private void googleShareDialog() {
+        GPSDatabase db = new GPSDatabase(this);
+        String thumbnailURL = db.getEncodedPolylineURL();
+        thumbnailURL = thumbnailURL.substring(0, thumbnailURL.length() - 7) + "400x400";
+        Intent shareIntent = new PlusShare.Builder(this)
+                .setType("text/plain")
+                .setText(getResources().getString(R.string.shared_message))
+                .setContentUrl(Uri.parse(shareURL))
+                .getIntent();
+
+        db.close();
+        startActivityForResult(shareIntent, 0);
     }
 
     @Override

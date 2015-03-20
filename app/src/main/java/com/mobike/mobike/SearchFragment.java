@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.mobike.mobike.network.HttpGetTask;
+import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.Route;
 import com.squareup.picasso.Picasso;
 
@@ -244,27 +245,29 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         JSONArray json;
         String name, id, description, creator, duration, length, difficulty, bends, type, thumbnailURL, startLocation, endLocation; // ora type non c'è nel json
         int rating, ratingNumber;
-        Bitmap map;
+        Crypter crypter = new Crypter();
 
+        if (result.length() == 0) return;
         try {
-            json = new JSONArray(result);
+            json = new JSONArray(crypter.decrypt(new JSONObject(result).getString("routes")));
+            Log.v(TAG, "json: " + json.toString());
             for (int i = 0; i< json.length(); i++) {
                 jsonRoute = json.getJSONObject(i);
                 name = jsonRoute.getString("name");
                 name = name.substring(0,1).toUpperCase() + name.substring(1);
-                id = jsonRoute.getInt("routeId") + "";
-                description = jsonRoute.getString("description");
+                id = jsonRoute.getInt("id") + "";
+                description = "";
                 creator = jsonRoute.getJSONObject("owner").getString("nickname");
                 length = jsonRoute.getDouble("length") + "";
                 duration = jsonRoute.getInt("duration") + "";
                 difficulty = jsonRoute.getInt("difficulty") + "";
                 bends = jsonRoute.getInt("bends") + "";
                 type = jsonRoute.getString("type");
-                rating = jsonRoute.getInt("rating");
-                ratingNumber = jsonRoute.getInt("ratingNumber");
-                thumbnailURL = jsonRoute.getString("imgUrl");
-                startLocation = jsonRoute.getString("startLocation");
-                endLocation = jsonRoute.getString("endLocation");
+                rating = jsonRoute.isNull("rating")? 0 : jsonRoute.getInt("rating");
+                ratingNumber = jsonRoute.isNull("ratingnumber")? 0 : jsonRoute.getInt("ratingnumber");
+                thumbnailURL = jsonRoute.isNull("imgUrl")? "https://maps.googleapis.com/maps/api/staticmap?size=100x100&path=weight:3%7Ccolor:0xff0000ff%7Cenc:aty~Fo|uiAkMnT_G`OYvIrDzKvG`OrH`NjE`OpDjS~BhRXd_@_Cpd@qHnc@ii@zw@cf@jnAqLdPw_@n|BrHfo@sHpd@kAtcAvGrqA{f@~eB" : jsonRoute.getString("imgUrl");
+                startLocation = jsonRoute.getString("startlocation");
+                endLocation = jsonRoute.getString("endlocation");
 
                 arrayList.add(new Route(name, id, description, creator, length, duration, difficulty, bends, type, thumbnailURL, startLocation, endLocation, rating, ratingNumber));
             }
@@ -284,7 +287,6 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 Bundle bundle = new Bundle();
                 bundle.putString(ROUTE_ID, route.getID());
                 bundle.putString(ROUTE_NAME, route.getName());
-                bundle.putString(ROUTE_DESCRIPTION, route.getDescription());
                 bundle.putString(ROUTE_CREATOR, route.getCreator());
                 bundle.putString(ROUTE_LENGTH, route.getLength());
                 bundle.putString(ROUTE_DURATION, route.getDuration());

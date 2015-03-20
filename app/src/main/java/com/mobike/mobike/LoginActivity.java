@@ -25,6 +25,7 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.mobike.mobike.network.LoginUserTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -186,8 +187,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
-            // new LoginUserTask(this, name, email).execute();
-            new LoginPostTask().execute();
+            new LoginUserTask(this, name, surname, email, imageURL).execute();
+            //new LoginPostTask().execute();
         } else
             Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
 

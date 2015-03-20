@@ -93,26 +93,36 @@ public class Event {
     }
 
     public JSONObject exportInJSON(int userID) {
-        JSONObject result = new JSONObject();
+        JSONObject result = new JSONObject(), event = new JSONObject(), user = new JSONObject();
+        Crypter crypter = new Crypter();
+
         try {
-            result.put("name", name);
-            result.put("description", description);
+            event.put("name", name);
+            event.put("description", description);
             JSONObject c = new JSONObject();
             c.put("nickname", creator);
-            c.put("userID", userID);
-            result.put("creator", c);
-            result.put("startDate", startDate);
-            result.put("startLocation", startLocation);
-            result.put("creationDate", creationDate);
-            result.put("routeID", routeID);
+            c.put("id", userID);
+            event.put("owner", c);
+            event.put("startdate", startDate);
+            event.put("startlocation", startLocation);
+            event.put("creationdate", creationDate);
+            JSONObject route = new JSONObject();
+            route.put("id", routeID);
+            event.put("route", route);
 
             // creo un JSONArray con gli invitati e lo metto nel campo "participants" dell'oggetto result (solo nickname)
             JSONArray array = new JSONArray();
             String[] invitedArray = participants.split("\n");
             for (int i = 0; i < invitedArray.length; i++)
                 array.put(new JSONObject().put("nickname", invitedArray[i]));
-            result.put("participants", array);
+            event.put("usersInvited", array);
+
+            user.put("id", userID);
+            user.put("nickname", creator);
+            result.put("event", crypter.encrypt(event.toString()));
+            result.put("user", crypter.encrypt(user.toString()));
         } catch (JSONException e) {}
+
         return result;
     }
 }

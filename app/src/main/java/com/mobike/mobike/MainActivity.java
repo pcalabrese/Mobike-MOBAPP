@@ -34,6 +34,13 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        /* VISUALIZZO ACTION BAR CON LOGO */
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.ic_launcher);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+
         //getSupportActionBar().hide();
 
         //new HttpGetTask(this).execute(EventsFragment.downloadInvitedEventsURL);

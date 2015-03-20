@@ -22,6 +22,7 @@ import android.widget.TextView;
 
 import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.CircleButton;
+import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.Event;
 
 import org.json.JSONArray;
@@ -255,9 +256,13 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         JSONArray json;
         String name, id, date, creator, routeID, startLocation, creationDate;
         int acceptedSize, invitedSize, refusedSize, state;
+        Crypter crypter = new Crypter();
 
+        Log.v(TAG, "result: " + result);
+
+        if (result.length() == 0) return;
         try {
-            json = new JSONArray(result);
+            json = new JSONArray(crypter.decrypt(new JSONObject(result).getString("events")));
             for (int i = 0; i < json.length(); i++) {
                 jsonEvent = json.getJSONObject(i);
                 name = jsonEvent.getString("name");

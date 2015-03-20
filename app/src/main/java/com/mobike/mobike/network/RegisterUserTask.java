@@ -64,7 +64,7 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
             urlConnection = (HttpURLConnection) u.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/json");
-            urlConnection.setRequestProperty("Accept", "text/plain");
+            urlConnection.setRequestProperty("Accept", "application/json");
             urlConnection.setReadTimeout(10000 /* milliseconds */);
             urlConnection.setConnectTimeout(15000 /* milliseconds */);
             urlConnection.setDoOutput(true);
@@ -75,12 +75,14 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
                 jsonObject.put("name", name);
                 jsonObject.put("surname", surname);
                 jsonObject.put("email", email);
-                jsonObject.put("imageURL", imageURL);
+                jsonObject.put("imgurl", imageURL);
                 jsonObject.put("nickname", nickname);
-                jsonObject.put("bike", bike);
+                jsonObject.put("bikemodel", bike);
                 jsonObject1.put("user", crypter.encrypt(jsonObject.toString()));
             }
             catch(JSONException e){/*not implemented yet*/ }
+            Log.v(TAG, "json: " + jsonObject.toString());
+            Log.v(TAG, "json criptato: " + jsonObject1.toString());
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
             out.write(jsonObject1.toString());
             out.close();
@@ -91,9 +93,12 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
                 JSONObject json;
                 try {
                     json = new JSONObject(crypter.decrypt((new JSONObject(response)).getString("user")));
-                    userID = json.getInt("userId") + "";
+                    userID = json.getInt("id") + "";
                     nickname = json.getString("nickname");
-                } catch (JSONException e) {}
+                } catch (JSONException e) {
+                    Log.v(TAG, "errore nel parsing del json di risposta");
+                }
+                Log.v(TAG, "userID: " + userID + ", nickname:" + nickname);
                 SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
                 editor.putInt(LoginActivity.ID, Integer.parseInt(userID));
@@ -105,6 +110,11 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
             }
             else {
                 // scrive un messaggio di errore con codice httpResult
+                BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));
+                String r;
+                r = br.readLine();
+                Log.v(TAG, "error: " + r);
+                br.close();
                 Log.v(TAG, " httpResult = " + httpResult);
                 return "Error code: " + httpResult;
             }

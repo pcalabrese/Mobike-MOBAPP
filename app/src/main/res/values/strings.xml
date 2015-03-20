@@ -100,5 +100,7 @@
     <string name="type">Type:</string>
     <string name="initial_length">0,0 km</string>
     <string name="initial_duration">0 h 0 m 0 s</string>
+    <string name="to">To</string>
+    <string name="from">From</string>
 
 </resources>

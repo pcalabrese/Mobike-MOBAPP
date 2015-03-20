@@ -23,20 +23,23 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 /**
  * Created by Andrea-PC on 09/03/2015.
  */
 public class LoginUserTask extends AsyncTask<String, Void, String> {
-    private String name, email;
+    private String name, surname, email, imgURL;
     private Context context;
     public static final String loginUserURL = "http://mobike.ddns.net/SRV/users/auth";
     private final static String TAG = "LoginUserTask";
 
-    public LoginUserTask(Context context, String name, String email) {
+    public LoginUserTask(Context context, String name, String surname, String email, String imgURL) {
         this.context = context;
         this.name = name;
+        this.surname = surname;
         this.email = email;
+        this.imgURL = imgURL;
     }
 
     @Override
@@ -51,6 +54,7 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
+        Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
         Log.v(TAG, result);
     }
 
@@ -59,7 +63,18 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
         String result = "";
         try {
             Crypter crypter = new Crypter();
-            URL u = new URL(loginUserURL + "?email=" + crypter.encrypt(email));
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("name", name);
+                jsonObject.put("surname", surname);
+                jsonObject.put("email", email);
+                jsonObject.put("imgurl", imgURL);
+            } catch (JSONException e) {}
+            Log.v(TAG, "json: " + jsonObject.toString());
+
+            String token = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
+            URL u = new URL(loginUserURL + "?token=" + token);
+            Log.v(TAG, "token = " + token);
             urlConnection = (HttpURLConnection) u.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.setRequestProperty("Accept", "application/json");
@@ -73,7 +88,7 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                 JSONObject json;
                 try {
                     json = new JSONObject(crypter.decrypt((new JSONObject(response)).getString("user")));
-                    userID = json.getInt("userId") + "";
+                    userID = json.getInt("id") + "";
                     nickname = json.getString("nickname");
                 } catch (JSONException e) {}
                 Log.v(TAG, "userID: " + userID);
@@ -84,16 +99,18 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                 editor.apply();
                 Intent intent = new Intent(context, MainActivity.class);
                 ((Activity) context).startActivityForResult(intent, LoginActivity.MAPS_REQUEST);
-                Toast.makeText(context, "Welcome  back" + name.substring(0,1).toUpperCase() + name.substring(1) + "!", Toast.LENGTH_SHORT).show();
-                return "";
+                return "Welcome  back " + name.substring(0,1).toUpperCase() + name.substring(1) + "!";
             }
-            else {
+            else if (httpResult == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 // l'utente non è registrato, fa partire la registrazione
                 Log.v(TAG, " httpResult = " + httpResult);
                 Intent intent = new Intent(context, NicknameActivity.class);
                 // uso startActivityForResult così se NicknameActivity termina esce dall'applicazione
                 // può terminare per due motivi, o termina la main activity o l'utente non inserisce il nickname
                 ((Activity) context).startActivityForResult(intent, LoginActivity.REGISTRATION_REQUEST);
+                return "User not registered: " + httpResult;
+            } else {
+                Log.v(TAG, " httpResult = " + httpResult);
                 return "Error code: " + httpResult;
             }
         } finally {

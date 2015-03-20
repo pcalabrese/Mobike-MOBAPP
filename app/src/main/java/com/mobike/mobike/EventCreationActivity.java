@@ -26,6 +26,7 @@ import android.widget.TimePicker;
 
 import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.network.UploadEventTask;
+import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.Event;
 import com.mobike.mobike.utils.Route;
 
@@ -33,6 +34,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,7 +57,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         getSupportActionBar().hide();
         setContentView(R.layout.activity_event_creation);
 
-        //downloadUsers();
+        downloadUsers();
 
         ((Button) findViewById(R.id.cancel)).setOnClickListener(this);
         ((Button) findViewById(R.id.pick_date)).setOnClickListener(this);
@@ -62,13 +65,13 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         ((Button) findViewById(R.id.create)).setOnClickListener(this);
         ((Button) findViewById(R.id.pick_route)).setOnClickListener(this);
 
-        ArrayList<String> data=new ArrayList<String>();
+        /*ArrayList<String> data=new ArrayList<String>();
         data.add("Andrea Donati");
         data.add("Marco Esposito");
         data.add("Bruno Vispi");
         data.add("Paolo Calabrese");
 
-        setUsersHints(data);
+        setUsersHints(data); */
     }
 
     public void onClick(View view) {
@@ -149,21 +152,48 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
     }
 
     public void downloadUsers() {
-        new HttpGetTask(this).execute(ALL_NICKNAMES_URL);
+        String name, surname, email, imgURL;
+        SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.USER, MODE_PRIVATE);
+        name = sharedPreferences.getString(LoginActivity.NAME, "");
+        surname = sharedPreferences.getString(LoginActivity.SURNAME, "");
+        email = sharedPreferences.getString(LoginActivity.EMAIL, "");
+        imgURL = sharedPreferences.getString(LoginActivity.IMAGEURL, "");
+
+        try {
+            Crypter crypter = new Crypter();
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("name", name);
+                jsonObject.put("surname", surname);
+                jsonObject.put("email", email);
+                jsonObject.put("imgurl", imgURL);
+            } catch (JSONException e) {
+            }
+            Log.v(TAG, "json: " + jsonObject.toString());
+
+            String token = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
+            new HttpGetTask(this).execute(ALL_NICKNAMES_URL + "?token=" + token);
+        } catch (UnsupportedEncodingException uee) {
+        }
     }
 
     public void setResult(String result) {
         ArrayList<String> userList = new ArrayList<>();
+        Crypter crypter = new Crypter();
+        Log.v(TAG, "result: " + result);
+
         try{
-            JSONArray array = new JSONArray(result);
+            JSONArray array = new JSONArray(crypter.decrypt(new JSONObject(result).getString("users")));
+            Log.v(TAG, "array di users: " + array.toString());
             for (int i = 0; i < array.length(); i++) {
                 JSONObject user = array.getJSONObject(i);
                 String name = user.getString("nickname");
                 userList.add(name);
             }
-            setUsersHints(userList);
         }catch(JSONException e)
         { e.printStackTrace();}
+
+        setUsersHints(userList);
     }
 
     public void setUsersHints(ArrayList<String> users) {

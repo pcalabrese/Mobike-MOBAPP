@@ -32,6 +32,7 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.network.DownloadGpxTask;
 import com.mobike.mobike.network.HttpGetTask;
+import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.CustomMapFragment;
 
 import org.json.JSONArray;
@@ -52,7 +53,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
     private Polyline routePoly; // the polyline of the route
     private ArrayList<LatLng> points; // the points of the route
 
-    private TextView mName, mDescription, mCreator, mLength, mDuration, mDifficulty, mBends, mType, mRating, mRatingNumber;
+    private TextView mName, mDescription, mCreator, mLength, mDuration, mDifficulty, mBends, mType, mRating, mRatingNumber, mStartLocation, mEndLocation;
     private RatingBar mRatingBar;
     private String routeID, userRate, userMessage;
     private boolean pickingRoute;
@@ -66,8 +67,6 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         setUpMapIfNeeded();
 
         getSupportActionBar().hide();
-
-        ((Button) findViewById(R.id.new_review_button)).setOnClickListener(this);
 
         pickingRoute = getIntent().getExtras().getInt(SearchFragment.REQUEST_CODE) == EventCreationActivity.ROUTE_REQUEST;
 
@@ -88,6 +87,8 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         mDifficulty = (TextView) findViewById(R.id.route_difficulty);
         mBends = (TextView) findViewById(R.id.route_bends);
         mType = (TextView) findViewById(R.id.route_type);
+        mStartLocation = (TextView) findViewById(R.id.route_start_location);
+        mEndLocation = (TextView) findViewById(R.id.route_end_location);
         mRatingBar = (RatingBar) findViewById(R.id.rating_bar);
         mRating = (TextView) findViewById(R.id.rating);
         mRatingNumber = (TextView) findViewById(R.id.rating_number);
@@ -204,14 +205,18 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
 
 
     public void setResult(String result) {
-        String name="", description="", creator="", length="", duration="", difficulty="", bends="", type="", gpx="";
+        String name="", description="", creator="", length="", duration="", difficulty="", bends="", type="", gpx="", startLocation="", endLocation="";
         int ratingNumber = 0;
         double rating = 0;
         JSONArray reviews = null;
         JSONObject jsonRoute;
+        Crypter crypter = new Crypter();
+
+        Log.v(TAG, "result: " + result);
 
         try {
-            jsonRoute = new JSONObject(result);
+            jsonRoute = new JSONObject(crypter.decrypt(new JSONObject(result).getString("route")));
+            Log.v(TAG, "jsonRoute: " + jsonRoute.toString());
             name = jsonRoute.getString("name");
             name = name.substring(0,1).toUpperCase() + name.substring(1);
             description = jsonRoute.getString("description");
@@ -223,10 +228,10 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             type = jsonRoute.getString("type");
             gpx = jsonRoute.getString("gpxString");
             reviews = jsonRoute.getJSONArray("reviewList");
-            rating = jsonRoute.getDouble("rating");
-            ratingNumber = jsonRoute.getInt("ratingNumber");
-            //startLocation = jsonRoute.getString("startLocation");
-            //endLocation = jsonRoute.getString("endLocation");
+            rating = jsonRoute.isNull("rating")? 0d : jsonRoute.getDouble("rating");
+            ratingNumber = jsonRoute.isNull("ratingnumber")? 0 : jsonRoute.getInt("ratingnumber");
+            startLocation = jsonRoute.getString("startlocation");
+            endLocation = jsonRoute.getString("endlocation");
         } catch (JSONException e) {}
 
 
@@ -239,9 +244,11 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         mDifficulty.setText(difficulty);
         mBends.setText(bends);
         mType.setText(type);
+        mStartLocation.setText(startLocation);
+        mEndLocation.setText(endLocation);
         setReviews(reviews);
         setGpx(gpx);
-        mRating.setText(String.format("%0.1f", rating));
+        mRating.setText(String.format("%.01f", rating));
         mRatingNumber.setText(ratingNumber + " reviews");
         mRatingBar.setRating(Float.parseFloat(String.valueOf(rating)));
 
@@ -294,7 +301,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             if (!found) {
                 LinearLayout userReviewLayout = (LinearLayout) findViewById(R.id.user_review_layout);
                 View view = getLayoutInflater().inflate(R.layout.new_review_button, userReviewLayout, false);
-                view.setOnClickListener(this);
+                view.findViewById(R.id.new_review_button).setOnClickListener(this);
                 userReviewLayout.addView(view);
             }
         } catch (JSONException e) {}

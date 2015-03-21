@@ -422,6 +422,8 @@ public class GPSDatabase
             jsonObject.put("user", crypter.encrypt(user.toString()));
             jsonObject.put("route", crypter.encrypt(route.toString()));
 
+            Log.v(TAG, "user json: " + user.toString());
+            Log.v(TAG, "route json: " + route.toString());
             Log.v(TAG, "imgUrl" + getEncodedPolylineURL());
         }
         catch(JSONException e){/*not implemented yet*/ }

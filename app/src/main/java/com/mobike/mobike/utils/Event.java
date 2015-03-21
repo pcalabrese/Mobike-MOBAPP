@@ -2,6 +2,7 @@ package com.mobike.mobike.utils;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.mobike.mobike.R;
 
@@ -19,6 +20,8 @@ public class Event {
     public static final int INVITED = 1;
     public static final int ACCEPTED = 2;
     public static final int REFUSED = 3;
+
+    private static final String TAG = "Event";
 
     private String name, id, startDate, creator, routeID, startLocation;
     private int acceptedSize, invitedSize, refusedSize, state;
@@ -122,6 +125,8 @@ public class Event {
             result.put("event", crypter.encrypt(event.toString()));
             result.put("user", crypter.encrypt(user.toString()));
         } catch (JSONException e) {}
+
+        Log.v(TAG, "event: " + event.toString() + "\nuser: " + user.toString());
 
         return result;
     }

@@ -61,11 +61,11 @@ public class UploadEventTask extends AsyncTask<String, Void, String> {
             urlConnection.connect();
 
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
-            SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.ID, Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
             int userID = sharedPref.getInt(LoginActivity.ID, 0);
-            out.write(event.exportInJSON(userID).toString());
+            out.write(event.exportInJSON(userID).toString().replace("\\/", "/").replace("\\\"", "\""));
             out.close();
-            Log.v(TAG, "json sent: " + event.exportInJSON(userID).toString());
+            Log.v(TAG, "json sent: " + event.exportInJSON(userID).toString().replace("\\/", "/").replace("\\\"", "\""));
 
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {

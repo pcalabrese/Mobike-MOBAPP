@@ -10,10 +10,10 @@ import com.mobike.mobike.R;
 public class Route {
     private String name, id, description, creator, length, duration, gpx, difficulty, bends, type, thumbnailURL, startLocation, endLocation;
     private int rating, ratingNumber;
-    public static final String MOUNTAIN = "mountain";
-    public static final String PLAIN = "plain";
-    public static final String COAST = "coast";
-    public static final String HILL = "hill";
+    public static final String MOUNTAIN = "montuoso";
+    public static final String PLAIN = "pianeggiante";
+    public static final String COAST = "costiero";
+    public static final String HILL = "collinare";
 
     public Route(String name, String id, String description, String creator, String length, String duration, String difficulty, String bends, String type, String thumbnailURL, String startLocation, String endLocation, int rating, int ratingNumber) {
         this.name = name;

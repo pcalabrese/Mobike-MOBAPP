@@ -48,6 +48,9 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
     public static final String USER_RATE = "com.mobike.mobike.RouteActivity.user_rate";
     public static final String USER_MESSAGE = "com.mobike.mobike.RouteActivity.user_message";
     public static final int EDIT_REVIEW_REQUEST = 1;
+    public static final String GPX = "com.mobike.mobike.gpx";
+
+    public static String currentGpx;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline routePoly; // the polyline of the route
@@ -55,7 +58,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
 
     private TextView mName, mDescription, mCreator, mLength, mDuration, mDifficulty, mBends, mType, mRating, mRatingNumber, mStartLocation, mEndLocation;
     private RatingBar mRatingBar;
-    private String routeID, userRate, userMessage;
+    private String routeID, userRate, userMessage, gpx;
     private boolean pickingRoute;
 
     private static final String TAG = "RouteActivity";
@@ -94,6 +97,8 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         mRatingNumber = (TextView) findViewById(R.id.rating_number);
 
         routeID = bundle.getString(SearchFragment.ROUTE_ID);
+
+        ((ImageButton) findViewById(R.id.fullscreen_button)).setOnClickListener(this);
 
         //new DownloadGpxTask(this).execute(routeID);
         //new HttpGetTask(this).execute(ALL_REVIEWS_URL + userID + routeID); //prendere lo userID dalle shared pref
@@ -180,12 +185,13 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
                 boundsBuilder.include(point);
             }
             LatLngBounds bounds = boundsBuilder.build();
-            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 50);
             mMap.animateCamera(cameraUpdate);
         }
     }
 
     public void setGpx(String gpx) {
+        this.gpx = gpx;
 
         // get points from route_gpx ,set up the map and finally add the polyline of the route
         GPSDatabase db = new GPSDatabase(this);
@@ -345,6 +351,16 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
                 bb.putInt(SearchFragment.REQUEST_CODE, EDIT_REVIEW_REQUEST);
                 ii.putExtras(bb);
                 startActivityForResult(ii, EDIT_REVIEW_REQUEST);
+                break;
+
+            case R.id.fullscreen_button:
+                Log.v(TAG, "fullscreen_button pressed");
+                Intent intent1 = new Intent(this, FullScreenMapActivity.class);
+                /*Bundle bun = new Bundle();
+                bun.putString(GPX, gpx);
+                intent1.putExtras(bun); */
+                RouteActivity.currentGpx = gpx;
+                startActivity(intent1);
                 break;
         }
     }

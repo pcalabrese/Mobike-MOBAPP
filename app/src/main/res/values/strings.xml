@@ -102,5 +102,6 @@
     <string name="initial_duration">0 h 0 m 0 s</string>
     <string name="to">To</string>
     <string name="from">From</string>
+    <string name="title_activity_full_screen_map">Route Map</string>
 
 </resources>

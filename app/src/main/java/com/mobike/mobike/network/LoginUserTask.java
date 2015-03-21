@@ -84,17 +84,18 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {
                 String response = convertInputStreamToString(urlConnection.getInputStream());
-                String userID = "none", nickname = "none";
+                String nickname = "none";
+                int userID = 0;
                 JSONObject json;
                 try {
                     json = new JSONObject(crypter.decrypt((new JSONObject(response)).getString("user")));
-                    userID = json.getInt("id") + "";
+                    userID = json.getInt("id");
                     nickname = json.getString("nickname");
                 } catch (JSONException e) {}
-                Log.v(TAG, "userID: " + userID);
+                Log.v(TAG, "userID: " + userID + "\nnickname: " + nickname);
                 SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
-                editor.putInt(LoginActivity.ID, Integer.parseInt(userID));
+                editor.putInt(LoginActivity.ID, userID);
                 editor.putString(LoginActivity.NICKNAME, nickname);
                 editor.apply();
                 Intent intent = new Intent(context, MainActivity.class);

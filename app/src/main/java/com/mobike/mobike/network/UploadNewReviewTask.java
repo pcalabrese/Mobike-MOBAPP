@@ -63,7 +63,7 @@ public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
             urlConnection.setDoOutput(true);
             urlConnection.setChunkedStreamingMode(0);
             urlConnection.connect();
-            SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.ID, Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
             int userID = sharedPref.getInt(LoginActivity.ID, 0);
             String nickname = sharedPref.getString(LoginActivity.NICKNAME, "");
             JSONObject jsonObject = new JSONObject(), review = new JSONObject(), user = new JSONObject(), pk = new JSONObject();
@@ -81,14 +81,16 @@ public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
                 jsonObject.put("review", crypter.encrypt(review.toString()));
             }
             catch(JSONException e){/*not implemented yet*/ }
+            Log.v(TAG, "user: " + user.toString() + "\nreview: " + review.toString() + "\njson sent: " + jsonObject.toString().replace("\\/", "/").replace("\\\"", "\""));
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
-            out.write(jsonObject.toString());
+            out.write(jsonObject.toString().replace("\\/", "/").replace("\\\"", "\""));
             out.close();
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {
                 /*BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 String response = br.readLine();
                 br.close();*/
+                Log.v(TAG, "Recensione caricata correttamente");
                 return "Review uploaded successfully";
             }
             else {

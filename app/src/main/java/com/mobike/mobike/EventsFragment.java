@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -30,6 +31,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -153,7 +156,21 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                             downloadEvents(downloadAllEventsURL);
                             break;
                         case 1:
-                            //downloadEvents(downloadUserEventsURL);
+                            String user = "";
+                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
+                            int id = sharedPreferences.getInt(LoginActivity.ID, 0);
+                            String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
+                            Crypter crypter = new Crypter();
+
+                            try {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("id", id);
+                                jsonObject.put("nickname", nickname);
+                                user = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
+                            } catch (JSONException e) {}
+                            catch (UnsupportedEncodingException uee) {}
+
+                            downloadEvents(downloadUserEventsURL + "?user=" + user);
                             break;
                         case 2:
                             //downloadEvents(downloadAcceptedEventsURL);
@@ -213,7 +230,22 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
             case 0:
                 downloadEvents(downloadAllEventsURL);
                 break;
-            case 1: //downloadEvents(downloadUserEventsURL);
+            case 1:
+                String user = "";
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
+                int id = sharedPreferences.getInt(LoginActivity.ID, 0);
+                String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
+                Crypter crypter = new Crypter();
+
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", id);
+                    jsonObject.put("nickname", nickname);
+                    user = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
+                } catch (JSONException e) {}
+                catch (UnsupportedEncodingException uee) {}
+
+                downloadEvents(downloadUserEventsURL + "?user=" + user);
                 break;
             case 2: //downloadEvents(downloadAcceptedEventsURL);
                 break;
@@ -260,27 +292,28 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
 
         Log.v(TAG, "result: " + result);
 
-        if (result.length() == 0) return;
-        try {
-            json = new JSONArray(crypter.decrypt(new JSONObject(result).getString("events")));
-            for (int i = 0; i < json.length(); i++) {
-                jsonEvent = json.getJSONObject(i);
-                name = jsonEvent.getString("name");
-                name = name.substring(0,1).toUpperCase() + name.substring(1);
-                id = jsonEvent.getInt("eventID") + "";
-                creator = jsonEvent.getJSONObject("owner").getString("nickname");
-                date = jsonEvent.getString("startDate");
-                startLocation = jsonEvent.getString("startLocation");
-                routeID = jsonEvent.getInt("routeId") + "";
-                acceptedSize = jsonEvent.getInt("acceptedSize");
-                invitedSize = jsonEvent.getInt("invitedSize");
-                refusedSize = jsonEvent.getInt("refusedSize");
-                state = jsonEvent.getInt("userState");
+        if (result.length() > 0) {
+            try {
+                json = new JSONArray(crypter.decrypt(new JSONObject(result).getString("events")));
+                for (int i = 0; i < json.length(); i++) {
+                    jsonEvent = json.getJSONObject(i);
+                    name = jsonEvent.getString("name");
+                    name = name.substring(0, 1).toUpperCase() + name.substring(1);
+                    id = jsonEvent.getInt("eventID") + "";
+                    creator = jsonEvent.getJSONObject("owner").getString("nickname");
+                    date = jsonEvent.getString("startDate");
+                    startLocation = jsonEvent.getString("startLocation");
+                    routeID = jsonEvent.getInt("routeId") + "";
+                    acceptedSize = jsonEvent.getInt("acceptedSize");
+                    invitedSize = jsonEvent.getInt("invitedSize");
+                    refusedSize = jsonEvent.getInt("refusedSize");
+                    state = jsonEvent.getInt("userState");
 
-                list.add(new Event(name, id, date, creator, routeID, startLocation, acceptedSize, invitedSize, refusedSize, state));
+                    list.add(new Event(name, id, date, creator, routeID, startLocation, acceptedSize, invitedSize, refusedSize, state));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
 
         ListView listView = (ListView) getView().findViewById(R.id.list_view);

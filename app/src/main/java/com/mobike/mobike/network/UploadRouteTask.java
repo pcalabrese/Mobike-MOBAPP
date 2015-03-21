@@ -74,9 +74,9 @@ public class UploadRouteTask extends AsyncTask<String, Void, String> {
             urlConnection.connect();
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
             GPSDatabase db = new GPSDatabase(context);
-            out.write(db.exportRouteInJson(email, name, description, difficulty, bends, type, startLocation, endLocation).toString());
+            out.write(db.exportRouteInJson(email, name, description, difficulty, bends, type, startLocation, endLocation).toString().replace("\\/", "/").replace("\\\"", "\""));
             out.close();
-            Log.v(TAG, "json sent: "+ db.exportRouteInJson(email, name, description, difficulty, bends, type, startLocation, endLocation).toString());
+            Log.v(TAG, "json sent: "+ db.exportRouteInJson(email, name, description, difficulty, bends, type, startLocation, endLocation).toString().replace("\\/", "/").replace("\\\"", "\""));
             db.close();
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {

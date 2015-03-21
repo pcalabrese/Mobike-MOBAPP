@@ -54,6 +54,7 @@ public class HttpGetTask extends AsyncTask<String, Void, String> {
                 InputStream in = urlConnection.getInputStream();
                 if (in != null)
                     result = convertInputStreamToString(in);
+                Log.v(TAG, "code: " + httpResult);
             } else {
                 // scrive un messaggio di errore con codice httpResult
                 BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getErrorStream()));

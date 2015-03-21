@@ -23,6 +23,7 @@ import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.network.UploadEventTask;
@@ -44,7 +45,7 @@ import java.util.Date;
 
 public class EventCreationActivity extends ActionBarActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, HttpGetTask.HttpGet {
     private String startDate, startTime;
-    private int routeID;
+    private int routeID = 0;
     private boolean picked = false;
     private static final String TAG = "EventCreationActivity";
 
@@ -90,7 +91,9 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 time = ((TextView) findViewById(R.id.time)).getText().toString();
 
                 if (name.length() == 0 || description.length() == 0 || startLocation.length() == 0 || invited.length() == 0
-                        || date.length() == 0 || time.length() == 0)
+                        || date.length() == 0 || time.length() == 0 || routeID == 0)
+                    Toast.makeText(this, "Fill all fields", Toast.LENGTH_SHORT).show();
+                else
                     createEvent();
                 break;
             case R.id.pick_date:
@@ -130,7 +133,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         Log.v(TAG, "invited: " + invited);
         invited = invited.replaceAll(", ", "\n");
         Log.v(TAG, "invited: " + invited);
-        SharedPreferences sharedPref = getSharedPreferences(LoginActivity.ID, Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
         String nickname = sharedPref.getString(LoginActivity.NICKNAME, "");
         creationDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 
@@ -169,7 +172,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 jsonObject.put("imgurl", imgURL);
             } catch (JSONException e) {
             }
-            Log.v(TAG, "json: " + jsonObject.toString());
+            Log.v(TAG, "token: " + jsonObject.toString());
 
             String token = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
             new HttpGetTask(this).execute(ALL_NICKNAMES_URL + "?token=" + token);

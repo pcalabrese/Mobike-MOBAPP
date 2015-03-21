@@ -52,18 +52,20 @@
             android:value="@string/google_maps_key" />
 
         <!-- metadata required to use facebook share dialog -->
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
         <activity
             android:name=".SummaryActivity"
             android:label="@string/title_activity_summary"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.ActionBarShadow">
+            android:theme="@style/AppTheme.ActionBarShadow" >
         </activity>
         <activity
             android:name=".ShareActivity"
             android:label="@string/title_activity_share"
-            android:theme="@style/AppTheme.ActionBarShadow">
+            android:theme="@style/AppTheme.ActionBarShadow" >
         </activity>
 
         <service
@@ -87,7 +89,7 @@
         <activity
             android:name=".RouteActivity"
             android:label="@string/title_activity_route"
-            android:theme="@style/AppTheme.ActionBarShadow">
+            android:theme="@style/AppTheme.ActionBarShadow" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobike.mobike.MainActivity" />
@@ -130,6 +132,10 @@
         <activity
             android:name=".FragmentActivity"
             android:label="@string/title_activity_fragment" >
+        </activity>
+        <activity
+            android:name=".FullScreenMapActivity"
+            android:label="@string/title_activity_full_screen_map" >
         </activity>
     </application>
 

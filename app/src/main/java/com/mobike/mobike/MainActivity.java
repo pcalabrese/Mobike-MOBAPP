@@ -94,8 +94,8 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
             JSONArray jsonArray = new JSONArray(result);
             if (jsonArray.length() > 0) {
                 new AlertDialog.Builder(this)
-                        .setTitle(getResources().getString(R.string.stop))
-                        .setMessage(getResources().getString(R.string.stop_registration))
+                        .setTitle("Invitations")
+                        .setMessage("Hey! You have pending invitations to events, check them!")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // do nothing

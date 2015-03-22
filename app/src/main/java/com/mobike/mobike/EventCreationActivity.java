@@ -41,12 +41,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 
 public class EventCreationActivity extends ActionBarActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, HttpGetTask.HttpGet {
     private String startDate, startTime;
     private int routeID = 0;
     private boolean picked = false;
+    private HashMap<String, Integer> usersMap;
+
     private static final String TAG = "EventCreationActivity";
 
     public static final String ALL_NICKNAMES_URL = "http://mobike.ddns.net/SRV/users/retrieveall";
@@ -138,7 +141,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         creationDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
 
         Event event = new Event(name, description, nickname, startDate + " " + startTime, startLocation, creationDate, String.valueOf(routeID), invited);
-        new UploadEventTask(this, event).execute();
+        new UploadEventTask(this, event, usersMap).execute();
         finish();
     }
 
@@ -182,6 +185,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
 
     public void setResult(String result) {
         ArrayList<String> userList = new ArrayList<>();
+        usersMap = new HashMap<>();
         Crypter crypter = new Crypter();
         Log.v(TAG, "result: " + result);
 
@@ -190,8 +194,10 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
             Log.v(TAG, "array di users: " + array.toString());
             for (int i = 0; i < array.length(); i++) {
                 JSONObject user = array.getJSONObject(i);
-                String name = user.getString("nickname");
-                userList.add(name);
+                String nickname = user.getString("nickname");
+                int id = user.getInt("id");
+                userList.add(nickname);
+                usersMap.put(nickname, id);
             }
         }catch(JSONException e)
         { e.printStackTrace();}

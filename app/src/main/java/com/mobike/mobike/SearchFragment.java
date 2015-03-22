@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -79,7 +80,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_TYPE = "com.mobike.mobike.SearchFragment.route_type";
 
     public static final String downloadAllRoutesURL = "http://mobike.ddns.net/SRV/routes/retrieveall";
-    public static final String downloadUserRoutesURL = "http://mobike.ddns.net/SRV/routes/retrieve";
+    public static final String downloadUserRoutesURL = "http://mobike.ddns.net/SRV/users/myroutes?token=";
 
     /**
      * Use this factory method to create a new instance of
@@ -179,7 +180,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                             } catch (JSONException e) {}
                             catch (UnsupportedEncodingException uee) {}
 
-                            downloadRoutes(downloadUserRoutesURL + "?user=" + user);
+                            downloadRoutes(downloadUserRoutesURL + user);
                             break;
                     }
                 }
@@ -245,11 +246,12 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("id", id);
                     jsonObject.put("nickname", nickname);
+                    Log.v(TAG, "json per mie route: " + jsonObject.toString());
                     user = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
                 } catch (JSONException e) {}
                 catch (UnsupportedEncodingException uee) {}
 
-                downloadRoutes(downloadUserRoutesURL + "?user=" + user);
+                downloadRoutes(downloadUserRoutesURL + user);
                 break;
         }
     }
@@ -258,7 +260,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         if (mSwipeRefreshLayout != null)
             mSwipeRefreshLayout.setRefreshing(true);
         new HttpGetTask(this).execute(url);
-        Log.v(TAG, "downloadRoutes: " + url);
+        Log.v(TAG, "downloadRoutes url: " + url);
     }
 
     //method called when no items in Spinner are selected
@@ -289,8 +291,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                     name = name.substring(0, 1).toUpperCase() + name.substring(1);
                     id = jsonRoute.getInt("id") + "";
                     description = "";
-                    //creator = jsonRoute.getJSONObject("owner").getString("nickname");
-                    creator = "mobteam";
+                    creator = jsonRoute.getJSONObject("owner").getString("nickname");
                     length = jsonRoute.getDouble("length") + "";
                     duration = jsonRoute.getInt("duration") + "";
                     difficulty = jsonRoute.getInt("difficulty") + "";
@@ -441,6 +442,7 @@ class RouteAdapter extends ArrayAdapter<Route> {
             TextView creator = (TextView) v.findViewById(R.id.route_creator);
             ImageView type = (ImageView) v.findViewById(R.id.route_type);
             ImageView thumbnailView = (ImageView) v.findViewById(R.id.route_image);
+            RatingBar ratingBar = (RatingBar) v.findViewById(R.id.rating_bar);
 
             //Picasso.with(context).load(p.getMap()).into(imageView);
 
@@ -458,6 +460,8 @@ class RouteAdapter extends ArrayAdapter<Route> {
                 type.setImageResource(p.getTypeColor());
             if (thumbnailView != null)
                 Picasso.with(context).load(p.getThumbnailURL()).into(thumbnailView);
+            if (ratingBar != null)
+                ratingBar.setRating(p.getRating());
         }
 
         return v;

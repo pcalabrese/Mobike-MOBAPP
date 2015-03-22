@@ -12,24 +12,22 @@ import com.mobike.mobike.utils.Crypter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * Created by Andrea-PC on 04/03/2015.
+ * Created by Andrea-PC on 22/03/2015.
  */
-public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
-    private static final String TAG = "UploadNewReviewTask";
-    private static final String postNewReviewURL = "http://mobike.ddns.net/SRV/reviews/create";
+public class EditReviewTask extends AsyncTask<String, Void, String> {
+    private static final String TAG = "EditReviewTask";
+    private static final String editReviewURL = "http://mobike.ddns.net/SRV/reviews/update";
     private Context context;
     private float rate;
     private String comment, routeID;
 
-    public UploadNewReviewTask(Context context, String routeID, String comment, float rate) {
+    public EditReviewTask(Context context, String routeID, String comment, float rate) {
         this.context = context;
         this.rate = rate;
         this.comment = comment;
@@ -39,9 +37,9 @@ public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... context) {
         try {
-            return postReview();
+            return editReview();
         } catch (IOException e) {
-            return "Unable to upload the route. URL may be invalid.";
+            return "Unable to edit the review. URL may be invalid.";
         }
     }
 
@@ -50,11 +48,10 @@ public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
     }
 
-    private String postReview() throws IOException {
+    private String editReview() throws IOException {
         HttpURLConnection urlConnection = null;
         try {
-            Log.v(TAG, "uploadNewReviewTask");
-            URL u = new URL(postNewReviewURL);
+            URL u = new URL(editReviewURL);
             urlConnection = (HttpURLConnection) u.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -91,13 +88,13 @@ public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
                 /*BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 String response = br.readLine();
                 br.close();*/
-                Log.v(TAG, "Recensione caricata correttamente");
-                return "Review uploaded successfully";
+                Log.v(TAG, "Recensione modificata correttamente");
+                return "Review edited successfully";
             }
             else {
                 // scrive un messaggio di errore con codice httpResult
                 Log.v(TAG, " httpResult = " + httpResult);
-                return "Error code in review upload: " + httpResult;
+                return "Error code in review update: " + httpResult;
             }
         } finally {
             if (urlConnection != null)

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ImageButton xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/accept_declined_event_button"
+    style="?android:attr/buttonBarButtonStyle"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_weight="2"
+    android:background="@drawable/green_button"
+    android:src="@drawable/material_green_check48dp"
+    android:gravity="center"
+    android:layout_marginTop="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="5dp"
+    android:paddingBottom="5dp"
+    android:paddingLeft="5dp"
+    android:paddingRight="5dp"
+    android:paddingTop="5dp"/>

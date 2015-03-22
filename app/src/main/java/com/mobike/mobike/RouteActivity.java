@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -30,6 +31,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.mobike.mobike.network.DeleteReviewTask;
 import com.mobike.mobike.network.DownloadGpxTask;
 import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.Crypter;
@@ -258,6 +260,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         mRatingNumber.setText(ratingNumber + " reviews");
         mRatingBar.setRating(Float.parseFloat(String.valueOf(rating)));
 
+        Log.v(TAG, "setResult() completed");
     }
 
 
@@ -278,9 +281,12 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
 
             for (int i = 0; i < reviews.length(); i++) {
                 JSONObject review = reviews.getJSONObject(i);
-                user = review.getJSONObject("owner").getString("nickanme");
-                rate = review.getString("rate");
+                Log.v(TAG, "set Reviews, review: " + review.toString());
+                user = review.getJSONObject("owner").getString("nickname");
+                rate = review.getInt("rate") + "";
                 message = review.getString("message");
+
+                Log.v(TAG, "set Reviews, campi: " + user + ", " + rate + ", " + message);
 
                  //aggiungi review al linear layout "reviews_list"
                  //inflate del file "review_item.xml" con i campi popolati
@@ -300,7 +306,13 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
                     ((TextView) view.findViewById(R.id.user)).setText(user);
                     ((RatingBar) view.findViewById(R.id.rating_bar)).setRating(Float.parseFloat(rate));
                     ((TextView) view.findViewById(R.id.review)).setText(message);
-                    ((Button) view.findViewById(R.id.edit_review)).setOnClickListener(this);
+                    if (!pickingRoute) {
+                        ((Button) view.findViewById(R.id.edit_review)).setOnClickListener(this);
+                        ((Button) view.findViewById(R.id.delete_review)).setOnClickListener(this);
+                    } else {
+                        ((Button) view.findViewById(R.id.edit_review)).setVisibility(View.GONE);
+                        ((Button) view.findViewById(R.id.delete_review)).setVisibility(View.GONE);
+                    }
                     userReviewLayout.addView(view);
                 }
             }
@@ -310,7 +322,9 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
                 view.findViewById(R.id.new_review_button).setOnClickListener(this);
                 userReviewLayout.addView(view);
             }
-        } catch (JSONException e) {}
+        } catch (JSONException e) {
+            Log.v(TAG, "jsonException");
+        }
     }
 
     @Override
@@ -341,7 +355,6 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
 
             case R.id.edit_review:
                 //modifica la review esistente
-                View v = findViewById(R.id.user_review_item);
 
                 Intent ii = new Intent(this, ReviewCreationActivity.class);
                 Bundle bb = new Bundle();
@@ -351,6 +364,10 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
                 bb.putInt(SearchFragment.REQUEST_CODE, EDIT_REVIEW_REQUEST);
                 ii.putExtras(bb);
                 startActivityForResult(ii, EDIT_REVIEW_REQUEST);
+                break;
+
+            case R.id.delete_review:
+                new DeleteReviewTask(this, routeID, userMessage, Float.parseFloat(userRate)).execute();
                 break;
 
             case R.id.fullscreen_button:
@@ -365,9 +382,19 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         }
     }
 
+    public void recreateActivity() {
+        finish();
+        startActivity(getIntent());
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (requestCode == EDIT_REVIEW_REQUEST)
-            new HttpGetTask(this).execute(ROUTE_URL + routeID);
+        if (requestCode == EDIT_REVIEW_REQUEST) {
+            //findViewById(R.id.user_review_item).setVisibility(View.GONE);
+            //new HttpGetTask(this).execute(ROUTE_URL + routeID);
+
+            finish();
+            startActivityForResult(getIntent(), getIntent().getExtras().getInt(SearchFragment.REQUEST_CODE));
+        }
     }
 }

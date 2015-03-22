@@ -65,9 +65,9 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String EVENT_START_LOCATION = "com.mobike.mobike.EventsFragment.event_start_location";
     public static final String EVENT_CREATION_DATE = "com.mobike.mobike.EventsFragment.event_creation_date";
 
-    public static final String downloadAllEventsURL = "http://mobike.ddns.net/SRV/events/retrieveall";
-    public static final String downloadUserEventsURL = "http://mobike.ddns.net/SRV/events/retrieve";
-    public static final String downloadInvitedEventsURL = "";
+    public static final String downloadAllEventsURL = "http://mobike.ddns.net/SRV/events/retrieveallws?user=";
+    public static final String downloadUserEventsURL = "http://mobike.ddns.net/SRV/users/myevents?token=";
+    public static final String downloadInvitedEventsURL = "http://mobike.ddns.net/SRV/users/myinvitations?token=";
 
     private Boolean initialSpinner = true, firstTime;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -156,24 +156,10 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                             downloadEvents(downloadAllEventsURL);
                             break;
                         case 1:
-                            String user = "";
-                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
-                            int id = sharedPreferences.getInt(LoginActivity.ID, 0);
-                            String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
-                            Crypter crypter = new Crypter();
-
-                            try {
-                                JSONObject jsonObject = new JSONObject();
-                                jsonObject.put("id", id);
-                                jsonObject.put("nickname", nickname);
-                                user = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
-                            } catch (JSONException e) {}
-                            catch (UnsupportedEncodingException uee) {}
-
-                            downloadEvents(downloadUserEventsURL + "?user=" + user);
+                            downloadEvents(downloadUserEventsURL);
                             break;
                         case 2:
-                            //downloadEvents(downloadAcceptedEventsURL);
+                            downloadEvents(downloadInvitedEventsURL);
                             break;
                     }
                 }
@@ -231,32 +217,37 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 downloadEvents(downloadAllEventsURL);
                 break;
             case 1:
-                String user = "";
-                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
-                int id = sharedPreferences.getInt(LoginActivity.ID, 0);
-                String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
-                Crypter crypter = new Crypter();
-
-                try {
-                    JSONObject jsonObject = new JSONObject();
-                    jsonObject.put("id", id);
-                    jsonObject.put("nickname", nickname);
-                    user = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
-                } catch (JSONException e) {}
-                catch (UnsupportedEncodingException uee) {}
-
-                downloadEvents(downloadUserEventsURL + "?user=" + user);
+                downloadEvents(downloadUserEventsURL);
                 break;
-            case 2: //downloadEvents(downloadAcceptedEventsURL);
+            case 2:
+                downloadEvents(downloadInvitedEventsURL);
                 break;
         }
     }
 
     private void downloadEvents(String url) {
+        String user = "";
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
+        int id = sharedPreferences.getInt(LoginActivity.ID, 0);
+        String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
+        Crypter crypter = new Crypter();
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", id);
+            jsonObject.put("nickname", nickname);
+            user = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
+            Log.v(TAG, "json per gli eventi: " + jsonObject.toString());
+        } catch (JSONException e) {
+            Log.v(TAG, "json exception in downloadEvents()");
+        }
+        catch (UnsupportedEncodingException uee) {}
+
         if (mSwipeRefreshLayout != null)
             mSwipeRefreshLayout.setRefreshing(true);
-        new HttpGetTask(this).execute(url);
-        Log.v(TAG, "downloadEvents: " + url);
+        new HttpGetTask(this).execute(url + user);
+
+        Log.v(TAG, "downloadEvents url: " + url + user);
     }
 
     // method called when no items in the spinner are selected
@@ -295,21 +286,21 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
         if (result.length() > 0) {
             try {
                 json = new JSONArray(crypter.decrypt(new JSONObject(result).getString("events")));
+                Log.v(TAG, "json events: " + json.toString());
                 for (int i = 0; i < json.length(); i++) {
                     jsonEvent = json.getJSONObject(i);
                     name = jsonEvent.getString("name");
                     name = name.substring(0, 1).toUpperCase() + name.substring(1);
-                    id = jsonEvent.getInt("eventID") + "";
+                    id = jsonEvent.getInt("id") + "";
                     creator = jsonEvent.getJSONObject("owner").getString("nickname");
-                    date = jsonEvent.getString("startDate");
-                    startLocation = jsonEvent.getString("startLocation");
-                    routeID = jsonEvent.getInt("routeId") + "";
+                    date = jsonEvent.getString("startdate");
+                    startLocation = jsonEvent.getString("startlocation");
                     acceptedSize = jsonEvent.getInt("acceptedSize");
                     invitedSize = jsonEvent.getInt("invitedSize");
                     refusedSize = jsonEvent.getInt("refusedSize");
                     state = jsonEvent.getInt("userState");
 
-                    list.add(new Event(name, id, date, creator, routeID, startLocation, acceptedSize, invitedSize, refusedSize, state));
+                    list.add(new Event(name, id, date, creator, "", startLocation, acceptedSize, invitedSize, refusedSize, state));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -395,7 +386,7 @@ class ListAdapter extends ArrayAdapter<Event> {
             }
             if (date != null) {
                 Date mDate = null, mDateCreation = null;
-                SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat s1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 try {
                     mDate = s1.parse(p.getStartDate());
                 } catch (ParseException e ) { }
@@ -415,11 +406,11 @@ class ListAdapter extends ArrayAdapter<Event> {
             if (state != null)
                 state.setImageResource(p.getColorState());
             if (accepted != null)
-                accepted.setText(p.getAcceptedSize());
+                accepted.setText(String.valueOf(p.getAcceptedSize()));
             if (invited != null)
-                invited.setText(p.getInvitedSize());
+                invited.setText(String.valueOf(p.getInvitedSize()));
             if (refused != null)
-                refused.setText(p.getRefusedSize());
+                refused.setText(String.valueOf(p.getRefusedSize()));
         }
 
         return v;

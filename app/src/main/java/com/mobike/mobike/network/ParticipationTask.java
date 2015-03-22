@@ -12,36 +12,32 @@ import com.mobike.mobike.utils.Crypter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 
 /**
- * Created by Andrea-PC on 04/03/2015.
+ * Created by Andrea-PC on 22/03/2015.
  */
-public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
+public class ParticipationTask extends AsyncTask<String, Void, String> {
     private static final String TAG = "UploadNewReviewTask";
-    private static final String postNewReviewURL = "http://mobike.ddns.net/SRV/reviews/create";
+    private static final String participationURL = "http://mobike.ddns.net/SRV/events/participation?op=";
     private Context context;
-    private float rate;
-    private String comment, routeID;
+    private String eventID;
 
-    public UploadNewReviewTask(Context context, String routeID, String comment, float rate) {
+    public ParticipationTask(Context context, String eventID) {
         this.context = context;
-        this.rate = rate;
-        this.comment = comment;
-        this.routeID = routeID;
+        this.eventID = eventID;
     }
 
     @Override
-    protected String doInBackground(String... context) {
+    protected String doInBackground(String... command) {
         try {
-            return postReview();
+            return postParticipation(command[0]);
         } catch (IOException e) {
-            return "Unable to upload the route. URL may be invalid.";
+            return "Unable to send participation. URL may be invalid.";
         }
     }
 
@@ -50,11 +46,11 @@ public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
     }
 
-    private String postReview() throws IOException {
+    private String postParticipation(String command) throws IOException {
         HttpURLConnection urlConnection = null;
         try {
-            Log.v(TAG, "uploadNewReviewTask");
-            URL u = new URL(postNewReviewURL);
+            URL u = new URL(participationURL + URLEncoder.encode(command, "utf-8"));
+            Log.v(TAG, "url: " + participationURL + URLEncoder.encode(command, "utf-8"));
             urlConnection = (HttpURLConnection) u.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -67,22 +63,18 @@ public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
             SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
             int userID = sharedPref.getInt(LoginActivity.ID, 0);
             String nickname = sharedPref.getString(LoginActivity.NICKNAME, "");
-            JSONObject jsonObject = new JSONObject(), review = new JSONObject(), user = new JSONObject(), pk = new JSONObject();
+            JSONObject jsonObject = new JSONObject(), event = new JSONObject(), user = new JSONObject();
             Crypter crypter = new Crypter();
 
             try{
                 user.put("id", userID);
                 user.put("nickname", nickname);
-                review.put("rate", rate);
-                review.put("message", comment);
-                pk.put("usersId", userID);
-                pk.put("routesId", routeID);
-                review.put("reviewPK", pk);
+                event.put("id", eventID);
                 jsonObject.put("user", crypter.encrypt(user.toString()));
-                jsonObject.put("review", crypter.encrypt(review.toString()));
+                jsonObject.put("event", crypter.encrypt(event.toString()));
             }
             catch(JSONException e){/*not implemented yet*/ }
-            Log.v(TAG, "user: " + user.toString() + "\nreview: " + review.toString() + "\njson sent: " + jsonObject.toString().replace("\\/", "/").replace("\\\"", "\""));
+            Log.v(TAG, "user: " + user.toString() + "\nevent: " + event.toString() + "\njson sent: " + jsonObject.toString().replace("\\/", "/").replace("\\\"", "\""));
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
             out.write(jsonObject.toString().replace("\\/", "/").replace("\\\"", "\""));
             out.close();
@@ -91,13 +83,13 @@ public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
                 /*BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 String response = br.readLine();
                 br.close();*/
-                Log.v(TAG, "Recensione caricata correttamente");
-                return "Review uploaded successfully";
+                Log.v(TAG, "Partecipazione inviata correttamente");
+                return "Participation sent successfully";
             }
             else {
                 // scrive un messaggio di errore con codice httpResult
                 Log.v(TAG, " httpResult = " + httpResult);
-                return "Error code in review upload: " + httpResult;
+                return "Error code in participation: " + httpResult;
             }
         } finally {
             if (urlConnection != null)

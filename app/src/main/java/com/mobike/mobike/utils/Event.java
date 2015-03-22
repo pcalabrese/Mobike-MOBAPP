@@ -11,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Andrea-PC on 04/02/2015.
@@ -95,7 +96,7 @@ public class Event {
         return R.color.material_grey;
     }
 
-    public JSONObject exportInJSON(int userID) {
+    public JSONObject exportInJSON(int userID, HashMap<String, Integer> usersMap) {
         JSONObject result = new JSONObject(), event = new JSONObject(), user = new JSONObject();
         Crypter crypter = new Crypter();
 
@@ -116,8 +117,12 @@ public class Event {
             // creo un JSONArray con gli invitati e lo metto nel campo "participants" dell'oggetto result (solo nickname)
             JSONArray array = new JSONArray();
             String[] invitedArray = participants.split("\n");
-            for (int i = 0; i < invitedArray.length; i++)
-                array.put(new JSONObject().put("nickname", invitedArray[i]));
+            for (int i = 0; i < invitedArray.length; i++) {
+                JSONObject invited = new JSONObject();
+                invited.put("id", usersMap.get(invitedArray[i]));
+                invited.put("nickname", invitedArray[i]);
+                array.put(invited);
+            }
             event.put("usersInvited", array);
 
             user.put("id", userID);

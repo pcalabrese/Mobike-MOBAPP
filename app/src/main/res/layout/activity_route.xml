@@ -429,7 +429,6 @@
                             android:layout_margin="5dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginStart="5dp"
-                            android:text="3,5"
                             android:textColor="@color/black"
                             android:textSize="45sp"
                             android:textStyle="bold" />
@@ -446,8 +445,7 @@
                             android:layout_toEndOf="@id/rating"
                             android:layout_toRightOf="@id/rating"
                             android:isIndicator="true"
-                            android:numStars="5"
-                            android:rating="3.5" />
+                            android:numStars="5" />
 
                         <TextView
                             android:id="@+id/rating_number"
@@ -459,7 +457,6 @@
                             android:layout_marginTop="3dp"
                             android:layout_toEndOf="@id/rating"
                             android:layout_toRightOf="@id/rating"
-                            android:text="200'000 reviews"
                             android:textStyle="italic" />
 
                     </RelativeLayout>

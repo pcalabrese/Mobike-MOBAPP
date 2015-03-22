@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -25,6 +26,8 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.network.DownloadGpxTask;
 import com.mobike.mobike.network.HttpGetTask;
+import com.mobike.mobike.network.ParticipationTask;
+import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.CustomMapFragment;
 import com.mobike.mobike.utils.Event;
 import com.mobike.mobike.utils.Route;
@@ -42,11 +45,13 @@ import java.util.Date;
 
 public class EventActivity extends ActionBarActivity implements HttpGetTask.HttpGet, View.OnClickListener {
     public static final String EVENT_URL = "http://mobike.ddns.net/SRV/events/retrieve/";
+    public static final String ACCEPT = "accept";
+    public static final String DECLINE = "decline";
 
     private TextView mName, mDate, mCreator, mDescription, mInvited, mStartLocation, mCreationDate;
     private ImageView mThumbnail;
     private Route route;
-    private String gpx, id, routeID;
+    private String eventID, routeID;
     private int state;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
@@ -74,32 +79,21 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
         mInvited = (TextView) findViewById(R.id.event_invited);
         mStartLocation = (TextView) findViewById(R.id.start_location);
         mCreationDate = (TextView) findViewById(R.id.creation_date);
-        mThumbnail = (ImageView) findViewById(R.id.event_map);
+        mThumbnail = (com.mobike.mobike.SquareImageView) findViewById(R.id.event_map);
 
         state = bundle.getInt(EventsFragment.EVENT_STATE);
-        id = bundle.getString(EventsFragment.EVENT_ID);
-        routeID = bundle.getString(EventsFragment.ROUTE_ID);
+        eventID = bundle.getString(EventsFragment.EVENT_ID);
 
-        //new HttpGetTask(this).execute(ROUTE_URL + bundle.getString(EventsFragment.ROUTE_ID));
-        //new DownloadGpxTask(this).execute(bundle.getString(EventsFragment.ROUTE_ID));
-        new HttpGetTask(this).execute(EVENT_URL + id);
+        new HttpGetTask(this).execute(EVENT_URL + eventID);
 
         //inflate dei giusto button per accettare o declinare l'invito
-        LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.button_layout);
 
         if (state == Event.INVITED) {
-            Button accept = (Button) getLayoutInflater().inflate(R.layout.accept_button, buttonLayout, false);
-            Button decline = (Button) getLayoutInflater().inflate(R.layout.decline_button, buttonLayout, false);
-            buttonLayout.addView(accept);
-            buttonLayout.addView(decline);
-            accept.setOnClickListener(this);
-            decline.setOnClickListener(this);
+            inflateButtons();
         } else if (state == Event.ACCEPTED) {
-            TextView accepted = (TextView) getLayoutInflater().inflate(R.layout.accepted_textview, buttonLayout, false);
-            buttonLayout.addView(accepted);
+            inflateTextviews();
         } else if (state == Event.REFUSED) {
-            TextView declined = (TextView) getLayoutInflater().inflate(R.layout.declined_textview, buttonLayout, false);
-            buttonLayout.addView(declined);
+            inflateTextviews();
         }
 
     }
@@ -108,22 +102,26 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
     public void setResult(String result) {
         String name="", date="", creator="", description="", accepted="", invited="", refused="", startLocation="", creationDate="", thumbnailURL="";
         JSONObject jsonEvent;
+        Crypter crypter = new Crypter();
 
         try {
-            jsonEvent = new JSONObject(result);
+            jsonEvent = new JSONObject(crypter.decrypt(new JSONObject(result).getString("event")));
+            Log.v(TAG, "json evento: " + jsonEvent.toString());
             name = jsonEvent.getString("name");
             name = name.substring(0,1).toUpperCase() + name.substring(1);
-            date = jsonEvent.getString("startDate");
+            date = jsonEvent.getString("startdate");
             creator = jsonEvent.getJSONObject("owner").getString("nickname");
             description = jsonEvent.getString("description");
-            startLocation = jsonEvent.getString("startLocation");
-            creationDate = jsonEvent.getString("creationDate");
-            thumbnailURL = jsonEvent.getString("route imgUrl");
+            startLocation = jsonEvent.getString("startlocation");
+            creationDate = jsonEvent.getString("creationdate");
+            //thumbnailURL = jsonEvent.getJSONObject("route").getString("imgUrl");
+            thumbnailURL = "https://maps.googleapis.com/maps/api/staticmap?size=500x500&path=weight:3%7Ccolor:0xff0000ff%7Cenc:aty~Fo|uiAkMnT_G`OYvIrDzKvG`OrH`NjE`OpDjS~BhRXd_@_Cpd@qHnc@ii@zw@cf@jnAqLdPw_@n|BrHfo@sHpd@kAtcAvGrqA{f@~eB";
+            routeID = jsonEvent.getJSONObject("route").getInt("id") + "";
         } catch (JSONException e) {}
 
 
         Date eventDate = null, mDateCreation = null;
-        SimpleDateFormat s1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat s1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
         try {
             eventDate = s1.parse(date);
             mDateCreation = s1.parse(creationDate);
@@ -292,17 +290,34 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
         switch (view.getId()) {
             case R.id.accept_event_button:
                 // post per accettare l'invito
+                new ParticipationTask(this, eventID).execute(ACCEPT);
 
                 removeButtons();
                 TextView accepted = (TextView) getLayoutInflater().inflate(R.layout.accepted_textview, buttonLayout, false);
                 buttonLayout.addView(accepted);
                 break;
+
             case R.id.decline_event_button:
                 // post per declinare l'invito
+                new ParticipationTask(this, eventID).execute(DECLINE);
 
                 removeButtons();
                 TextView declined = (TextView) getLayoutInflater().inflate(R.layout.declined_textview, buttonLayout, false);
                 buttonLayout.addView(declined);
+                break;
+
+            case R.id.accept_declined_event_button:
+                new ParticipationTask(this, eventID).execute(ACCEPT);
+                removeTextviews();
+                state = Event.ACCEPTED;
+                inflateTextviews();
+                break;
+
+            case R.id.decline_accepted_event_button:
+                new ParticipationTask(this, eventID).execute(DECLINE);
+                removeTextviews();
+                state = Event.REFUSED;
+                inflateTextviews();
                 break;
         }
     }
@@ -310,5 +325,42 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
     private void removeButtons() {
         ((Button) findViewById(R.id.accept_event_button)).setVisibility(View.GONE);
         ((Button) findViewById(R.id.decline_event_button)).setVisibility(View.GONE);
+    }
+
+    private void removeTextviews() {
+        if (state == Event.ACCEPTED) {
+            ((TextView) findViewById(R.id.accepted_event_textview)).setVisibility(View.GONE);
+            ((ImageButton) findViewById(R.id.decline_accepted_event_button)).setVisibility(View.GONE);
+        } else {
+            ((TextView) findViewById(R.id.declined_event_textview)).setVisibility(View.GONE);
+            ((ImageButton) findViewById(R.id.accept_declined_event_button)).setVisibility(View.GONE);
+        }
+    }
+
+    private void inflateButtons() {
+        LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.button_layout);
+        Button accept = (Button) getLayoutInflater().inflate(R.layout.accept_button, buttonLayout, false);
+        Button decline = (Button) getLayoutInflater().inflate(R.layout.decline_button, buttonLayout, false);
+        buttonLayout.addView(accept);
+        buttonLayout.addView(decline);
+        accept.setOnClickListener(this);
+        decline.setOnClickListener(this);
+    }
+
+    private void inflateTextviews() {
+        LinearLayout buttonLayout = (LinearLayout) findViewById(R.id.button_layout);
+        if (state == Event.ACCEPTED) {
+            TextView accepted = (TextView) getLayoutInflater().inflate(R.layout.accepted_textview, buttonLayout, false);
+            ImageButton decline = (ImageButton) getLayoutInflater().inflate(R.layout.decline_accepted_button, buttonLayout, false);
+            buttonLayout.addView(accepted);
+            buttonLayout.addView(decline);
+            decline.setOnClickListener(this);
+        } else {
+            TextView declined = (TextView) getLayoutInflater().inflate(R.layout.declined_textview, buttonLayout, false);
+            ImageButton accept = (ImageButton) getLayoutInflater().inflate(R.layout.accept_declined_button, buttonLayout, false);
+            buttonLayout.addView(declined);
+            buttonLayout.addView(accept);
+            accept.setOnClickListener(this);
+        }
     }
 }

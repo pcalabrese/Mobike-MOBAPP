@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.mobike.mobike.LoginActivity;
 import com.mobike.mobike.MainActivity;
+import com.mobike.mobike.NicknameActivity;
 import com.mobike.mobike.utils.Crypter;
 
 import org.json.JSONException;
@@ -53,6 +54,11 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
 
     @Override
     protected void onPostExecute(String result) {
+
+        if (result.equals("1")) {
+            result = "This nickname already exists, please choose another one.";
+            ((NicknameActivity) context).nicknameAlreadyExists();
+        }
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
     }
 
@@ -107,6 +113,8 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
                 Intent intent = new Intent(context, MainActivity.class);
                 ((Activity) context).startActivityForResult(intent, LoginActivity.MAPS_REQUEST);
                 return "Welcome " + name.substring(0,1).toUpperCase() + name.substring(1) + "!";
+            } else if (httpResult == HttpURLConnection.HTTP_CONFLICT) {
+                return "1";
             }
             else {
                 // scrive un messaggio di errore con codice httpResult

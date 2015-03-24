@@ -2,9 +2,8 @@ package com.mobike.mobike;
 
 import android.content.Intent;
 import android.graphics.PorterDuff;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.RangeSeekBar;
 
 
@@ -26,6 +24,8 @@ public class RouteSearchActivity extends ActionBarActivity implements View.OnCli
 
     private ImageView mountain, hill, plain, coast;
     private Boolean[] selected = new Boolean[4];
+    private RangeSeekBar<Float> seekBar;
+    private boolean oneSelected = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class RouteSearchActivity extends ActionBarActivity implements View.OnCli
         for (int i = 0; i < 4; i++) selected[i] = false;
 
         //range seekbar
-        RangeSeekBar<Float> seekBar = new RangeSeekBar<>(100f, 500f, this);
+        seekBar = new RangeSeekBar<>(100f, 500f, this);
         seekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Float>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
@@ -99,57 +99,94 @@ public class RouteSearchActivity extends ActionBarActivity implements View.OnCli
     public void onClick(View view) {
         int grigio_trasparente = getResources().getColor(R.color.grigio_trasparente);
         Log.v(TAG, "onClick()");
+
         switch (view.getId()) {
             case R.id.mountain_icon:
-                if (!selected[0])
+                if (!selected[0] && !oneSelected) {
                     mountain.setColorFilter(null);
-                else
+                    oneSelected = true;
+                    selected[0] = !selected[0];
+                }
+                else if (selected[0]) {
                     mountain.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
-                selected[0] = !selected[0];
+                    oneSelected = false;
+                    selected[0] = !selected[0];
+                }
+
                 break;
 
             case R.id.hill_icon:
-                if (!selected[1])
+                if (!selected[1] && !oneSelected) {
                     hill.setColorFilter(null);
-                else
+                    oneSelected = true;
+                    selected[1] = !selected[1];
+                }
+                else if (selected[1]) {
                     hill.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
-                selected[1] = !selected[1];
+                    oneSelected = false;
+                    selected[1] = !selected[1];
+                }
+
                 break;
 
             case R.id.plain_icon:
-                if (!selected[2])
+                if (!selected[2] && !oneSelected) {
                     plain.setColorFilter(null);
-                else
+                    oneSelected = true;
+                    selected[2] = !selected[2];
+                }
+                else if (selected[2]) {
                     plain.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
-                selected[2] = !selected[2];
+                    oneSelected = false;
+                    selected[2] = !selected[2];
+                }
                 break;
 
             case R.id.coast_icon:
-                if (!selected[3])
+                if (!selected[3] && !oneSelected) {
                     coast.setColorFilter(null);
-                else
+                    oneSelected = true;
+                    selected[3] = !selected[3];
+                }
+                else if (selected[3]) {
                     coast.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
-                selected[3] = !selected[3];
+                    oneSelected = false;
+                    selected[3] = !selected[3];
+                }
                 break;
 
             case R.id.send:
                 String start = ((EditText) findViewById(R.id.start)).getText().toString();
                 String destination = ((EditText) findViewById(R.id.destination)).getText().toString();
+                String url = "http://mobike.ddns.net/SRV/routes/retrievefiltered?";
 
-                if (start.length() == 0) {
+                if (start.length() != 0) {
                     Toast.makeText(this, "Please insert the start location", Toast.LENGTH_SHORT).show();
-                } else if (destination.length() == 0) {
-                    Toast.makeText(this, "Please insert the destination", Toast.LENGTH_SHORT).show();
-                } else {
-                    //build url and returns it to SearchFragment
-                    Intent intent = new Intent();
-                    Bundle bundle = new Bundle();
-                    bundle.putString(ROUTE_SEARCH_URL, "http://mobike.ddns.net/SRV/routes/retrieveall");
-                    intent.putExtras(bundle);
-                    setResult(RESULT_OK, intent);
-                    Toast.makeText(this, "Route search is currently under development", Toast.LENGTH_SHORT).show();
-                    finish();
+                    url += "startLocation=" + start + "&";
                 }
+                if (destination.length() != 0) {
+                    Toast.makeText(this, "Please insert the destination", Toast.LENGTH_SHORT).show();
+                    url += "endLocation=" + destination + "&";
+                }
+                //build url and returns it to SearchFragment
+
+                url += "minLength=" + String.format("%.0f", seekBar.getSelectedMinValue()*1000);
+                url += "&maxLength=" + String.format("%.0f", seekBar.getSelectedMaxValue()*1000);
+                if (oneSelected) url += "&type=";
+
+                if (selected[0]) url += "Montuoso";
+                if (selected[1]) url += "Collinare";
+                if (selected[2]) url += "Pianura";
+                if (selected[3]) url += "Costiero";
+
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putString(ROUTE_SEARCH_URL, url);
+                intent.putExtras(bundle);
+                setResult(RESULT_OK, intent);
+                Toast.makeText(this, "Route search is currently under development", Toast.LENGTH_SHORT).show();
+                finish();
+
                 break;
         }
     }

@@ -109,7 +109,7 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                 // uso startActivityForResult così se NicknameActivity termina esce dall'applicazione
                 // può terminare per due motivi, o termina la main activity o l'utente non inserisce il nickname
                 ((Activity) context).startActivityForResult(intent, LoginActivity.REGISTRATION_REQUEST);
-                return "User not registered: " + httpResult;
+                return "You are not registered yet, please create an account!";
             } else {
                 Log.v(TAG, " httpResult = " + httpResult);
                 return "Error code: " + httpResult;

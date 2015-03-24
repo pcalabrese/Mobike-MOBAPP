@@ -14,8 +14,11 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,14 +52,15 @@ import java.util.Locale;
 public class SummaryActivity extends ActionBarActivity {
 
     public static final int SHARE_REQUEST = 1;
-    public static final int REVIEW_REQUEST = 2;
+    public static final int REVIEW_REQUEST = 3;
     private static final String TAG = "SummaryActivity";
     private static final String UploadURL = "http://mobike.ddns.net/SRV/routes/create";
     private static final String DEFAULT_ACCOUNT_NAME = "no account";
     public static final String ROUTE_ID = "com.mobike.mobike.ROUTE_ID";
     public static final String ROUTE_NAME = "com.mobike.mobike.route_name";
     public static final String ROUTE_LOCATION = "com.mobike.mobike.route_location";
-    private  EditText routeNameText, routeDescriptionText, routeDifficulty, routeBends, routeType, routeStartLocation, routeEndLocation;
+    private  EditText routeNameText, routeDescriptionText, routeDifficulty, routeBends, routeStartLocation, routeEndLocation;
+    private Spinner typeSpinner;
     private TextView length, duration;
     private long durationInSeconds;
     private String routeName, routeDescription, email, routeID, difficulty, bends, type, startLocation, endLocation;
@@ -92,9 +96,41 @@ public class SummaryActivity extends ActionBarActivity {
         routeDescriptionText = (EditText) findViewById(R.id.route_description_text);
         routeDifficulty = (EditText) findViewById(R.id.route_difficulty);
         routeBends = (EditText) findViewById(R.id.route_bends);
-        routeType = (EditText) findViewById(R.id.route_type);
+        typeSpinner = (Spinner) findViewById(R.id.route_type);
         routeStartLocation = (EditText) findViewById(R.id.start_location);
         routeEndLocation = (EditText) findViewById(R.id.end_location);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.route_type_selection, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        typeSpinner.setAdapter(adapter);
+        typeSpinner.setPrompt("Route type...");
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                switch (position) {
+                    case 0:
+                        type = "Montuoso";
+                        break;
+                    case 1:
+                        type = "Collinare";
+                        break;
+                    case 2:
+                        type = "Costiero";
+                        break;
+                    case 3:
+                        type = "Pianeggiante";
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                //do nothing
+            }
+        });
 
         //set length and duration text views
         GPSDatabase db2 = new GPSDatabase(this);
@@ -143,7 +179,13 @@ public class SummaryActivity extends ActionBarActivity {
                         ((ScrollView) findViewById(R.id.scroll_view)).requestDisallowInterceptTouchEvent(true);
                     }
                 });
-                setUpMap();
+                mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                    @Override
+                    public void onMapLoaded() {
+                        setUpMap();
+                    }
+                });
+                //setUpMap();
             }
         }
     }
@@ -180,7 +222,7 @@ public class SummaryActivity extends ActionBarActivity {
                 }
                 Log.v(TAG, "numero punti: " + points.size());
                 LatLngBounds bounds = boundsBuilder.build();
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 10);
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 50);
                 mMap.animateCamera(cameraUpdate);
             } else {
                 CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
@@ -221,7 +263,7 @@ public class SummaryActivity extends ActionBarActivity {
             routeDescription = routeDescriptionText.getText().toString();
             difficulty = routeDifficulty.getText().toString();
             bends = routeBends.getText().toString();
-            type = routeType.getText().toString();
+            //type = typeSpinner.getText().toString();
             startLocation = routeStartLocation.getText().toString();
             endLocation = routeEndLocation.getText().toString();
 

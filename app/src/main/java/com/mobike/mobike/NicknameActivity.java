@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobike.mobike.network.RegisterUserTask;
@@ -78,6 +79,12 @@ public class NicknameActivity extends ActionBarActivity implements View.OnClickL
                 }
                 break;
         }
+    }
+
+    public void nicknameAlreadyExists() {
+        TextView textView = ((TextView) findViewById(R.id.nickname_textview));
+        textView.setText(getResources().getString(R.string.nickname_already_exists));
+        textView.setTextColor(getResources().getColor(R.color.material_red));
     }
 
     @Override

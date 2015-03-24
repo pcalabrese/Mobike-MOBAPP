@@ -1,8 +1,8 @@
 package com.mobike.mobike;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,8 +24,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-import com.mobike.mobike.network.DownloadGpxTask;
 import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.network.ParticipationTask;
 import com.mobike.mobike.utils.Crypter;
@@ -33,14 +32,13 @@ import com.mobike.mobike.utils.Event;
 import com.mobike.mobike.utils.Route;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class EventActivity extends ActionBarActivity implements HttpGetTask.HttpGet, View.OnClickListener {
@@ -49,10 +47,12 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
     public static final String DECLINE = "decline";
 
     private TextView mName, mDate, mCreator, mDescription, mInvited, mStartLocation, mCreationDate;
+    private Button mDisplayRouteButton, mAcceptedButton, mInvitedButton, mDeclinedButton;
     private ImageView mThumbnail;
     private Route route;
     private String eventID, routeID;
     private int state;
+    private ArrayList<String> usersAccepted, usersInvited, usersDeclined;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline routePoly; // the route
@@ -80,6 +80,10 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
         mStartLocation = (TextView) findViewById(R.id.start_location);
         mCreationDate = (TextView) findViewById(R.id.creation_date);
         mThumbnail = (com.mobike.mobike.SquareImageView) findViewById(R.id.event_map);
+        mDisplayRouteButton = ((Button) findViewById(R.id.display_route_button));
+        mAcceptedButton = ((Button) findViewById(R.id.accepted_users_button));
+        mInvitedButton = ((Button) findViewById(R.id.pending_users_button));
+        mDeclinedButton = ((Button) findViewById(R.id.declined_users_button));
 
         state = bundle.getInt(EventsFragment.EVENT_STATE);
         eventID = bundle.getString(EventsFragment.EVENT_ID);
@@ -96,28 +100,45 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
             inflateTextviews();
         }
 
+        mDisplayRouteButton.setOnClickListener(this);
+        mAcceptedButton.setOnClickListener(this);
+        mInvitedButton.setOnClickListener(this);
+        mDeclinedButton.setOnClickListener(this);
+
     }
 
 
     public void setResult(String result) {
-        String name="", date="", creator="", description="", accepted="", invited="", refused="", startLocation="", creationDate="", thumbnailURL="";
+        String name = "", date = "", creator = "", description = "", startLocation = "", creationDate = "", thumbnailURL = "";
+        int acceptedSize = 0, invitedSize = 0, declinedSize = 0;
         JSONObject jsonEvent;
         Crypter crypter = new Crypter();
+
+        if (result.length() == 0) {
+            Toast.makeText(this, "An error occurred loading this event", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         try {
             jsonEvent = new JSONObject(crypter.decrypt(new JSONObject(result).getString("event")));
             Log.v(TAG, "json evento: " + jsonEvent.toString());
             name = jsonEvent.getString("name");
-            name = name.substring(0,1).toUpperCase() + name.substring(1);
+            name = name.substring(0, 1).toUpperCase() + name.substring(1);
             date = jsonEvent.getString("startdate");
             creator = jsonEvent.getJSONObject("owner").getString("nickname");
             description = jsonEvent.getString("description");
             startLocation = jsonEvent.getString("startlocation");
             creationDate = jsonEvent.getString("creationdate");
-            //thumbnailURL = jsonEvent.getJSONObject("route").getString("imgUrl");
-            thumbnailURL = "https://maps.googleapis.com/maps/api/staticmap?size=500x500&path=weight:3%7Ccolor:0xff0000ff%7Cenc:aty~Fo|uiAkMnT_G`OYvIrDzKvG`OrH`NjE`OpDjS~BhRXd_@_Cpd@qHnc@ii@zw@cf@jnAqLdPw_@n|BrHfo@sHpd@kAtcAvGrqA{f@~eB";
+            thumbnailURL = jsonEvent.getJSONObject("route").isNull("imgUrl") ? "https://maps.googleapis.com/maps/api/staticmap?size=500x500&path=weight:3%7Ccolor:0xff0000ff%7Cenc:aty~Fo|uiAkMnT_G`OYvIrDzKvG`OrH`NjE`OpDjS~BhRXd_@_Cpd@qHnc@ii@zw@cf@jnAqLdPw_@n|BrHfo@sHpd@kAtcAvGrqA{f@~eB" : jsonEvent.getJSONObject("route").getString("imgUrl") + "&size=500x500";
             routeID = jsonEvent.getJSONObject("route").getInt("id") + "";
-        } catch (JSONException e) {}
+            usersAccepted = getList(jsonEvent.getString("usersAccepted"));
+            usersInvited = getList(jsonEvent.getString("usersInvited"));
+            usersDeclined = getList(jsonEvent.getString("usersRefused"));
+            acceptedSize = jsonEvent.getInt("acceptedSize");
+            invitedSize = jsonEvent.getInt("invitedSize");
+            declinedSize = jsonEvent.getInt("declinedSize");
+        } catch (JSONException e) {
+        }
 
 
         Date eventDate = null, mDateCreation = null;
@@ -125,16 +146,30 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
         try {
             eventDate = s1.parse(date);
             mDateCreation = s1.parse(creationDate);
-        } catch (ParseException e ) { }
+        } catch (ParseException e) {
+        }
 
         mName.setText(name);
         mDate.setText(new SimpleDateFormat("EEEE, d MMMM yyyy\nkk:mm").format(eventDate));
         mCreator.setText(creator);
         mDescription.setText(description);
-        mInvited.setText(invited);
+        mAcceptedButton.setText(String.valueOf(acceptedSize) + "\nAccepted");
+        mInvitedButton.setText(String.valueOf(invitedSize) + "\nInvited");
+        mDeclinedButton.setText(String.valueOf(declinedSize) + "\nDeclined");
         mStartLocation.setText(startLocation);
         mCreationDate.setText(new SimpleDateFormat("EEEE, d MMMM yyyy").format(mDateCreation));
         Picasso.with(this).load(thumbnailURL).into(mThumbnail);
+    }
+
+    private ArrayList<String> getList(String s) throws JSONException{
+        ArrayList<String> result = new ArrayList<>();
+        JSONArray array = new JSONArray(s);
+        if (array.length() == 0) return result;
+
+        for (int i = 0; i < array.length(); i++)
+            result.add(array.getJSONObject(i).getString("nickname"));
+
+        return result;
     }
 
 
@@ -268,7 +303,7 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
         }
     }
 
-    public void displayRoute(View view) {
+    public void displayRoute() {
         Intent intent = new Intent(this, RouteActivity.class);
         Bundle bundle = new Bundle();
         /*bundle.putString(SearchFragment.ROUTE_NAME, route.getName());
@@ -319,7 +354,30 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
                 state = Event.REFUSED;
                 inflateTextviews();
                 break;
+
+            case R.id.accepted_users_button:
+                createListDialog("Accepted", usersAccepted);
+                break;
+
+            case R.id.pending_users_button:
+                createListDialog("Pending", usersInvited);
+                break;
+
+            case R.id.declined_users_button:
+                createListDialog("Declined", usersDeclined);
+                break;
+
+            case R.id.display_route_button:
+                displayRoute();
         }
+    }
+
+    private void createListDialog(String title, ArrayList<String> elements) {
+        TextView titleView = ((TextView) getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
+        titleView.setText(title);
+        ShowListDialog dialog = new ShowListDialog();
+        dialog.setArguments(title, elements, titleView);
+        dialog.show(getSupportFragmentManager(), "usersList");
     }
 
     private void removeButtons() {
@@ -361,6 +419,30 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
             buttonLayout.addView(declined);
             buttonLayout.addView(accept);
             accept.setOnClickListener(this);
+        }
+    }
+
+
+
+    public static class ShowListDialog extends android.support.v4.app.DialogFragment {
+        private ArrayList<String> elements;
+        private String title;
+        private View titleView;
+
+        public void setArguments(String title, ArrayList<String> e, View t) {
+            this.title = title;
+            elements = e;
+            titleView = t;
+        }
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setCustomTitle(titleView)
+                    .setItems(elements.toArray(new String[elements.size()]), null);
+            return builder.create();
         }
     }
 }

@@ -103,5 +103,12 @@
     <string name="to">To</string>
     <string name="from">From</string>
     <string name="title_activity_full_screen_map">Route Map</string>
+    <string name="nickname_already_exists">The nickname you entered already exists, please choose another one.</string>
+    <string-array name="route_type_selection">
+        <item>Montuoso</item>
+        <item>Collinare</item>
+        <item>Costiero</item>
+        <item>Pianeggiante</item>
+    </string-array>
 
 </resources>

@@ -299,7 +299,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                     type = jsonRoute.getString("type");
                     rating = jsonRoute.isNull("rating") ? 0 : jsonRoute.getInt("rating");
                     ratingNumber = jsonRoute.isNull("ratingnumber") ? 0 : jsonRoute.getInt("ratingnumber");
-                    thumbnailURL = jsonRoute.isNull("imgUrl") ? "https://maps.googleapis.com/maps/api/staticmap?size=200x200&path=weight:3%7Ccolor:0xff0000ff%7Cenc:aty~Fo|uiAkMnT_G`OYvIrDzKvG`OrH`NjE`OpDjS~BhRXd_@_Cpd@qHnc@ii@zw@cf@jnAqLdPw_@n|BrHfo@sHpd@kAtcAvGrqA{f@~eB" : jsonRoute.getString("imgUrl");
+                    thumbnailURL = jsonRoute.isNull("imgUrl") ? "https://maps.googleapis.com/maps/api/staticmap?size=200x200&path=weight:3%7Ccolor:0xff0000ff%7Cenc:aty~Fo|uiAkMnT_G`OYvIrDzKvG`OrH`NjE`OpDjS~BhRXd_@_Cpd@qHnc@ii@zw@cf@jnAqLdPw_@n|BrHfo@sHpd@kAtcAvGrqA{f@~eB" : jsonRoute.getString("imgUrl") + "&size=200x200";
                     startLocation = jsonRoute.getString("startlocation");
                     endLocation = jsonRoute.getString("endlocation");
 

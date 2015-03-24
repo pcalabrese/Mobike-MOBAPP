@@ -21,6 +21,7 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,6 +51,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
     public static final String USER_RATE = "com.mobike.mobike.RouteActivity.user_rate";
     public static final String USER_MESSAGE = "com.mobike.mobike.RouteActivity.user_message";
     public static final int EDIT_REVIEW_REQUEST = 1;
+    public static final int NEW_REVIEW_REQUEST = 2;
     public static final String GPX = "com.mobike.mobike.gpx";
 
     public static String currentGpx;
@@ -217,13 +219,19 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         int ratingNumber = 0;
         double rating = 0;
         JSONArray reviews = null;
-        JSONObject jsonRoute;
+        JSONObject jsonRoute, resultJSON;
         Crypter crypter = new Crypter();
 
         Log.v(TAG, "result: " + result);
 
+        if (result.length() == 0) {
+            Toast.makeText(this, "An error occurred loading this route", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         try {
-            jsonRoute = new JSONObject(crypter.decrypt(new JSONObject(result).getString("route")));
+            resultJSON = new JSONObject(result);
+            jsonRoute = new JSONObject(crypter.decrypt(resultJSON.getString("route")));
             Log.v(TAG, "jsonRoute: " + jsonRoute.toString());
             name = jsonRoute.getString("name");
             name = name.substring(0,1).toUpperCase() + name.substring(1);
@@ -234,7 +242,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             difficulty = jsonRoute.getInt("difficulty") + "";
             bends = jsonRoute.getInt("bends") + "";
             type = jsonRoute.getString("type");
-            gpx = jsonRoute.getString("gpxString");
+            gpx = resultJSON.getString("gpx");
             reviews = jsonRoute.getJSONArray("reviewList");
             rating = jsonRoute.isNull("rating")? 0d : jsonRoute.getDouble("rating");
             ratingNumber = jsonRoute.isNull("ratingnumber")? 0 : jsonRoute.getInt("ratingnumber");
@@ -249,8 +257,8 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         mLength.setText(String.format("%.01f", Float.parseFloat(length)/1000) + " km");
         int durationInSeconds = Integer.parseInt(duration);
         mDuration.setText(String.valueOf(durationInSeconds/3600) + " h " + String.valueOf((durationInSeconds/60)%60) + " m " + String.valueOf(durationInSeconds%60) + " s");
-        mDifficulty.setText(difficulty);
-        mBends.setText(bends);
+        mDifficulty.setText(difficulty + "/10");
+        mBends.setText(bends + "/10");
         mType.setText(type);
         mStartLocation.setText(startLocation);
         mEndLocation.setText(endLocation);
@@ -335,7 +343,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
                 Bundle bundle = new Bundle();
                 bundle.putString(SearchFragment.ROUTE_ID, routeID);
                 intent.putExtras(bundle);
-                startActivity(intent);
+                startActivityForResult(intent, NEW_REVIEW_REQUEST);
                 break;
 
             case R.id.pick_this_route_button:
@@ -392,9 +400,12 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         if (requestCode == EDIT_REVIEW_REQUEST) {
             //findViewById(R.id.user_review_item).setVisibility(View.GONE);
             //new HttpGetTask(this).execute(ROUTE_URL + routeID);
+            if (resultCode == RESULT_OK)
+                recreateActivity();
 
-            finish();
-            startActivityForResult(getIntent(), getIntent().getExtras().getInt(SearchFragment.REQUEST_CODE));
         }
+        if (requestCode == NEW_REVIEW_REQUEST && resultCode == RESULT_OK)
+            recreateActivity();
+
     }
 }

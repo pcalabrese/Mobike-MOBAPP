@@ -92,9 +92,11 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
     public void setResult(String result) {
         try {
             JSONArray jsonArray = new JSONArray(result);
+            TextView titleView = ((TextView) getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
+            titleView.setText("Pending Invitations");
             if (jsonArray.length() > 0) {
                 new AlertDialog.Builder(this)
-                        .setTitle("Invitations")
+                        .setCustomTitle(titleView)
                         .setMessage("Hey! You have pending invitations to events, check them!")
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {

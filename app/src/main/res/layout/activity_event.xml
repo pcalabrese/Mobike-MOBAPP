@@ -150,7 +150,7 @@
                 <include layout="@layout/divider" />
 
                 <!-- text view for the invited people of the event -->
-                <TextView
+                <!--<TextView
                     android:id="@+id/event_invited"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -165,7 +165,7 @@
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
-                <include layout="@layout/divider" />
+                <include layout="@layout/divider" /> -->
 
                 <!-- text view for the start location of the event -->
                 <LinearLayout
@@ -244,6 +244,45 @@
                     android:textSize="15sp"
                     android:textStyle="italic" />
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/accepted_users_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="10dp"
+                        android:gravity="center"
+                        android:background="@drawable/green_button"
+                        android:textColor="@color/white"
+                        android:text="12\nAccepted"/>
+
+                    <Button
+                        android:id="@+id/pending_users_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="10dp"
+                        android:gravity="center"
+                        android:background="@drawable/orange_button"
+                        android:textColor="@color/white"
+                        android:text="5\nPending"/>
+
+                    <Button
+                        android:id="@+id/declined_users_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="10dp"
+                        android:gravity="center"
+                        android:background="@drawable/red_button"
+                        android:textColor="@color/white"
+                        android:text="15\nDeclined"/>
+                </LinearLayout>
+
                 <!-- map whit the route associated with the event -->
                 <!--<fragment
                     android:id="@+id/map"
@@ -262,6 +301,7 @@
         </ScrollView>
 
         <Button
+            android:id="@+id/display_route_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -270,7 +310,6 @@
             android:layout_marginRight="40dp"
             android:background="@drawable/orange_button"
             android:elevation="@dimen/default_elevation"
-            android:onClick="displayRoute"
             android:stateListAnimator="@anim/fab_animation"
             android:text="@string/view_route_details"
             android:textColor="@color/white" />

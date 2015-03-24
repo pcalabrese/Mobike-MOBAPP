@@ -347,10 +347,12 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     public void stopButtonPressed(View view) {
         if (view.getId() == R.id.stop_button) {
             final View.OnClickListener onClickListener = this;
+            TextView titleView = ((TextView) getActivity().getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
+            titleView.setText(getResources().getString(R.string.stop));
             if(registered) {
                 //alert dialog to stop the registration
                 new AlertDialog.Builder(getActivity())
-                        .setTitle(getResources().getString(R.string.stop))
+                        .setCustomTitle(titleView)
                         .setMessage(getResources().getString(R.string.stop_registration))
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -371,7 +373,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
             else {
                 // dialog to stop the registration if there are no recorded positions
                 new AlertDialog.Builder(getActivity())
-                        .setTitle(getResources().getString(R.string.stop))
+                        .setCustomTitle(titleView)
                         .setMessage(getResources().getString(R.string.stop_registration_no_positions))
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {

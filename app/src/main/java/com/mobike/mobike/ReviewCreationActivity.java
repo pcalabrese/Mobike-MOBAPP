@@ -95,9 +95,10 @@ public class ReviewCreationActivity extends ActionBarActivity implements View.On
 
                     if (requestCode != RouteActivity.EDIT_REVIEW_REQUEST)
                         new UploadNewReviewTask(this, routeID, comment, rate).execute();
-                    else if (requestCode == RouteActivity.EDIT_REVIEW_REQUEST)
+                    else
                         new EditReviewTask(this, routeID, comment, rate).execute();
 
+                    setResult(RESULT_OK, null);
                     finish();
                 }
 

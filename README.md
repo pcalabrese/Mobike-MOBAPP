@@ -17,4 +17,3 @@ Milestone 2 - Release Candidate
 
 Milestone 3 - Final
 ==============
-- [Presentation]()

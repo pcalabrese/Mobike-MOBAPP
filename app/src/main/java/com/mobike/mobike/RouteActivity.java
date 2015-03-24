@@ -265,7 +265,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         setReviews(reviews);
         setGpx(gpx);
         mRating.setText(String.format("%.01f", rating));
-        mRatingNumber.setText(ratingNumber + " reviews");
+        mRatingNumber.setText(ratingNumber + (ratingNumber == 1? " review" : " reviews"));
         mRatingBar.setRating(Float.parseFloat(String.valueOf(rating)));
 
         Log.v(TAG, "setResult() completed");

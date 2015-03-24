@@ -2,17 +2,23 @@
 
 <!-- file xml del bottone start che verrà aggiunto al linear layout della MapsActivity -->
 
+    <!-- left e right 70dp, bottom 20dp -->
 <Button android:id="@+id/start_button"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:text="@string/start_button"
     android:layout_height="match_parent"
     android:layout_width="0dp"
     android:layout_weight="1"
-    android:layout_marginLeft="70dp"
-    android:layout_marginRight="70dp"
-    android:layout_marginBottom="20dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginBottom="15dp"
     android:layout_marginTop="10dp"
     android:textColor="@color/white"
     android:background="@drawable/green_button"
     android:elevation="@dimen/default_elevation"
-    android:stateListAnimator="@anim/fab_animation"/>
+    android:stateListAnimator="@anim/fab_animation"
+    android:drawableLeft="@drawable/ic_play_white_24dp"
+    android:drawableStart="@drawable/ic_play_white_24dp"
+    android:drawablePadding="15dp"
+    android:paddingLeft="120dp"
+    android:paddingRight="120dp"/>

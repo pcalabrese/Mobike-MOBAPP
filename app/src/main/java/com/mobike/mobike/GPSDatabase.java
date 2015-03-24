@@ -2,6 +2,7 @@ package com.mobike.mobike;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,6 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.PolyUtil;
 
 import org.json.JSONArray;
@@ -46,7 +48,7 @@ public class GPSDatabase
             FIELD_LAT+" VARCHAR NOT NULL, "+ FIELD_LNG+" VARCHAR NOT NULL, "+FIELD_ALT +" VARCHAR, " +
             FIELD_TIME+" INTEGER, " + FIELD_DIST + " REAL);";
 
-    private final String staticMapURL = "https://maps.googleapis.com/maps/api/staticmap?size=400x400&path=weight:5%7Ccolor:0xff0000ff%7Cenc:";
+    private final String staticMapURL = "https://maps.googleapis.com/maps/api/staticmap?&path=weight:5%7Ccolor:0xff0000ff%7Cenc:";
     private final int maxEncodedPoints = 100;
     private final String TAG = "GPSDatabase";
 
@@ -355,12 +357,9 @@ public class GPSDatabase
      * This method gets a gpx file and returns the list of the TrackPoints in that file.
      * @param gpxString A string representing a gpx file.
      * @return A list of LatLng objects.
-     * @throws IOException when there is something wrong.
      */
-    public ArrayList<LatLng> gpxToMapPoints(String gpxString) throws IOException {
+    public ArrayList<LatLng> gpxToMapPoints(String gpxString) {
         ArrayList<LatLng> list = new ArrayList<>();
-        BufferedReader bufReader = new BufferedReader(new StringReader(gpxString));
-        String line;
         double latitude;
         double longitude;
         LatLng couple;
@@ -390,19 +389,41 @@ public class GPSDatabase
      * @param description the description the user gave to the route
      * @return the JSONObject containing all the informations on the route.
      */
-    public JSONObject exportRouteInJson(String email, String name, String description, String difficulty, String bends, String type){
-        JSONObject jsonObject = new JSONObject();
+    public JSONObject exportRouteInJson(String email, String name, String description, String difficulty, String bends, String type, String startLocation, String endLocation){
+        JSONObject jsonObject = new JSONObject(), route = new JSONObject(), user = new JSONObject();
+        Crypter crypter = new Crypter();
+
         try{
-            jsonObject.put("creatorEmail", email);
-            jsonObject.put("description", description);
-            jsonObject.put("duration", getTotalDuration());
-            jsonObject.put("length", getTotalLength());
-            jsonObject.put("name", name);
-            jsonObject.put("gpxString", getTableInGPX(email, name, description));
-            jsonObject.put("difficulty", difficulty);
-            jsonObject.put("bends", bends);
-            jsonObject.put("type", type);
-            jsonObject.put("imgUrl", getEncodedPolylineURL());
+            route.put("name", name);
+            route.put("description", description);
+            SharedPreferences sharedPreferences = context.getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
+            int userID = sharedPreferences.getInt(LoginActivity.ID, 0);
+            String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
+            JSONObject creator = new JSONObject();
+            creator.put("id", userID);
+            creator.put("nickname", nickname);
+            route.put("owner", creator);
+            //creation date
+            String creationDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date());
+            route.put("uploaddate", creationDate);
+            route.put("length", getTotalLength());
+            route.put("duration", getTotalDuration());
+            route.put("difficulty", difficulty);
+            route.put("bends", bends);
+            route.put("type", type);
+            route.put("startlocation", startLocation);
+            route.put("endlocation", endLocation);
+            //route.put("imgUrl", getEncodedPolylineURL());
+            route.put("gpxString", getTableInGPX(email, name, description));
+
+            user.put("id", userID);
+            user.put("nickname", nickname);
+
+            jsonObject.put("user", crypter.encrypt(user.toString()));
+            jsonObject.put("route", crypter.encrypt(route.toString()));
+
+            Log.v(TAG, "user json: " + user.toString());
+            Log.v(TAG, "route json: " + route.toString());
             Log.v(TAG, "imgUrl" + getEncodedPolylineURL());
         }
         catch(JSONException e){/*not implemented yet*/ }
@@ -449,6 +470,6 @@ public class GPSDatabase
                     result.add(input.get(i));
             }
         }
-        return staticMapURL + PolyUtil.encode(result);
+        return staticMapURL + PolyUtil.encode(result) + "&size=100x100";
     }
 }

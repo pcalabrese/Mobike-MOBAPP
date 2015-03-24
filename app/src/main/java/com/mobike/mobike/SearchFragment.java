@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -20,16 +21,21 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.mobike.mobike.network.HttpGetTask;
+import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.Route;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +63,9 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     private ProgressDialog progressDialog;
     private Boolean initialSpinner = true, firstTime;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private boolean pickingRoute;
+
+    public static final int SEARCH_REQUEST = 3;
 
     public static final String REQUEST_CODE = "com.mobike.mobike.SearchFragment.request_code";
     public static final String ROUTE_ID = "com.mobike.mobike.SearchFragment.route_id";
@@ -71,7 +80,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_TYPE = "com.mobike.mobike.SearchFragment.route_type";
 
     public static final String downloadAllRoutesURL = "http://mobike.ddns.net/SRV/routes/retrieveall";
-    public static final String downloadUserRoutesURL = "qualcosa";
+    public static final String downloadUserRoutesURL = "http://mobike.ddns.net/SRV/users/myroutes?token=";
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -101,6 +111,11 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        if (getActivity().getIntent().getExtras() != null)
+            pickingRoute = getActivity().getIntent().getExtras().getInt(REQUEST_CODE) == EventCreationActivity.ROUTE_REQUEST;
+
+        Log.v(TAG, "pickingRoute: " + pickingRoute);
 
         firstTime = true;
 
@@ -150,7 +165,22 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                         case 0:
                             downloadRoutes(downloadAllRoutesURL);
                             break;
-                        case 1: //downloadRoutes(downloadUserRoutesURL);
+                        case 1:
+                            String user = "";
+                            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
+                            int id = sharedPreferences.getInt(LoginActivity.ID, 0);
+                            String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
+                            Crypter crypter = new Crypter();
+
+                            try {
+                                JSONObject jsonObject = new JSONObject();
+                                jsonObject.put("id", id);
+                                jsonObject.put("nickname", nickname);
+                                user = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
+                            } catch (JSONException e) {}
+                            catch (UnsupportedEncodingException uee) {}
+
+                            downloadRoutes(downloadUserRoutesURL + user);
                             break;
                     }
                 }
@@ -206,7 +236,22 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 downloadRoutes(downloadAllRoutesURL);
                 break;
             case 1:
-                //downloadRoutes(downloadUserRoutesURL);
+                String user = "";
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
+                int id = sharedPreferences.getInt(LoginActivity.ID, 0);
+                String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
+                Crypter crypter = new Crypter();
+
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("id", id);
+                    jsonObject.put("nickname", nickname);
+                    Log.v(TAG, "json per mie route: " + jsonObject.toString());
+                    user = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
+                } catch (JSONException e) {}
+                catch (UnsupportedEncodingException uee) {}
+
+                downloadRoutes(downloadUserRoutesURL + user);
                 break;
         }
     }
@@ -215,7 +260,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         if (mSwipeRefreshLayout != null)
             mSwipeRefreshLayout.setRefreshing(true);
         new HttpGetTask(this).execute(url);
-        Log.v(TAG, "downloadRoutes: " + url);
+        Log.v(TAG, "downloadRoutes url: " + url);
     }
 
     //method called when no items in Spinner are selected
@@ -232,27 +277,38 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
         JSONObject jsonRoute;
         JSONArray json;
-        String name, description, creator, duration, length, gpx, difficulty, bends, type; // ora type non c'è nel json
-        Bitmap map;
+        String name, id, description, creator, duration, length, difficulty, bends, type, thumbnailURL, startLocation, endLocation; // ora type non c'è nel json
+        int rating, ratingNumber;
+        Crypter crypter = new Crypter();
 
-        try {
-            json = new JSONArray(result);
-            for (int i = 0; i< json.length(); i++) {
-                jsonRoute = json.getJSONObject(i);
-                name = jsonRoute.getString("name");
-                description = jsonRoute.getString("description");
-                creator = jsonRoute.getString("creatorEmail");
-                length = jsonRoute.getDouble("length") + "";
-                duration = jsonRoute.getInt("duration") + "";
-                map = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.staticmap);
-                gpx = jsonRoute.getString("url");
-                difficulty = jsonRoute.getInt("difficulty") + "";
-                bends = jsonRoute.getInt("bends") + "";
-                type = "DefaultRouteType";
-                String id = jsonRoute.getInt("id") + "";
-                arrayList.add(new Route(name, description, creator, length, duration, map, gpx, difficulty, bends, type, id));
+        if (result.length() > 0) {
+            try {
+                json = new JSONArray(crypter.decrypt(new JSONObject(result).getString("routes")));
+                Log.v(TAG, "json: " + json.toString());
+                for (int i = 0; i < json.length(); i++) {
+                    jsonRoute = json.getJSONObject(i);
+                    name = jsonRoute.getString("name");
+                    name = name.substring(0, 1).toUpperCase() + name.substring(1);
+                    id = jsonRoute.getInt("id") + "";
+                    description = "";
+                    creator = jsonRoute.getJSONObject("owner").getString("nickname");
+                    length = jsonRoute.getDouble("length") + "";
+                    duration = jsonRoute.getInt("duration") + "";
+                    difficulty = jsonRoute.getInt("difficulty") + "";
+                    bends = jsonRoute.getInt("bends") + "";
+                    type = jsonRoute.getString("type");
+                    rating = jsonRoute.isNull("rating") ? 0 : jsonRoute.getInt("rating");
+                    ratingNumber = jsonRoute.isNull("ratingnumber") ? 0 : jsonRoute.getInt("ratingnumber");
+                    thumbnailURL = jsonRoute.isNull("imgUrl") ? "https://maps.googleapis.com/maps/api/staticmap?size=200x200&path=weight:3%7Ccolor:0xff0000ff%7Cenc:aty~Fo|uiAkMnT_G`OYvIrDzKvG`OrH`NjE`OpDjS~BhRXd_@_Cpd@qHnc@ii@zw@cf@jnAqLdPw_@n|BrHfo@sHpd@kAtcAvGrqA{f@~eB" : jsonRoute.getString("imgUrl") + "&size=200x200";
+                    startLocation = jsonRoute.getString("startlocation");
+                    endLocation = jsonRoute.getString("endlocation");
+
+                    arrayList.add(new Route(name, id, description, creator, length, duration, difficulty, bends, type, thumbnailURL, startLocation, endLocation, rating, ratingNumber));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        }catch(JSONException e){e.printStackTrace();}
+        }
 
         // creo il gridAdapter
         RouteAdapter routeAdapter = new RouteAdapter(getActivity(), R.layout.route_list_row, arrayList);
@@ -268,16 +324,20 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 Bundle bundle = new Bundle();
                 bundle.putString(ROUTE_ID, route.getID());
                 bundle.putString(ROUTE_NAME, route.getName());
-                bundle.putString(ROUTE_DESCRIPTION, route.getDescription());
                 bundle.putString(ROUTE_CREATOR, route.getCreator());
                 bundle.putString(ROUTE_LENGTH, route.getLength());
                 bundle.putString(ROUTE_DURATION, route.getDuration());
-                bundle.putString(ROUTE_GPX, route.getGpx());
                 bundle.putString(ROUTE_DIFFICULTY, route.getDifficulty());
                 bundle.putString(ROUTE_BENDS, route.getBends());
                 bundle.putString(ROUTE_TYPE, route.getType());
-                intent.putExtras(bundle);
-                startActivity(intent);
+                if (pickingRoute) {
+                    bundle.putInt(REQUEST_CODE, EventCreationActivity.ROUTE_REQUEST);
+                    intent.putExtras(bundle);
+                    startActivityForResult(intent, EventCreationActivity.ROUTE_REQUEST);
+                } else {
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -288,8 +348,23 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
         switch (view.getId()) {
             case R.id.route_search:
                 Intent intent = new Intent(getActivity(), RouteSearchActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, SEARCH_REQUEST);
                 break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == EventCreationActivity.ROUTE_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                getActivity().setResult(Activity.RESULT_OK, intent);
+                getActivity().finish();
+            }
+        } else if (requestCode == SearchFragment.SEARCH_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                downloadRoutes(intent.getExtras().getString(RouteSearchActivity.ROUTE_SEARCH_URL));
+            }
+
         }
     }
 
@@ -365,8 +440,9 @@ class RouteAdapter extends ArrayAdapter<Route> {
             TextView length = (TextView) v.findViewById(R.id.route_length);
             TextView duration = (TextView) v.findViewById(R.id.route_duration);
             TextView creator = (TextView) v.findViewById(R.id.route_creator);
-            TextView type = (TextView) v.findViewById(R.id.route_type);
-            ImageView imageView = (ImageView) v.findViewById(R.id.route_image);
+            ImageView type = (ImageView) v.findViewById(R.id.route_type);
+            ImageView thumbnailView = (ImageView) v.findViewById(R.id.route_image);
+            RatingBar ratingBar = (RatingBar) v.findViewById(R.id.rating_bar);
 
             //Picasso.with(context).load(p.getMap()).into(imageView);
 
@@ -381,9 +457,11 @@ class RouteAdapter extends ArrayAdapter<Route> {
             if (creator != null)
                 creator.setText(p.getCreator());
             if (type != null)
-                type.setText(p.getType());
-            if (imageView != null)
-                imageView.setImageBitmap(p.getMap());
+                type.setImageResource(p.getTypeColor());
+            if (thumbnailView != null)
+                Picasso.with(context).load(p.getThumbnailURL()).into(thumbnailView);
+            if (ratingBar != null)
+                ratingBar.setRating(p.getRating());
         }
 
         return v;

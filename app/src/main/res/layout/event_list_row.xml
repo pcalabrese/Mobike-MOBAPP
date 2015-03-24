@@ -1,119 +1,262 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent" >
-<android.support.v7.widget.CardView
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    card_view:cardCornerRadius="5dp"
-    card_view:cardElevation="2dp"
-    android:layout_marginLeft="10dp"
-    android:layout_marginStart="10dp"
-    android:layout_marginRight="10dp"
-    android:layout_marginEnd="10dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginBottom="4dp">
-
-<RelativeLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-   <!-- <com.mobike.mobike.SquareImageView
-        android:id="@+id/icon"
-        android:layout_width="85dp"
-        android:layout_height="85dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/material_green_check48dp"/> -->
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/icon"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="10dp"
         android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:layout_centerVertical="true"
-        android:src="@drawable/material_orange_interrogation_mark_48dp"
-        app:border_width="0dp"
-        app:border_color="#FF000000"/>
+        android:layout_marginTop="4dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        card_view:cardCornerRadius="@dimen/cardview_default_radius"
+        card_view:cardElevation="@dimen/cardview_default_elevation">
 
-    <!-- TextView with the event's name -->
-    <TextView
-        android:id="@+id/event_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/icon"
-        android:layout_toEndOf="@+id/icon"
-        android:layout_toLeftOf="@+id/arrow"
-        android:layout_toStartOf="@+id/arrow"
-        android:layout_alignParentTop="true"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textColor="@color/black"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <!-- TextView with the event's date -->
-    <TextView
-        android:id="@+id/event_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/icon"
-        android:layout_toEndOf="@+id/icon"
-        android:layout_below="@+id/event_name"
-        android:textStyle="italic"
-        android:textSize="15sp"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"/>
+            <ImageView
+                android:id="@+id/event_state"
+                android:layout_width="10dp"
+                android:layout_height="96dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:src="@color/material_green" />
 
-    <!-- TextView with the event's time -->
-    <TextView
-        android:id="@+id/event_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/event_date"
-        android:layout_toEndOf="@+id/event_date"
-        android:layout_below="@+id/event_name"
-        android:textStyle="italic"
-        android:textSize="15sp"
-        android:layout_marginTop="5dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"/>
+            <!-- prima era 60x60-->
+            <!--<de.hdodenhof.circleimageview.CircleImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/icon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_centerVertical="true"
+                android:src="@drawable/material_orange_interrogation_mark_48dp"
+                app:border_width="0dp"
+                app:border_color="#FF000000"/> -->
 
-    <!-- TextView with the event's creator -->
-    <TextView
-        android:id="@+id/event_creator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/icon"
-        android:layout_toEndOf="@+id/icon"
-        android:layout_toLeftOf="@+id/arrow"
-        android:layout_toStartOf="@+id/arrow"
-        android:layout_below="@+id/event_date"
-        android:textStyle="italic"
-        android:textSize="15sp"
-        android:layout_marginTop="2dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginBottom="5dp"/>
+            <!-- TextView with the event's name -->
+            <TextView
+                android:id="@+id/event_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="5dp"
+                android:layout_toEndOf="@+id/event_state"
+                android:layout_toLeftOf="@+id/accounts_icon"
+                android:layout_toRightOf="@+id/event_state"
+                android:layout_toStartOf="@+id/accounts_icon"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:maxLines="1"/>
 
-    <!-- arrow image -->
-    <ImageView
-        android:id="@+id/arrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/grey_arrow_36dp"
-        android:layout_centerVertical="true"
-        tools:ignore="ContentDescription"/>
+            <!-- TextView with the event's date -->
+            <TextView
+                android:id="@+id/event_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/event_name"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="2dp"
+                android:layout_toEndOf="@+id/event_state"
+                android:layout_toRightOf="@+id/event_state"
+                android:textSize="13sp"
+                android:textStyle="italic"
+                android:maxLines="1"/>
 
-</RelativeLayout>
-</android.support.v7.widget.CardView>
+            <!-- TextView with the event's time -->
+            <TextView
+                android:id="@+id/event_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/event_name"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="2dp"
+                android:layout_toEndOf="@+id/event_date"
+                android:layout_toRightOf="@+id/event_date"
+                android:textSize="13sp"
+                android:textStyle="italic"
+                android:maxLines="1"/>
+
+            <!-- TextView with the event's location -->
+            <TextView
+                android:id="@+id/event_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/event_date"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="2dp"
+                android:layout_toEndOf="@+id/event_state"
+                android:layout_toRightOf="@+id/event_state"
+                android:textSize="13sp"
+                android:textStyle="italic"
+                android:maxLines="1"/>
+
+            <!-- TextView with the event's creator -->
+            <!--<TextView
+                android:id="@+id/event_creator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@+id/icon"
+                android:layout_toEndOf="@+id/icon"
+                android:layout_below="@+id/event_location"
+                android:textStyle="italic"
+                android:textSize="13sp"
+                android:layout_marginTop="2dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginBottom="5dp"/> -->
+
+            <!-- arrow image -->
+            <!--<ImageView
+                android:id="@+id/arrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/grey_arrow_36dp"
+                android:layout_centerVertical="true"
+                tools:ignore="ContentDescription"/> -->
+
+            <!-- nickname text view -->
+            <TextView
+                android:id="@+id/event_creator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginBottom="4dp"
+                android:layout_marginRight="6dp"
+                android:layout_marginEnd="6dp"
+                android:textColor="@color/colorPrimary" />
+
+            <!-- number of refused people -->
+            <TextView
+                android:id="@+id/event_refused"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="8dp"
+                android:text="5"
+                android:textColor="@color/material_red"
+                android:textSize="15sp"
+                android:textStyle="italic" />
+
+            <!-- number of invited people -->
+            <TextView
+                android:id="@+id/event_invited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="8dp"
+                android:layout_toLeftOf="@+id/event_refused"
+                android:layout_toStartOf="@+id/event_refused"
+                android:text="5"
+                android:textColor="@color/colorAccent"
+                android:textSize="15sp"
+                android:textStyle="italic" />
+
+            <!-- number of accepted people -->
+            <TextView
+                android:id="@+id/event_accepted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="8dp"
+                android:layout_toLeftOf="@id/event_invited"
+                android:layout_toStartOf="@+id/event_invited"
+                android:text="5"
+                android:textColor="@color/material_green"
+                android:textSize="15sp"
+                android:textStyle="italic" />
+
+            <!-- accounts icon -->
+            <ImageView
+                android:id="@+id/accounts_icon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_alignParentTop="true"
+                android:layout_margin="5dp"
+                android:layout_toLeftOf="@+id/event_accepted"
+                android:layout_toStartOf="@+id/event_accepted"
+                android:src="@drawable/account_multiple_grey_24dp" />
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
 </FrameLayout>
+
+
+
+    <!-- number of refused people -->
+<!--<TextView
+android:id="@+id/event_refused"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_alignParentEnd="true"
+android:layout_alignParentRight="true"
+android:layout_alignParentTop="true"
+android:layout_marginRight="10dp"
+android:layout_marginTop="8dp"
+android:paddingLeft="5dp"
+android:paddingRight="5dp"
+android:text="5"
+android:background="@drawable/red_button"
+android:textColor="@color/white"
+android:textSize="15sp"
+android:textStyle="italic" />
+
+
+<TextView
+android:id="@+id/event_invited"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_alignParentTop="true"
+android:layout_marginRight="3dp"
+android:layout_marginTop="8dp"
+android:paddingLeft="5dp"
+android:paddingRight="5dp"
+android:layout_toLeftOf="@+id/event_refused"
+android:layout_toStartOf="@+id/event_refused"
+android:text="5"
+android:background="@drawable/orange_button"
+android:textColor="@color/white"
+android:textSize="15sp"
+android:textStyle="italic" />
+
+
+<TextView
+android:id="@+id/event_accepted"
+android:layout_width="wrap_content"
+android:layout_height="wrap_content"
+android:layout_alignParentTop="true"
+android:layout_marginRight="3dp"
+android:layout_marginTop="8dp"
+android:paddingLeft="5dp"
+android:paddingRight="5dp"
+android:layout_toLeftOf="@id/event_invited"
+android:layout_toStartOf="@+id/event_invited"
+android:text="5"
+android:background="@drawable/green_button"
+android:textColor="@color/white"
+android:textSize="15sp"
+android:textStyle="italic" /> -->

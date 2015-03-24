@@ -1,6 +1,7 @@
 package com.mobike.mobike.network;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -15,6 +16,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 
 /**
  * Created by Andrea-PC on 22/02/2015.
@@ -22,13 +24,15 @@ import java.net.URL;
 public class UploadEventTask extends AsyncTask<String, Void, String> {
     private Event event;
     private Context context;
+    private HashMap<String, Integer> usersMap;
 
-    private final static String UploadEventURL = "qualcosa";
+    private final static String UploadEventURL = "http://mobike.ddns.net/SRV/events/create";
     private final static String TAG = "UploadEventTask";
 
-    public UploadEventTask(Context context, Event event) {
+    public UploadEventTask(Context context, Event event, HashMap<String, Integer> usersMap) {
         this.event = event;
         this.context = context;
+        this.usersMap = usersMap;
     }
 
     @Override
@@ -59,20 +63,22 @@ public class UploadEventTask extends AsyncTask<String, Void, String> {
             urlConnection.setDoOutput(true);
             urlConnection.setChunkedStreamingMode(0);
             urlConnection.connect();
+
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
-            SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.ID, Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
             int userID = sharedPref.getInt(LoginActivity.ID, 0);
-            out.write(event.exportInJSON(userID).toString());
+            out.write(event.exportInJSON(userID, usersMap).toString().replace("\\/", "/").replace("\\\"", "\""));
             out.close();
-            Log.v(TAG, "json sent: " + event.exportInJSON(userID).toString());
+            Log.v(TAG, "json sent: " + event.exportInJSON(userID, usersMap).toString().replace("\\/", "/").replace("\\\"", "\""));
+
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {
-                String routeID;
+                String eventID;
                 BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                routeID = br.readLine();
-                Log.v(TAG, routeID);
+                eventID = br.readLine();
+                Log.v(TAG, "Event created: " + eventID);
                 br.close();
-                return "Upload completed!";
+                return "Event created!";
             }
             else {
                 // scrive un messaggio di errore con codice httpResult

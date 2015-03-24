@@ -157,7 +157,6 @@
             android:layout_weight="1"
             android:layout_marginLeft="5dp"
             android:layout_marginStart="5dp"
-            android:text="@string/event_date"
             android:textSize="18sp"/>
 
         <Button
@@ -188,7 +187,6 @@
                 android:layout_weight="1"
                 android:layout_marginLeft="5dp"
                 android:layout_marginStart="5dp"
-                android:text="@string/event_time"
                 android:textSize="18sp"/>
 
             <Button
@@ -233,6 +231,12 @@
             android:background="@color/colorPrimary"
             android:textColor="@color/white"/> -->
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/route_picked"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"></LinearLayout>
 
     <Button
         android:id="@+id/pick_route"

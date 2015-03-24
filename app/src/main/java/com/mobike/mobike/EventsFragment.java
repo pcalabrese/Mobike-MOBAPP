@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -22,13 +23,20 @@ import android.widget.TextView;
 
 import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.CircleButton;
+import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.Event;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -46,6 +54,8 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    public static final String EVENT_ID = "com.mobike.mobike.EevntsFragment.event_id";
+    public static final String EVENT_STATE = "com.mobike.mobike.EevntsFragment.event_state";
     public static final String EVENT_NAME = "com.mobike.mobike.EventsFragment.event_name";
     public static final String EVENT_DATE = "com.mobike.mobike.EventsFragment.event_date";
     public static final String EVENT_CREATOR = "com.mobike.mobike.EventsFragment.event_creator";
@@ -55,9 +65,9 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
     public static final String EVENT_START_LOCATION = "com.mobike.mobike.EventsFragment.event_start_location";
     public static final String EVENT_CREATION_DATE = "com.mobike.mobike.EventsFragment.event_creation_date";
 
-    public static final String downloadAllEventsURL = "http://mobike.ddns.net/SRV/events/retrieveall";
-    public static final String downloadUserEventsURL = "";
-    public static final String downloadAcceptedEventsURL = "";
+    public static final String downloadAllEventsURL = "http://mobike.ddns.net/SRV/events/retrieveallws?user=";
+    public static final String downloadUserEventsURL = "http://mobike.ddns.net/SRV/users/myevents?token=";
+    public static final String downloadInvitedEventsURL = "http://mobike.ddns.net/SRV/users/myinvitations?token=";
 
     private Boolean initialSpinner = true, firstTime;
     private SwipeRefreshLayout mSwipeRefreshLayout;
@@ -146,10 +156,10 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                             downloadEvents(downloadAllEventsURL);
                             break;
                         case 1:
-                            //downloadEvents(downloadUserEventsURL);
+                            downloadEvents(downloadUserEventsURL);
                             break;
                         case 2:
-                            //downloadEvents(downloadAcceptedEventsURL);
+                            downloadEvents(downloadInvitedEventsURL);
                             break;
                     }
                 }
@@ -206,18 +216,38 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
             case 0:
                 downloadEvents(downloadAllEventsURL);
                 break;
-            case 1: //downloadEvents(downloadUserEventsURL);
+            case 1:
+                downloadEvents(downloadUserEventsURL);
                 break;
-            case 2: //downloadEvents(downloadAcceptedEventsURL);
+            case 2:
+                downloadEvents(downloadInvitedEventsURL);
                 break;
         }
     }
 
     private void downloadEvents(String url) {
+        String user = "";
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
+        int id = sharedPreferences.getInt(LoginActivity.ID, 0);
+        String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
+        Crypter crypter = new Crypter();
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", id);
+            jsonObject.put("nickname", nickname);
+            user = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
+            Log.v(TAG, "json per gli eventi: " + jsonObject.toString());
+        } catch (JSONException e) {
+            Log.v(TAG, "json exception in downloadEvents()");
+        }
+        catch (UnsupportedEncodingException uee) {}
+
         if (mSwipeRefreshLayout != null)
             mSwipeRefreshLayout.setRefreshing(true);
-        new HttpGetTask(this).execute(url);
-        Log.v(TAG, "downloadEvents: " + url);
+        new HttpGetTask(this).execute(url + user);
+
+        Log.v(TAG, "downloadEvents url: " + url + user);
     }
 
     // method called when no items in the spinner are selected
@@ -247,30 +277,34 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
 
         JSONObject jsonEvent;
         JSONArray json;
-        String name, date, creator, description, routeID, startLocation, creationDate;
+        String name, id, date, creator, routeID, startLocation, creationDate;
+        int acceptedSize, invitedSize, refusedSize, state;
+        Crypter crypter = new Crypter();
 
-        try {
-            json = new JSONArray(result);
-            for (int i = 0; i < json.length(); i++) {
-                jsonEvent = json.getJSONObject(i);
-                name = jsonEvent.getString("name");
-                date = jsonEvent.getString("startDate");
-                creator = jsonEvent.getInt("creatorId") + "";
-                description = jsonEvent.getString("description");
-                routeID = jsonEvent.getInt("routeId") + "";
-                /*ArrayList<String> invited = new ArrayList<>();
-                invited.add("Andrea Donati");
-                invited.add("Marco Esposito");
-                invited.add("Paolo Calabrese");
-                invited.add("Bruno Vispi"); */
-                String invited = "Andrea Donati\nMarco Esposito\nPaolo Calabrese\nBruno Vispi";
-                startLocation = jsonEvent.getString("startLocation");
-                creationDate = jsonEvent.getString("creationDate");
+        Log.v(TAG, "result: " + result);
 
-                list.add(new Event(name, date, creator, description, routeID, startLocation, creationDate, invited));
+        if (result.length() > 0) {
+            try {
+                json = new JSONArray(crypter.decrypt(new JSONObject(result).getString("events")));
+                Log.v(TAG, "json events: " + json.toString());
+                for (int i = 0; i < json.length(); i++) {
+                    jsonEvent = json.getJSONObject(i);
+                    name = jsonEvent.getString("name");
+                    name = name.substring(0, 1).toUpperCase() + name.substring(1);
+                    id = jsonEvent.getInt("id") + "";
+                    creator = jsonEvent.getJSONObject("owner").getString("nickname");
+                    date = jsonEvent.getString("startdate");
+                    startLocation = jsonEvent.getString("startlocation");
+                    acceptedSize = jsonEvent.getInt("acceptedSize");
+                    invitedSize = jsonEvent.getInt("invitedSize");
+                    refusedSize = jsonEvent.getInt("refusedSize");
+                    state = jsonEvent.getInt("userState");
+
+                    list.add(new Event(name, id, date, creator, "", startLocation, acceptedSize, invitedSize, refusedSize, state));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
 
         ListView listView = (ListView) getView().findViewById(R.id.list_view);
@@ -283,14 +317,9 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
                 Event event = (Event) adapterView.getAdapter().getItem(position);
                 Intent intent = new Intent(getActivity(), EventActivity.class);
                 Bundle bundle = new Bundle();
-                bundle.putString(EVENT_NAME, event.getName());
-                bundle.putString(EVENT_DATE, event.getDate());
-                bundle.putString(EVENT_CREATOR, event.getCreator());
-                bundle.putString(EVENT_DESCRIPTION, event.getDescription());
-                bundle.putString(EVENT_INVITED, event.getInvited());
+                bundle.putString(EVENT_ID, event.getId());
+                bundle.putInt(EVENT_STATE, event.getState());
                 bundle.putString(ROUTE_ID, event.getRouteID());
-                bundle.putString(EVENT_START_LOCATION, event.getStartLocation());
-                bundle.putString(EVENT_CREATION_DATE, event.getCreationDate());
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -341,28 +370,47 @@ class ListAdapter extends ArrayAdapter<Event> {
 
         if (p != null) {
 
-            TextView tt = (TextView) v.findViewById(R.id.event_name);
-            TextView tt1 = (TextView) v.findViewById(R.id.event_date);
-            TextView tt2 = (TextView) v.findViewById(R.id.event_time);
-            TextView tt3 = (TextView) v.findViewById(R.id.event_creator);
+            TextView name = (TextView) v.findViewById(R.id.event_name);
+            TextView date = (TextView) v.findViewById(R.id.event_date);
+            TextView time = (TextView) v.findViewById(R.id.event_time);
+            TextView creator = (TextView) v.findViewById(R.id.event_creator);
+            TextView location = (TextView) v.findViewById(R.id.event_location);
+            ImageView state = (ImageView) v.findViewById(R.id.event_state);
+            TextView accepted = (TextView) v.findViewById(R.id.event_accepted);
+            TextView invited = (TextView) v.findViewById(R.id.event_invited);
+            TextView refused = (TextView) v.findViewById(R.id.event_refused);
 
-            if (tt != null) {
-                tt.setText(p.getName());
-            }
-            if (tt1 != null) {
-                String[] work = p.getDate().split(" ")[0].split("-");
-                String date = work[2] + "/" + work[1] + "/" + work[0];
-                tt1.setText(date);
-            }
-            if (tt2 != null) {
-                String[] work = p.getDate().split(" ")[1].split(":");
-                String time = work[0] + ":" + work[1];
-                tt2.setText(time);
-            }
-            if (tt3 != null) {
 
-                tt3.setText("Created by " + p.getCreator());
+            if (name != null) {
+                name.setText(p.getName());
             }
+            if (date != null) {
+                Date mDate = null, mDateCreation = null;
+                SimpleDateFormat s1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                try {
+                    mDate = s1.parse(p.getStartDate());
+                } catch (ParseException e ) { }
+                String dateString = new SimpleDateFormat("EEEE, d/MM/yyyy").format(mDate);
+                date.setText(dateString.substring(0,1).toUpperCase() + dateString.substring(1));
+            }
+            if (time != null) {
+                String[] work = p.getStartDate().split(" ")[1].split(":");
+                String timeString = work[0] + ":" + work[1];
+                time.setText(timeString);
+            }
+            if (creator != null) {
+                creator.setText("Created by " + p.getCreator());
+            }
+            if (location != null)
+                location.setText(p.getStartLocation());
+            if (state != null)
+                state.setImageResource(p.getColorState());
+            if (accepted != null)
+                accepted.setText(String.valueOf(p.getAcceptedSize()));
+            if (invited != null)
+                invited.setText(String.valueOf(p.getInvitedSize()));
+            if (refused != null)
+                refused.setText(String.valueOf(p.getRefusedSize()));
         }
 
         return v;

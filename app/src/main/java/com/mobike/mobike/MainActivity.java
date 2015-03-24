@@ -1,5 +1,7 @@
 package com.mobike.mobike;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -15,10 +17,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.tabs.SlidingTabLayout;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 
-public class MainActivity extends ActionBarActivity {
+
+public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpGet {
 
     private ViewPager mPager;
     private SlidingTabLayout mTabs;
@@ -27,6 +33,17 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        /* VISUALIZZO ACTION BAR CON LOGO */
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayUseLogoEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.ic_launcher);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+
+        //getSupportActionBar().hide();
+
+        //new HttpGetTask(this).execute(EventsFragment.downloadInvitedEventsURL);
 
         // resetting the database
         GPSDatabase db = new GPSDatabase(this);
@@ -71,6 +88,26 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+
+    public void setResult(String result) {
+        try {
+            JSONArray jsonArray = new JSONArray(result);
+            TextView titleView = ((TextView) getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
+            titleView.setText("Pending Invitations");
+            if (jsonArray.length() > 0) {
+                new AlertDialog.Builder(this)
+                        .setCustomTitle(titleView)
+                        .setMessage("Hey! You have pending invitations to events, check them!")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // do nothing
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+            }
+        } catch (JSONException e) {}
+    }
 
 
     class MyPagerAdapter extends FragmentPagerAdapter {

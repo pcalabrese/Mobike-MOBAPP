@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -11,8 +14,11 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +28,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -35,6 +42,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * This activity displays the route that has just been recorded and gives
@@ -44,15 +52,18 @@ import java.util.List;
 public class SummaryActivity extends ActionBarActivity {
 
     public static final int SHARE_REQUEST = 1;
-    public static final int REVIEW_REQUEST = 2;
+    public static final int REVIEW_REQUEST = 3;
     private static final String TAG = "SummaryActivity";
     private static final String UploadURL = "http://mobike.ddns.net/SRV/routes/create";
     private static final String DEFAULT_ACCOUNT_NAME = "no account";
     public static final String ROUTE_ID = "com.mobike.mobike.ROUTE_ID";
-    private  EditText routeNameText, routeDescriptionText, routeDifficulty, routeBends, routeType;
+    public static final String ROUTE_NAME = "com.mobike.mobike.route_name";
+    public static final String ROUTE_LOCATION = "com.mobike.mobike.route_location";
+    private  EditText routeNameText, routeDescriptionText, routeDifficulty, routeBends, routeStartLocation, routeEndLocation;
+    private Spinner typeSpinner;
     private TextView length, duration;
     private long durationInSeconds;
-    private String routeName, routeDescription, email, routeID, difficulty, bends, type;
+    private String routeName, routeDescription, email, routeID, difficulty, bends, type, startLocation, endLocation;
     private Context context = this;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline route; // the recorded route
@@ -69,17 +80,57 @@ public class SummaryActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
         setUpMapIfNeeded();
+
         route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         GPSDatabase db = new GPSDatabase(this);
         db.open();
         points = db.getAllLocations();
         db.close();
         route.setPoints(points);
+
+        // request of start and end location
+        new GeocoderTask(this, 0).execute(points.get(0));
+        new GeocoderTask(this, 1).execute(points.get(points.size() - 1));
+
         routeNameText = (EditText) findViewById(R.id.route_name_text);
         routeDescriptionText = (EditText) findViewById(R.id.route_description_text);
         routeDifficulty = (EditText) findViewById(R.id.route_difficulty);
         routeBends = (EditText) findViewById(R.id.route_bends);
-        routeType = (EditText) findViewById(R.id.route_type);
+        typeSpinner = (Spinner) findViewById(R.id.route_type);
+        routeStartLocation = (EditText) findViewById(R.id.start_location);
+        routeEndLocation = (EditText) findViewById(R.id.end_location);
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.route_type_selection, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        typeSpinner.setAdapter(adapter);
+        typeSpinner.setPrompt("Route type...");
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                switch (position) {
+                    case 0:
+                        type = "Montuoso";
+                        break;
+                    case 1:
+                        type = "Collinare";
+                        break;
+                    case 2:
+                        type = "Costiero";
+                        break;
+                    case 3:
+                        type = "Pianeggiante";
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                //do nothing
+            }
+        });
 
         //set length and duration text views
         GPSDatabase db2 = new GPSDatabase(this);
@@ -128,7 +179,13 @@ public class SummaryActivity extends ActionBarActivity {
                         ((ScrollView) findViewById(R.id.scroll_view)).requestDisallowInterceptTouchEvent(true);
                     }
                 });
-                setUpMap();
+                mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                    @Override
+                    public void onMapLoaded() {
+                        setUpMap();
+                    }
+                });
+                //setUpMap();
             }
         }
     }
@@ -158,9 +215,20 @@ public class SummaryActivity extends ActionBarActivity {
             mMap.addMarker(new MarkerOptions().position(end).title("End"));
 
             // Zooming on the route
-            CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
-                    MapsFragment.CAMERA_ZOOM_VALUE - 5);
-            mMap.animateCamera(update);
+            if (points.size() > 1) {
+                LatLngBounds.Builder boundsBuilder = LatLngBounds.builder();
+                for (LatLng point : points) {
+                    boundsBuilder.include(point);
+                }
+                Log.v(TAG, "numero punti: " + points.size());
+                LatLngBounds bounds = boundsBuilder.build();
+                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngBounds(bounds, 50);
+                mMap.animateCamera(cameraUpdate);
+            } else {
+                CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
+                            MapsFragment.CAMERA_ZOOM_VALUE - 5);
+                mMap.animateCamera(update);
+            }
         }
 
         db.close();
@@ -195,19 +263,30 @@ public class SummaryActivity extends ActionBarActivity {
             routeDescription = routeDescriptionText.getText().toString();
             difficulty = routeDifficulty.getText().toString();
             bends = routeBends.getText().toString();
-            type = routeType.getText().toString();
+            //type = typeSpinner.getText().toString();
+            startLocation = routeStartLocation.getText().toString();
+            endLocation = routeEndLocation.getText().toString();
+
             SharedPreferences sharedPref = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
             email = sharedPref.getString(LoginActivity.EMAIL, DEFAULT_ACCOUNT_NAME);
             Log.v(TAG, "email = " + email);
             ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
             if (networkInfo != null && networkInfo.isConnected()) {
-                new UploadRouteTask(this, email, routeName, routeDescription, difficulty, bends, type).execute();
+                new UploadRouteTask(this, email, routeName, routeDescription, difficulty, bends, type, startLocation, endLocation).execute();
                 Toast.makeText(this, getResources().getString(R.string.uploading_toast), Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void setStartLocation(String text) {
+        routeStartLocation.setText(text);
+    }
+
+    public void setEndLocation(String text) {
+        routeEndLocation.setText(text);
     }
 
     // Method called when ShareActivity finishes, returns to MapsActivity
@@ -218,12 +297,56 @@ public class SummaryActivity extends ActionBarActivity {
             finish();
         else if (requestCode == REVIEW_REQUEST) {
             Intent intent = new Intent(this, ShareActivity.class);
-            intent.putExtra(ROUTE_ID, routeID);
+            Bundle bundle = new Bundle();
+            bundle.putString(ROUTE_ID, routeID);
+            bundle.putString(ROUTE_NAME, routeName);
+            bundle.putString(ROUTE_LOCATION, endLocation);
+            intent.putExtras(bundle);
             startActivityForResult(intent, SummaryActivity.SHARE_REQUEST);
         }
     }
 
     public void setRoute(String routeID) {
         this.routeID = routeID;
+    }
+}
+
+
+
+
+class GeocoderTask extends AsyncTask<LatLng, Void, String> {
+    private Context context;
+    private int request;
+    private static final String TAG = "GeocoderTask";
+
+    public GeocoderTask(Context context, int request) {
+        this.context = context;
+        this.request = request;
+    }
+
+    @Override
+    protected String doInBackground(LatLng... locations) {
+        Geocoder geocoder = new Geocoder(context, Locale.getDefault());
+        String result = "";
+        try {
+            List<Address> list = geocoder.getFromLocation(locations[0].latitude, locations[0].longitude, 1);
+            if (list != null && list.size() > 0) {
+                Address address = list.get(0);
+                // sending back first address line and locality
+                result = address.getLocality();
+                Log.v(TAG, "location found: " + result);
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Impossible to connect to Geocoder", e);
+        }
+        return result;
+    }
+
+    @Override
+    protected void onPostExecute(String result) {
+        if (request == 0)
+            ((SummaryActivity) context).setStartLocation(result);
+        else
+            ((SummaryActivity) context).setEndLocation(result);
     }
 }

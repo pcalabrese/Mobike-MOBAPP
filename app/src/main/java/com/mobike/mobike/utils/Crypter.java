@@ -26,7 +26,7 @@ public class Crypter {
             cipher = Cipher.getInstance("AES/CTR/NoPadding");
             cipher.init(Cipher.ENCRYPT_MODE, this.secretKey, this.ivSpec);
             encryptedByte = cipher.doFinal(plainTextByte);
-            String encryptedText = Base64.encodeToString(encryptedByte, 0, encryptedByte.length, Base64.DEFAULT);
+            String encryptedText = Base64.encodeToString(encryptedByte, Base64.NO_WRAP);
             return encryptedText;
         } catch (Exception e) {}
         return "";

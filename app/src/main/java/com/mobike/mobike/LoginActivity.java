@@ -25,6 +25,7 @@ import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListe
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
+import com.mobike.mobike.network.LoginUserTask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -180,15 +181,15 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         editor.putString(EMAIL, email);
         editor.putString(NAME, name);
         editor.putString(SURNAME, surname);
-        //editor.putString(NICKNAME, nickname);
         editor.putString(IMAGEURL, imageURL);
         editor.apply();
 
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected())
-            new LoginPostTask().execute();
-        else
+        if (networkInfo != null && networkInfo.isConnected()) {
+            new LoginUserTask(this, name, surname, email, imageURL).execute();
+            //new LoginPostTask().execute();
+        } else
             Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
 
     }
@@ -311,7 +312,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     editor.apply();
                     Intent intent = new Intent(context, MainActivity.class);
                     startActivityForResult(intent, MAPS_REQUEST);
-                    return "Welcome " + name + "!";
+                    return "Welcome " + name.substring(0,1).toUpperCase() + name.substring(1) + "!";
                 }
                 else {
                     // scrive un messaggio di errore con codice httpResult

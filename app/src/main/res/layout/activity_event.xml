@@ -1,213 +1,317 @@
-<ScrollView
-    android:id="@+id/scroll_view"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
+
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/button_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:background="@color/colorPrimary">
+
+                    <!--<Button
+                        android:id="@+id/decline_event"
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@color/colorPrimary"
+                        android:drawableLeft="@drawable/material_red_close48dp"
+                        android:drawableStart="@drawable/material_red_close48dp"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:paddingTop="10dp"
+                        android:text="@string/decline"
+                        android:textColor="@color/white" />
+
+                    <Button
+                        android:id="@+id/accept_event"
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@color/colorPrimary"
+                        android:drawableLeft="@drawable/material_green_check48dp"
+                        android:drawableStart="@drawable/material_green_check48dp"
+                        android:paddingBottom="8dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:paddingTop="10dp"
+                        android:text="@string/join"
+                        android:textColor="@color/white" /> -->
+
+                </LinearLayout>
+
+                    <!-- text view for the name of the event -->
+                    <!--<TextView
+                        android:id="@+id/event_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_weight="7"
+                        android:drawableLeft="@drawable/pencil_grey_24dp"
+                        android:drawablePadding="15dp"
+                        android:drawableStart="@drawable/pencil_grey_24dp"
+                        android:textColor="@color/black"
+                        android:textSize="20sp"
+                        android:textStyle="bold" /> -->
+
+                <TextView
+                    android:id="@+id/event_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/colorPrimary"
+                    android:paddingBottom="25dp"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:paddingTop="25dp"
+                    android:textColor="@color/white"
+                    android:textSize="25sp"
+                    android:textStyle="bold"/>
+
+
+                <!--<include layout="@layout/divider" /> -->
+
+                <!-- text view for the date of the event -->
+                <TextView
+                    android:id="@+id/event_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    android:drawableLeft="@drawable/clock_grey_24dp"
+                    android:drawablePadding="15dp"
+                    android:drawableStart="@drawable/clock_grey_24dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <include layout="@layout/divider" />
+
+                <!-- text view for the creator of the event -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="15dp"
+                        android:drawableLeft="@drawable/account_grey_24dp"
+                        android:drawablePadding="15dp"
+                        android:drawableStart="@drawable/account_grey_24dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/created_by"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/event_creator"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="15dp"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <include layout="@layout/divider" />
+
+                <!-- text view for the invited people of the event -->
+                <!--<TextView
+                    android:id="@+id/event_invited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    android:drawableLeft="@drawable/account_multiple_grey_24dp"
+                    android:drawablePadding="15dp"
+                    android:drawableStart="@drawable/account_multiple_grey_24dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <include layout="@layout/divider" /> -->
+
+                <!-- text view for the start location of the event -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/start_location"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/start_location"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="15dp"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <include layout="@layout/divider" />
+
+                <!-- text view for the creation date of the event -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/created_on"
+                        android:textColor="@color/black"
+                        android:textSize="15sp" />
+
+                    <TextView
+                        android:id="@+id/creation_date"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="15dp"
+                        android:layout_marginTop="15dp"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <include layout="@layout/divider" />
+
+                <!-- text view for the description of the event -->
+                <TextView
+                    android:id="@+id/event_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginTop="15dp"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="italic" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/accepted_users_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="10dp"
+                        android:gravity="center"
+                        android:background="@drawable/green_button"
+                        android:textColor="@color/white"
+                        android:text="12\nAccepted"/>
+
+                    <Button
+                        android:id="@+id/pending_users_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="10dp"
+                        android:gravity="center"
+                        android:background="@drawable/orange_button"
+                        android:textColor="@color/white"
+                        android:text="5\nPending"/>
+
+                    <Button
+                        android:id="@+id/declined_users_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_margin="10dp"
+                        android:gravity="center"
+                        android:background="@drawable/red_button"
+                        android:textColor="@color/white"
+                        android:text="15\nDeclined"/>
+                </LinearLayout>
+
+                <!-- map whit the route associated with the event -->
+                <!--<fragment
+                    android:id="@+id/map"
+                    android:name="com.mobike.mobike.utils.CustomMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    tools:context="com.mobike.mobike.EventActivity" /> -->
+
+                <com.mobike.mobike.SquareImageView
+                    android:id="@+id/event_map"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp" />
+
+            </LinearLayout>
+
+        </ScrollView>
 
         <Button
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/decline_event"
-            android:layout_weight="1"
-            android:drawableLeft="@drawable/close_red_48dp"
-            android:drawableStart="@drawable/close_red_48dp"
-            android:text="@string/decline"
-            android:background="@color/colorPrimary"
-            style="?android:attr/buttonBarButtonStyle"
-            android:textColor="@color/red"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="8dp"/>
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/accept_event"
-            android:layout_weight="1"
-            android:drawableLeft="@drawable/check_green_48dp"
-            android:drawableStart="@drawable/check_green_48dp"
-            android:text="@string/join"
-            android:background="@color/colorPrimary"
-            style="?android:attr/buttonBarButtonStyle"
-            android:textColor="@color/lime"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingTop="10dp"
-            android:paddingBottom="8dp"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-    <!-- text view for the name of the event -->
-    <TextView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="7"
-        android:id="@+id/event_name"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:textColor="@color/black"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginBottom="15dp"
-        android:drawableLeft="@drawable/pencil_grey_24dp"
-        android:drawableStart="@drawable/pencil_grey_24dp"
-        android:drawablePadding="15dp"/>
-
-        <View
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:background="@color/myGray" />
-
-        <ImageButton
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:layout_gravity="end"
-            android:src="@drawable/map_marker_radius_grey_24dp"
-            android:background="@color/transparent"
-            android:onClick="displayRoute"/>
-
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/myGray" />
-
-    <!-- text view for the date of the event -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/event_date"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:textColor="@color/black"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginBottom="15dp"
-        android:drawableLeft="@drawable/clock_grey_24dp"
-        android:drawableStart="@drawable/clock_grey_24dp"
-        android:drawablePadding="15dp"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/myGray" />
-
-    <!-- text view for the creator of the event -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/event_creator"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:textColor="@color/black"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginBottom="15dp"
-        android:drawableLeft="@drawable/account_grey_24dp"
-        android:drawableStart="@drawable/account_grey_24dp"
-        android:drawablePadding="15dp"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/myGray" />
-
-    <!-- text view for the invited people of the event -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/event_invited"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:textColor="@color/black"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginBottom="15dp"
-        android:drawableLeft="@drawable/account_multiple_grey_24dp"
-        android:drawableStart="@drawable/account_multiple_grey_24dp"
-        android:drawablePadding="15dp"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/myGray" />
-
-    <!-- text view for the start location of the event -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/start_location"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:textColor="@color/black"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginBottom="15dp"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/myGray" />
-
-    <!-- text view for the creation date of the event -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/creation_date"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:textColor="@color/black"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginBottom="15dp"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/myGray" />
-
-    <!-- text view for the description of the event -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/event_description"
-        android:textStyle="italic"
-        android:textSize="15sp"
-        android:textColor="@color/black"
-        android:layout_marginTop="15dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
-        android:layout_marginBottom="15dp"/>
-
-    <!-- map whit the route associated with the event -->
-    <fragment  android:layout_width="match_parent"
-        android:layout_height="300dp" android:id="@+id/map"
-        tools:context="com.mobike.mobike.EventActivity"
-        android:name="com.mobike.mobike.utils.CustomMapFragment" />
-
-</LinearLayout>
-
-</ScrollView>
+            android:id="@+id/display_route_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:background="@drawable/orange_button"
+            android:elevation="@dimen/default_elevation"
+            android:stateListAnimator="@anim/fab_animation"
+            android:text="@string/view_route_details"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+</FrameLayout>

@@ -85,7 +85,7 @@ public class GPSService extends Service implements GoogleApiClient.ConnectionCal
     public void onConnected(Bundle connectionHint) {
         mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(
                 mGoogleApiClient);
-        if (mCurrentLocation != null){ nLocationListener.onNewLocation(mCurrentLocation); }
+        if (mCurrentLocation != null){ nLocationListener.onNewLocation(mCurrentLocation,0,0); }
         startLocationUpdates();
     }
 
@@ -215,9 +215,10 @@ public class GPSService extends Service implements GoogleApiClient.ConnectionCal
         mCurrentLocation = location;
         nLocationListener.updateCamera(location);
         if(isServiceRegistering()) {
+            GPSDatabase db = new GPSDatabase(context);
             updateDatabase(location);
             nLocationListener.setRegistered();
-            nLocationListener.onNewLocation(mCurrentLocation);
+            nLocationListener.onNewLocation(mCurrentLocation, db.getTotalLength(), db.getTotalDuration());
         }
     }
 

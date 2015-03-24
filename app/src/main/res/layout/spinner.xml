@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <Spinner
         android:id="@+id/types"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:padding="10dp"/>
 
     <!-- divider -->
@@ -15,3 +17,40 @@
         android:layout_height="2dp"
         android:background="@color/colorAccent" />
 </LinearLayout>
+
+
+
+
+<!--
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <Button
+        android:id="@+id/legend_button"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:text="Legend"
+        android:textColor="@color/white"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/orange_button"/>
+
+    <Spinner
+        android:id="@+id/types"
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:padding="10dp"
+        android:layout_alignParentLeft="true"
+        android:layout_toLeftOf="@+id/legend_button"/>
+
+
+<View
+android:layout_width="match_parent"
+android:layout_height="2dp"
+android:background="@color/colorAccent"
+android:layout_below="@+id/types"/>
+
+
+    </RelativeLayout> -->

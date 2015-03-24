@@ -16,12 +16,14 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mobike.mobike.network.EditReviewTask;
 import com.mobike.mobike.network.UploadNewReviewTask;
 
 
 public class ReviewCreationActivity extends ActionBarActivity implements View.OnClickListener {
     private static final String TAG = "ReviewCreationActivity";
     private String routeID;
+    private int requestCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +34,12 @@ public class ReviewCreationActivity extends ActionBarActivity implements View.On
 
         ((Button) findViewById(R.id.send)).setOnClickListener(this);
 
-        routeID = getIntent().getExtras().getString(SearchFragment.ROUTE_ID);
+        Bundle bundle = getIntent().getExtras();
+        routeID = bundle.getString(SearchFragment.ROUTE_ID);
 
-        if (getIntent().getExtras().getInt(SearchFragment.REQUEST_CODE) == SummaryActivity.REVIEW_REQUEST) {
+        requestCode = bundle.getInt(SearchFragment.REQUEST_CODE);
+
+        if (requestCode == SummaryActivity.REVIEW_REQUEST) {
             TextView mTextView = ((TextView) findViewById(R.id.review_text_view));
             mTextView.setText(getResources().getString(R.string.review_after_upload_text));
             LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -43,6 +48,11 @@ public class ReviewCreationActivity extends ActionBarActivity implements View.On
             int margin = (int)(dpValue * d); // margin in pixels
             llp.setMargins(margin, margin, margin, margin); // llp.setMargins(left, top, right, bottom);
             mTextView.setLayoutParams(llp);
+        }
+
+        if (requestCode == RouteActivity.EDIT_REVIEW_REQUEST) {
+            ((RatingBar) findViewById(R.id.rating_bar)).setRating(Float.parseFloat(bundle.getString(RouteActivity.USER_RATE)));
+            ((EditText) findViewById(R.id.comment)).setText(bundle.getString(RouteActivity.USER_MESSAGE));
         }
     }
 
@@ -82,8 +92,13 @@ public class ReviewCreationActivity extends ActionBarActivity implements View.On
                 } else if (comment.length() == 0) {
                     Toast.makeText(this, "Please insert a comment", Toast.LENGTH_SHORT).show();
                 } else {
-                    //new UploadNewReviewTask(this, routeID, comment, rate).execute();
-                    Toast.makeText(this, "Review creation is currently under development", Toast.LENGTH_SHORT).show();
+
+                    if (requestCode != RouteActivity.EDIT_REVIEW_REQUEST)
+                        new UploadNewReviewTask(this, routeID, comment, rate).execute();
+                    else
+                        new EditReviewTask(this, routeID, comment, rate).execute();
+
+                    setResult(RESULT_OK, null);
                     finish();
                 }
 

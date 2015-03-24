@@ -1,129 +1,197 @@
-<ScrollView
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scroll_view"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="wrap_content">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/main_layout_summary"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
-
-    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/main_layout_summary"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:layout_marginBottom="20dp"
-        android:id="@+id/summary_map"
-        tools:context="com.mobike.mobike.SummaryActivity"
-        android:name="com.mobike.mobike.utils.CustomMapFragment" />
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/summary_map"
+            android:name="com.mobike.mobike.utils.CustomMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginBottom="20dp"
+            tools:context="com.mobike.mobike.SummaryActivity" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <!-- text view for the creator of the event -->
+            <TextView
+                android:id="@+id/length_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/car_grey_24dp"
+                android:drawablePadding="15dp"
+                android:drawableStart="@drawable/car_grey_24dp"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/duration_text_view"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="15dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="15dp"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/clock_grey_24dp"
+                android:drawablePadding="15dp"
+                android:drawableStart="@drawable/clock_grey_24dp"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/route_name_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/abc_edit_text_material"
+            android:hint="@string/route_name_hint"
+            android:maxLines="1"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/route_description_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/abc_edit_text_material"
+            android:hint="@string/route_description_hint"
+            android:maxLines="3"
+            android:minLines="3" />
+
+        <!-- difficulty -->
+        <EditText
+            android:id="@+id/route_difficulty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/abc_edit_text_material"
+            android:hint="@string/route_difficulty_hint"
+            android:maxLines="1" />
+
+        <!-- bends -->
+        <EditText
+            android:id="@+id/route_bends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/abc_edit_text_material"
+            android:hint="@string/route_bends_hint"
+            android:maxLines="1" />
+
+        <!-- type -->
+        <!--<EditText
+            android:id="@+id/route_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_marginBottom="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/abc_edit_text_material"
+            android:hint="@string/route_type_hint"
+            android:maxLines="1" /> -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="10dp"
         android:orientation="horizontal">
-        <!-- text view for the creator of the event -->
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/length_text_view"
-            android:textStyle="bold"
-            android:textSize="15sp"
-            android:textColor="@color/black"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginBottom="15dp"
-            android:drawableLeft="@drawable/car_grey_24dp"
-            android:drawableStart="@drawable/car_grey_24dp"
-            android:drawablePadding="15dp"/>
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/duration_text_view"
-            android:textStyle="bold"
-            android:textSize="15sp"
-            android:textColor="@color/black"
-            android:layout_marginTop="15dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginBottom="15dp"
-            android:drawableLeft="@drawable/clock_grey_24dp"
-            android:drawableStart="@drawable/clock_grey_24dp"
-            android:drawablePadding="15dp"/>
-    </LinearLayout>
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text="Type:"
+            android:textSize="16sp"
+            android:layout_gravity="center_vertical"/>
 
-    <EditText
-        android:id="@+id/route_name_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:maxLines="1"
-        android:hint="@string/route_name_hint"
-        android:textStyle="bold"
-        android:background="@drawable/abc_edit_text_material"/>
+        <Spinner
+            android:id="@+id/route_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="10dp"/>
 
-    <EditText
-        android:id="@+id/route_description_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:hint="@string/route_description_hint"
-        android:minLines="3"
-        android:maxLines="3"
-        android:background="@drawable/abc_edit_text_material"/>
+        </LinearLayout>
 
-    <!-- difficulty -->
-    <EditText
-        android:id="@+id/route_difficulty"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:maxLines="1"
-        android:hint="@string/route_difficulty_hint"
-        android:background="@drawable/abc_edit_text_material"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
 
-    <!-- bends -->
-    <EditText
-        android:id="@+id/route_bends"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:maxLines="1"
-        android:hint="@string/route_bends_hint"
-        android:background="@drawable/abc_edit_text_material"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="@string/start_location"
+                android:textSize="16sp" />
 
-    <!-- type -->
-    <EditText
-        android:id="@+id/route_type"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:maxLines="1"
-        android:hint="@string/route_type_hint"
-        android:background="@drawable/abc_edit_text_material"/>
+            <EditText
+                android:id="@+id/start_location"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/abc_edit_text_material"
+                android:maxLines="1"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="* fields are required"
-        android:layout_margin="15dp"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:text="@string/end_location"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/end_location"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/abc_edit_text_material"
+                android:maxLines="1" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:text="@string/required_fields" />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
@@ -133,27 +201,29 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <Button android:id="@+id/delete_route_button"
-                android:text="@string/delete"
-                android:layout_height="match_parent"
+            <Button
+                android:id="@+id/delete_route_button"
                 android:layout_width="0dp"
-                android:layout_weight="0.5"
+                android:layout_height="match_parent"
                 android:layout_margin="10dp"
-                android:textColor="@color/white"
+                android:layout_weight="0.5"
                 android:background="@drawable/red_button"
-                android:onClick="deleteRoute"/>
+                android:onClick="deleteRoute"
+                android:text="@string/delete"
+                android:textColor="@color/white" />
 
-            <Button android:id="@+id/save_route_button"
-                android:text="@string/save"
-                android:layout_height="match_parent"
+            <Button
+                android:id="@+id/save_route_button"
                 android:layout_width="0dp"
-                android:layout_weight="0.5"
+                android:layout_height="match_parent"
                 android:layout_margin="10dp"
-                android:textColor="@color/white"
+                android:layout_weight="0.5"
                 android:background="@drawable/green_button"
-                android:onClick="saveRoute"/>
+                android:onClick="saveRoute"
+                android:text="@string/save"
+                android:textColor="@color/white" />
+
+        </LinearLayout>
 
     </LinearLayout>
-
-</LinearLayout>
 </ScrollView>

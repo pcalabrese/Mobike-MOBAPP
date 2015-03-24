@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.mobike.mobike.LoginActivity;
+import com.mobike.mobike.utils.Crypter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +24,7 @@ import java.net.URL;
  */
 public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
     private static final String TAG = "UploadNewReviewTask";
-    private static final String postNewReviewURL = "qualcosa";
+    private static final String postNewReviewURL = "http://mobike.ddns.net/SRV/reviews/create";
     private Context context;
     private float rate;
     private String comment, routeID;
@@ -52,6 +53,7 @@ public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
     private String postReview() throws IOException {
         HttpURLConnection urlConnection = null;
         try {
+            Log.v(TAG, "uploadNewReviewTask");
             URL u = new URL(postNewReviewURL);
             urlConnection = (HttpURLConnection) u.openConnection();
             urlConnection.setRequestMethod("POST");
@@ -62,24 +64,34 @@ public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
             urlConnection.setDoOutput(true);
             urlConnection.setChunkedStreamingMode(0);
             urlConnection.connect();
-            SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.ID, Context.MODE_PRIVATE);
+            SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
             int userID = sharedPref.getInt(LoginActivity.ID, 0);
-            JSONObject jsonObject = new JSONObject();
+            String nickname = sharedPref.getString(LoginActivity.NICKNAME, "");
+            JSONObject jsonObject = new JSONObject(), review = new JSONObject(), user = new JSONObject(), pk = new JSONObject();
+            Crypter crypter = new Crypter();
+
             try{
-                jsonObject.put("userID", userID);
-                jsonObject.put("routeID", routeID);
-                jsonObject.put("rate", rate);
-                jsonObject.put("comment", comment);
+                user.put("id", userID);
+                user.put("nickname", nickname);
+                review.put("rate", rate);
+                review.put("message", comment);
+                pk.put("usersId", userID);
+                pk.put("routesId", routeID);
+                review.put("reviewPK", pk);
+                jsonObject.put("user", crypter.encrypt(user.toString()));
+                jsonObject.put("review", crypter.encrypt(review.toString()));
             }
             catch(JSONException e){/*not implemented yet*/ }
+            Log.v(TAG, "user: " + user.toString() + "\nreview: " + review.toString() + "\njson sent: " + jsonObject.toString().replace("\\/", "/").replace("\\\"", "\""));
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
-            out.write(jsonObject.toString());
+            out.write(jsonObject.toString().replace("\\/", "/").replace("\\\"", "\""));
             out.close();
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {
                 /*BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
                 String response = br.readLine();
                 br.close();*/
+                Log.v(TAG, "Recensione caricata correttamente");
                 return "Review uploaded successfully";
             }
             else {

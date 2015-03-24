@@ -29,7 +29,7 @@
         android:icon="@drawable/ic_launcher_test"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
-        android:theme="@style/CustomTheme" >
+        android:theme="@style/AppTheme.Base" >
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
@@ -51,14 +51,21 @@
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <!-- metadata required to use facebook share dialog -->
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
         <activity
             android:name=".SummaryActivity"
             android:label="@string/title_activity_summary"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.ActionBarShadow" >
         </activity>
         <activity
             android:name=".ShareActivity"
-            android:label="@string/title_activity_share" >
+            android:label="@string/title_activity_share"
+            android:theme="@style/AppTheme.ActionBarShadow" >
         </activity>
 
         <service
@@ -81,7 +88,8 @@
         </activity>
         <activity
             android:name=".RouteActivity"
-            android:label="@string/title_activity_route" >
+            android:label="@string/title_activity_route"
+            android:theme="@style/AppTheme.ActionBarShadow" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobike.mobike.MainActivity" />
@@ -117,9 +125,17 @@
         </activity>
         <activity
             android:name=".RouteSearchActivity"
-            android:label="@string/title_activity_route_search"
             android:excludeFromRecents="true"
-            android:theme="@style/Theme.AppCompat.Light.Dialog">
+            android:label="@string/title_activity_route_search"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" >
+        </activity>
+        <activity
+            android:name=".FragmentActivity"
+            android:label="@string/title_activity_fragment" >
+        </activity>
+        <activity
+            android:name=".FullScreenMapActivity"
+            android:label="@string/title_activity_full_screen_map" >
         </activity>
     </application>
 

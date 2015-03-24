@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="facebook_app_id">613824922094851</string>
 
     <string name="app_name">MoBike</string>
     <string name="action_settings">Settings</string>
@@ -13,9 +14,9 @@
     <string name="save">Save</string>
     <string name="title_activity_share">Share</string>
     <string name="record_new_route">Record new route</string>
-    <string name="share">Share the route!</string>
+    <string name="share">Share</string>
     <string name="share_textview">You can visualize the route at this URL:</string>
-    <string name="shared_message">Hey! Look at motorcyle trip I just had at </string>
+    <string name="shared_message">Hey! Look at motorcyle trip I just had </string>
     <string name="uploading_toast">Uplaoding...</string>
     <string name="logging_in">Logging in...</string>
     <string name="title_activity_main">Mobike</string>
@@ -85,5 +86,29 @@
     <string name="title_activity_route_search">Route Search</string>
     <string name="start">Start</string>
     <string name="destination">Destination</string>
+    <string name="pick_this_route">Pick this route</string>
+    <string name="title_activity_fragment">Select a route</string>
+    <string name="search">Search</string>
+    <string name="start_location">Start Location:</string>
+    <string name="end_location">End Location:</string>
+    <string name="required_fields">* fields are required</string>
+    <string name="view_route_details">View Route Details</string>
+    <string name="created_on">Created on</string>
+    <string name="created_by">Created by</string>
+    <string name="difficulty">Difficulty:</string>
+    <string name="bends">Bends:</string>
+    <string name="type">Type:</string>
+    <string name="initial_length">0,0 km</string>
+    <string name="initial_duration">0 h 0 m 0 s</string>
+    <string name="to">To</string>
+    <string name="from">From</string>
+    <string name="title_activity_full_screen_map">Route Map</string>
+    <string name="nickname_already_exists">The nickname you entered already exists, please choose another one.</string>
+    <string-array name="route_type_selection">
+        <item>Montuoso</item>
+        <item>Collinare</item>
+        <item>Costiero</item>
+        <item>Pianeggiante</item>
+    </string-array>
 
 </resources>

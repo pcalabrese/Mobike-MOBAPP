@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -245,10 +246,12 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      * This method updates the map, adding the last known location to the route drawn on it.
      * @param location the last known location.
      */
-    private void updateUIRoute(Location location){
+    private void updateUIRoute(Location location, float length, long duration){
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         points.add(latLng);
         route.setPoints(points);
+        ((TextView) getActivity().findViewById(R.id.current_length)).setText(String.format("%.01f", length/1000) + " km");
+        ((TextView) getActivity().findViewById(R.id.current_duration)).setText(String.valueOf(duration/3600) + " h " + String.valueOf((duration/60)%60) + " m " + String.valueOf(duration%60) + " s");
     }
 
 
@@ -280,7 +283,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     public void startButtonPressed(View view) {
         if (view.getId() == R.id.start_button) {
             /*if (!mGoogleApiClient.isConnected()){mGoogleApiClient.connect(); }*/
-            start.setVisibility(View.GONE);
+            ((Button) view).setVisibility(View.GONE);
             pause = (Button) getActivity().getLayoutInflater().inflate(R.layout.pause_button, buttonLayout, false);
             stop = (Button) getActivity().getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
             buttonLayout.addView(pause);
@@ -344,10 +347,12 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     public void stopButtonPressed(View view) {
         if (view.getId() == R.id.stop_button) {
             final View.OnClickListener onClickListener = this;
+            TextView titleView = ((TextView) getActivity().getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
+            titleView.setText(getResources().getString(R.string.stop));
             if(registered) {
                 //alert dialog to stop the registration
                 new AlertDialog.Builder(getActivity())
-                        .setTitle(getResources().getString(R.string.stop))
+                        .setCustomTitle(titleView)
                         .setMessage(getResources().getString(R.string.stop_registration))
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -368,7 +373,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
             else {
                 // dialog to stop the registration if there are no recorded positions
                 new AlertDialog.Builder(getActivity())
-                        .setTitle(getResources().getString(R.string.stop))
+                        .setCustomTitle(titleView)
                         .setMessage(getResources().getString(R.string.stop_registration_no_positions))
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
@@ -441,13 +446,13 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      * to be added to the route to be added on the map.
      * @param location The last location updated.
      */
-    public void onNewLocation(Location location){
+    public void onNewLocation(Location location, float length, long duration){
         if (location != null) {
             Log.v(TAG, "Location accuracy: " + String.valueOf(location.getAccuracy()));
         //    Toast.makeText(getActivity(), "Location accuracy: " + String.valueOf(location.getAccuracy()), Toast.LENGTH_SHORT).show();
         }
         updateCamera(location);
-        updateUIRoute(location);
+        updateUIRoute(location, length, duration);
         mCurrentLocation = location;
     }
     public void setRegistered(){registered = true;}
@@ -483,7 +488,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
  * a reference to a MapsActivity object, which implements NewLocationListener [see GPSService]
  */
 interface NewLocationListener {
-    public void onNewLocation(Location location);
+    public void onNewLocation(Location location, float length, long duration);
     public void updateCamera(Location location);
     public void setRegistered();
 }

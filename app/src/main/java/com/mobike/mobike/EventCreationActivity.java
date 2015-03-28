@@ -1,9 +1,11 @@
 package com.mobike.mobike;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
@@ -11,8 +13,10 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -21,6 +25,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MultiAutoCompleteTextView;
+import android.widget.RatingBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -49,6 +55,8 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
     private int routeID = 0;
     private boolean picked = false;
     private HashMap<String, Integer> usersMap;
+    private ArrayList<String> userList;
+    private boolean[] userState;
 
     private static final String TAG = "EventCreationActivity";
 
@@ -68,6 +76,15 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         ((Button) findViewById(R.id.pick_time)).setOnClickListener(this);
         ((Button) findViewById(R.id.create)).setOnClickListener(this);
         ((Button) findViewById(R.id.pick_route)).setOnClickListener(this);
+        ((Button) findViewById(R.id.invite_button)).setOnClickListener(this);
+        ((TextView) findViewById(R.id.invited_users_textview)).setMovementMethod(new ScrollingMovementMethod());
+        ((TextView) findViewById(R.id.invited_users_textview)).setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                ((ScrollView) findViewById(R.id.scroll_view)).requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
 
         /*ArrayList<String> data=new ArrayList<String>();
         data.add("Andrea Donati");
@@ -89,7 +106,8 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 name = ((EditText) findViewById(R.id.name)).getText().toString();
                 description = ((EditText) findViewById(R.id.description)).getText().toString();
                 startLocation = ((EditText) findViewById(R.id.start_location)).getText().toString();
-                invited = ((MultiAutoCompleteTextView) findViewById(R.id.invite)).getText().toString();
+                //invited = ((MultiAutoCompleteTextView) findViewById(R.id.invite)).getText().toString();
+                invited = ((TextView) findViewById(R.id.invited_users_textview)).getText().toString();
                 date = ((TextView) findViewById(R.id.date)).getText().toString();
                 time = ((TextView) findViewById(R.id.time)).getText().toString();
 
@@ -124,6 +142,35 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 startActivityForResult(intent, ROUTE_REQUEST);
                 Log.v(TAG, "pickRoute button pressed");
                 break;
+
+            case R.id.invite_button:
+                TextView titleView = ((TextView) getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
+                titleView.setText("Select users");
+                new AlertDialog.Builder(this)
+                        .setCustomTitle(titleView)
+                        .setMultiChoiceItems(userList.toArray(new String[userList.size()]), userState, new DialogInterface.OnMultiChoiceClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which,
+                                                boolean isChecked) {
+                                userState[which] = isChecked;
+                            }
+                        })
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // visualizza i nomi scelti
+                                Log.v(TAG, "invitati scelti: " + userState.toString());
+
+                                String s = "";
+                                for (int i = 0; i < userList.size(); i++) {
+                                    if (userState[i]) s += userList.get(i) + "\n";
+                                }
+
+                                ((TextView) findViewById(R.id.invited_users_textview)).setText(s);
+                            }
+                        })
+                        .show();
         }
     }
 
@@ -132,9 +179,10 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         name = ((EditText) findViewById(R.id.name)).getText().toString();
         description = ((EditText) findViewById(R.id.description)).getText().toString();
         startLocation = ((EditText) findViewById(R.id.start_location)).getText().toString();
-        invited = ((MultiAutoCompleteTextView) findViewById(R.id.invite)).getText().toString();
+        //invited = ((MultiAutoCompleteTextView) findViewById(R.id.invite)).getText().toString();
+        invited = ((TextView) findViewById(R.id.invited_users_textview)).getText().toString();
         Log.v(TAG, "invited: " + invited);
-        invited = invited.replaceAll(", ", "\n");
+        //invited = invited.replaceAll(", ", "\n");
         Log.v(TAG, "invited: " + invited);
         SharedPreferences sharedPref = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
         String nickname = sharedPref.getString(LoginActivity.NICKNAME, "");
@@ -184,7 +232,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
     }
 
     public void setResult(String result) {
-        ArrayList<String> userList = new ArrayList<>();
+        userList = new ArrayList<>();
         usersMap = new HashMap<>();
         Crypter crypter = new Crypter();
         Log.v(TAG, "result: " + result);
@@ -202,10 +250,11 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         }catch(JSONException e)
         { e.printStackTrace();}
 
-        setUsersHints(userList);
+        //setUsersHints(userList);
+        userState = new boolean[userList.size()];
     }
 
-    public void setUsersHints(ArrayList<String> users) {
+    /*public void setUsersHints(ArrayList<String> users) {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, users);
         MultiAutoCompleteTextView textView = (MultiAutoCompleteTextView) findViewById(R.id.invite);
 
@@ -213,7 +262,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
 
         textView.setAdapter(adapter);
         textView.setTokenizer(tokenizer);
-    }
+    }*/
 
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == ROUTE_REQUEST) {
@@ -232,6 +281,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 ((TextView) findViewById(R.id.route_creator)).setText(bundle.getString(SearchFragment.ROUTE_CREATOR));
                 ((ImageView) findViewById(R.id.route_type)).setImageResource(Route.getStaticTypeColor(bundle.getString(SearchFragment.ROUTE_TYPE)));
                 ((ImageView) findViewById(R.id.route_image)).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.staticmap));
+                ((RatingBar) findViewById(R.id.rating_bar)).setRating(bundle.getFloat(SearchFragment.ROUTE_RATING));
                 Log.v(TAG, "route name: " + bundle.getString(SearchFragment.ROUTE_NAME));
             }
         }

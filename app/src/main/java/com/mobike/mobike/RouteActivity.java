@@ -355,6 +355,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
                 b.putString(SearchFragment.ROUTE_DURATION, mDuration.getText().toString());
                 b.putString(SearchFragment.ROUTE_CREATOR, mCreator.getText().toString());
                 b.putString(SearchFragment.ROUTE_TYPE, mType.getText().toString());
+                b.putFloat(SearchFragment.ROUTE_RATING, mRatingBar.getRating());
                 data.putExtras(b);
                 setResult(RESULT_OK, data);
                 Log.v(TAG, "pick this route button pressed");

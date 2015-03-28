@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.mobike.mobike.EventCreationActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.mobike.mobike.EventCreationActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -12,241 +12,287 @@
 
         <Button
             android:id="@+id/cancel"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="@string/cancel"
-            style="?android:attr/buttonBarButtonStyle"
-            android:background="@color/colorPrimary"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
-            android:paddingLeft="10dp"/>
+            android:background="@color/colorPrimary"
+            android:paddingLeft="10dp"
+            android:text="@string/cancel"
+            android:textColor="@color/white" />
 
-        <TextView android:text="@string/new_event"
+        <TextView
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@color/colorPrimary"
+            android:padding="20dp"
+            android:text="@string/new_event"
+            android:textColor="@color/white"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/create"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@color/colorPrimary"
+            android:paddingRight="10dp"
+            android:text="@string/create"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+    <!--
+        <TextView android:text="@string/new_event"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:textSize="24sp"
             android:textColor="@color/white"
             android:background="@color/colorPrimary"
-            android:padding="20dp"
-            android:layout_centerInParent="true"/>
+            android:paddingTop="20dp"
+            android:paddingBottom="10dp"
+            android:gravity="center"/>
 
-        <Button
-            android:id="@+id/create"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:text="@string/create"
-            style="?android:attr/buttonBarButtonStyle"
-            android:background="@color/colorPrimary"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:paddingRight="10dp"/>
-    </RelativeLayout>
+            android:orientation="horizontal">
 
-<!--
-    <TextView android:text="@string/new_event"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="24sp"
-        android:textColor="@color/white"
-        android:background="@color/colorPrimary"
-        android:paddingTop="20dp"
-        android:paddingBottom="10dp"
-        android:gravity="center"/>
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/cancel"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/close_red_48dp"
+                android:drawableStart="@drawable/close_red_48dp"
+                android:text="@string/cancel"
+                android:background="@color/colorPrimary"
+                style="?android:attr/buttonBarButtonStyle"
+                android:textColor="@color/red"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="8dp"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <Button
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:id="@+id/create"
+                android:layout_weight="1"
+                android:drawableLeft="@drawable/check_green_48dp"
+                android:drawableStart="@drawable/check_green_48dp"
+                android:text="@string/create"
+                android:background="@color/colorPrimary"
+                style="?android:attr/buttonBarButtonStyle"
+                android:textColor="@color/lime"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingBottom="8dp"/>
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/cancel"
-            android:layout_weight="1"
-            android:drawableLeft="@drawable/close_red_48dp"
-            android:drawableStart="@drawable/close_red_48dp"
-            android:text="@string/cancel"
-            android:background="@color/colorPrimary"
-            style="?android:attr/buttonBarButtonStyle"
-            android:textColor="@color/red"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingBottom="8dp"/>
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:id="@+id/create"
-            android:layout_weight="1"
-            android:drawableLeft="@drawable/check_green_48dp"
-            android:drawableStart="@drawable/check_green_48dp"
-            android:text="@string/create"
-            android:background="@color/colorPrimary"
-            style="?android:attr/buttonBarButtonStyle"
-            android:textColor="@color/lime"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:paddingBottom="8dp"/>
-
-    </LinearLayout> -->
+        </LinearLayout> -->
 
     <ScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <!-- name -->
-    <EditText
-        android:id="@+id/name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:paddingTop="20dp"
-        android:maxLines="1"
-        android:hint="@string/event_name_hint"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:background="@drawable/abc_edit_text_material"/>
-
-    <!-- description -->
-    <EditText
-        android:id="@+id/description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:hint="@string/event_description_hint"
-        android:minLines="2"
-        android:maxLines="2"
-        android:background="@drawable/abc_edit_text_material"/>
-
-        <EditText
-            android:id="@+id/start_location"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:hint="@string/event_start_location_hint"
-            android:background="@drawable/abc_edit_text_material"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal">
-
-        <!-- date -->
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginLeft="5dp"
-            android:layout_marginStart="5dp"
-            android:textSize="18sp"/>
-
-        <Button
-            android:id="@+id/pick_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginLeft="10dp"
-            android:text="@string/pick_date"
-            android:background="@drawable/blue_button"
-            android:textColor="@color/white"/>
-    </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <!-- time -->
-            <TextView
-                android:id="@+id/time"
+            <!-- name -->
+            <EditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/abc_edit_text_material"
+                android:hint="@string/event_name_hint"
+                android:maxLines="1"
+                android:paddingTop="20dp"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- description -->
+            <EditText
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/abc_edit_text_material"
+                android:hint="@string/event_description_hint"
+                android:maxLines="2"
+                android:minLines="2" />
+
+            <EditText
+                android:id="@+id/start_location"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/abc_edit_text_material"
+                android:hint="@string/event_start_location_hint" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <!-- date -->
+                <TextView
+                    android:id="@+id/date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/pick_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/blue_button"
+                    android:text="@string/pick_date"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <!-- time -->
+                <TextView
+                    android:id="@+id/time"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_weight="1"
+                    android:textSize="18sp" />
+
+                <Button
+                    android:id="@+id/pick_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/blue_button"
+                    android:text="@string/pick_time"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <!--<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal"> -->
+
+            <!-- invite users -->
+            <!--<MultiAutoCompleteTextView
+                android:id="@+id/invite"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:textSize="18sp"/>
+                android:background="@drawable/abc_edit_text_material"
+                android:hint="@string/invite_user_hint"
+                android:maxLines="3"
+                android:minLines="1" /> -->
 
-            <Button
-                android:id="@+id/pick_time"
+            <!--<Button
+                android:id="@+id/invite_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginLeft="10dp"
-                android:text="@string/pick_time"
+                android:layout_marginRight="10dp"
+                android:background="@color/colorPrimary"
+                android:text="@string/invite"
+                android:textColor="@color/white" />
+        </LinearLayout> -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <!-- invite users -->
+                <TextView
+                    android:id="@+id/invited_users_textview"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:maxLines="4"
+                    android:minLines="4"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"/>
+
+                <Button
+                    android:id="@+id/invite_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="@color/colorPrimary"
+                    android:text="@string/invite"
+                    android:textColor="@color/white" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/route_picked"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"></LinearLayout>
+
+            <Button
+                android:id="@+id/pick_route"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
                 android:background="@drawable/blue_button"
-                android:textColor="@color/white"/>
+                android:text="@string/pick_route"
+                android:textColor="@color/white" />
+
+            <!--<Button
+                android:id="@+id/invite_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/blue_button"
+                android:text="@string/invite"
+                android:textColor="@color/white" /> -->
+
         </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:orientation="horizontal">
-
-        <!-- invite users -->
-        <MultiAutoCompleteTextView
-            android:id="@+id/invite"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:minLines="1"
-            android:maxLines="3"
-            android:hint="@string/invite_user_hint"
-            android:background="@drawable/abc_edit_text_material"/>
-<!--
-        <Button
-            android:id="@+id/invite_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginLeft="10dp"
-            android:text="@string/invite"
-            android:background="@color/colorPrimary"
-            android:textColor="@color/white"/> -->
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/route_picked"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"></LinearLayout>
-
-    <Button
-        android:id="@+id/pick_route"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="@string/pick_route"
-        android:background="@drawable/blue_button"
-        android:textColor="@color/white"
-        android:layout_gravity="center"/>
-</LinearLayout>
-</ScrollView>
+    </ScrollView>
 </LinearLayout>

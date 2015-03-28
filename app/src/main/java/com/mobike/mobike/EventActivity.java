@@ -360,7 +360,7 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
                 break;
 
             case R.id.pending_users_button:
-                createListDialog("Pending", usersInvited);
+                createListDialog("Invited", usersInvited);
                 break;
 
             case R.id.declined_users_button:

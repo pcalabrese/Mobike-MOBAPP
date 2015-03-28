@@ -78,6 +78,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     public static final String ROUTE_DIFFICULTY = "com.mobike.mobike.SearchFragment.route_difficulty";
     public static final String ROUTE_BENDS = "com.mobike.mobike.SearchFragment.route_bends";
     public static final String ROUTE_TYPE = "com.mobike.mobike.SearchFragment.route_type";
+    public static final String ROUTE_RATING = "com.mobike.mobike.SearchFragment.route_rating";
 
     public static final String downloadAllRoutesURL = "http://mobike.ddns.net/SRV/routes/retrieveall";
     public static final String downloadUserRoutesURL = "http://mobike.ddns.net/SRV/users/myroutes?token=";
@@ -294,8 +295,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                     creator = jsonRoute.getJSONObject("owner").getString("nickname");
                     length = jsonRoute.getDouble("length") + "";
                     duration = jsonRoute.getInt("duration") + "";
-                    difficulty = jsonRoute.getInt("difficulty") + "";
-                    bends = jsonRoute.getInt("bends") + "";
+                    //difficulty = jsonRoute.getInt("difficulty") + "";
+                    //bends = jsonRoute.getInt("bends") + "";
                     type = jsonRoute.getString("type");
                     rating = jsonRoute.isNull("rating") ? 0 : jsonRoute.getInt("rating");
                     ratingNumber = jsonRoute.isNull("ratingnumber") ? 0 : jsonRoute.getInt("ratingnumber");
@@ -303,7 +304,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                     startLocation = jsonRoute.getString("startlocation");
                     endLocation = jsonRoute.getString("endlocation");
 
-                    arrayList.add(new Route(name, id, description, creator, length, duration, difficulty, bends, type, thumbnailURL, startLocation, endLocation, rating, ratingNumber));
+                    arrayList.add(new Route(name, id, description, creator, length, duration, "0", "0", type, thumbnailURL, startLocation, endLocation, rating, ratingNumber));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

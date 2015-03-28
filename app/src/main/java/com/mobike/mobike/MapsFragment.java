@@ -413,10 +413,12 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      * This method shows an alert inviting the user to activate the GPS in the settings menu.
      */
     public void showSettingsAlert(){
+        TextView titleView = ((TextView) getActivity().getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
+        titleView.setText("GPS in settings");
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
 
         // Setting Dialog Title
-        alertDialog.setTitle("GPS in settings");
+        alertDialog.setCustomTitle(titleView);
 
         // Setting Dialog Message
         alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");

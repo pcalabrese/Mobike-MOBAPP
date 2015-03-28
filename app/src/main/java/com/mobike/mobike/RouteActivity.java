@@ -324,7 +324,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
                     userReviewLayout.addView(view);
                 }
             }
-            if (!found) {
+            if (!found && !pickingRoute) {
                 LinearLayout userReviewLayout = (LinearLayout) findViewById(R.id.user_review_layout);
                 View view = getLayoutInflater().inflate(R.layout.new_review_button, userReviewLayout, false);
                 view.findViewById(R.id.new_review_button).setOnClickListener(this);

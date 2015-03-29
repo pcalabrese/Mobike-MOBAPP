@@ -184,7 +184,6 @@ public class RouteSearchActivity extends ActionBarActivity implements View.OnCli
                 bundle.putString(ROUTE_SEARCH_URL, url);
                 intent.putExtras(bundle);
                 setResult(RESULT_OK, intent);
-                Toast.makeText(this, "Route search is currently under development", Toast.LENGTH_SHORT).show();
                 finish();
 
                 break;

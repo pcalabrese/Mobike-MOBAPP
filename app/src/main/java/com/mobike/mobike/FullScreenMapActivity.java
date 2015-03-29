@@ -20,6 +20,9 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.List;
 
+/**
+ * This is a fullscreen map activity to display better the route's path
+ */
 public class FullScreenMapActivity extends ActionBarActivity implements View.OnClickListener {
     private static final String TAG = "FullScreenMapActivity";
 

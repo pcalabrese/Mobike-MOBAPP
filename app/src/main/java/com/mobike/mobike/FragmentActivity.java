@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
-
+/**
+ * This is an activity used as a wrapper for the execution of a fragment
+ */
 public class FragmentActivity extends ActionBarActivity {
 
     @Override

@@ -17,7 +17,9 @@ import android.widget.Toast;
 
 import com.mobike.mobike.network.RegisterUserTask;
 
-
+/**
+ * This activity is called if the user is not registered yet, here the user will insert his data for the registration.
+ */
 public class NicknameActivity extends ActionBarActivity implements View.OnClickListener {
 
     @Override

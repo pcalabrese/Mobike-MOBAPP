@@ -41,6 +41,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * This is activity where are displayed the details of an event, with a link to the associated route
+ */
 public class EventActivity extends ActionBarActivity implements HttpGetTask.HttpGet, View.OnClickListener {
     public static final String EVENT_URL = "http://mobike.ddns.net/SRV/events/retrieve/";
     public static final String ACCEPT = "accept";

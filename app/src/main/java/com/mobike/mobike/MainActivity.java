@@ -23,7 +23,9 @@ import com.mobike.mobike.tabs.SlidingTabLayout;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-
+/**
+ * This is the main activity, where you can reach all the features. It contains three tabs with rute recording, route list and event list.
+ */
 public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpGet {
 
     private ViewPager mPager;

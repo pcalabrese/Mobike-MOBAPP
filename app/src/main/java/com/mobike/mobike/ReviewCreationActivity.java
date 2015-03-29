@@ -19,7 +19,9 @@ import android.widget.Toast;
 import com.mobike.mobike.network.EditReviewTask;
 import com.mobike.mobike.network.UploadNewReviewTask;
 
-
+/**
+ * This is the activity for the creation of a new review of a route
+ */
 public class ReviewCreationActivity extends ActionBarActivity implements View.OnClickListener {
     private static final String TAG = "ReviewCreationActivity";
     private String routeID;

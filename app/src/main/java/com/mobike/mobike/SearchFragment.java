@@ -41,12 +41,7 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link SearchFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link SearchFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This is the fragment where is displayed the list of routes (all, user's routes)
  */
 public class SearchFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener, HttpGetTask.HttpGet, View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
@@ -385,7 +380,9 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     }
 }
 
-// custom class for square images
+/**
+ * Class for custom implementation of squared images
+ */
 class SquareImageView extends ImageView {
     public SquareImageView(Context context) {
         super(context);
@@ -407,7 +404,9 @@ class SquareImageView extends ImageView {
 }
 
 
-
+/**
+ * This is the adapter for routes visualization in the list
+ */
 class RouteAdapter extends ArrayAdapter<Route> {
     private Context context;
 
@@ -469,71 +468,3 @@ class RouteAdapter extends ArrayAdapter<Route> {
 
     }
 }
-
-// adapter for items in the grid view
-/*class MyAdapter extends BaseAdapter {
-    private List<Item> items = new ArrayList<Item>();
-    private LayoutInflater inflater;
-
-    public MyAdapter(Context context) {
-        inflater = LayoutInflater.from(context);
-
-        items.add(new Item("Pasdo Delle Capannelle",       R.drawable.ic_launcher));
-        items.add(new Item("La Scarzuola",   R.drawable.ic_launcher));
-        items.add(new Item("Spinaceto Palmarola", R.drawable.ic_launcher));
-        items.add(new Item("Raduno A Leonessa",      R.drawable.ic_launcher));
-        items.add(new Item("Giro Di Prova",     R.drawable.ic_launcher));
-        items.add(new Item("Prova",      R.drawable.ic_launcher));
-        items.add(new Item("Prova",      R.drawable.ic_launcher));
-        items.add(new Item("Prova",      R.drawable.ic_launcher));
-    }
-
-    @Override
-    public int getCount() {
-        return items.size();
-    }
-
-    @Override
-    public Object getItem(int i) {
-        return items.get(i);
-    }
-
-    @Override
-    public long getItemId(int i) {
-        return items.get(i).drawableId;
-    }
-
-    @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
-        View v = view;
-        ImageView picture;
-        TextView name;
-
-        if(v == null) {
-            v = inflater.inflate(R.layout.search_grid_item, viewGroup, false);
-            v.setTag(R.id.picture, v.findViewById(R.id.picture));
-            v.setTag(R.id.text, v.findViewById(R.id.text));
-        }
-
-        picture = (ImageView)v.getTag(R.id.picture);
-        name = (TextView)v.getTag(R.id.text);
-
-        Item item = (Item)getItem(i);
-
-        picture.setImageResource(item.drawableId);
-        name.setText(item.name);
-
-        return v;
-    }
-
-    // class for items in the grid view
-    private class Item {
-        final String name;
-        final int drawableId;
-
-        Item(String name, int drawableId) {
-            this.name = name;
-            this.drawableId = drawableId;
-        }
-    }
-}*/

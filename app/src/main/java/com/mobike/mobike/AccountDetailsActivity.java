@@ -11,7 +11,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-
+/**
+ * This is the activity where are displayed details of user's account like image, name, email, nickname and bike model
+ */
 public class AccountDetailsActivity extends ActionBarActivity {
 
     @Override

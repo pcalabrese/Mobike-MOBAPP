@@ -37,6 +37,10 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+/**
+ * This is the first activity, where the user logs in or create a new account
+ */
+
 public class LoginActivity extends ActionBarActivity implements View.OnClickListener, ConnectionCallbacks, OnConnectionFailedListener {
 
     private static final int REQUEST_RESOLVE_ERROR = 1001;
@@ -194,6 +198,12 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
     }
 
+    /**
+     * This method close the app if the user navigates back to login activity, in addiction it handles Google login connection problems.
+     * @param requestCode request code of the terminated activity
+     * @param resultCode result code of the terminated activity
+     * @param intent intent containing result data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == REQUEST_RESOLVE_ERROR) {
@@ -223,7 +233,10 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
     // The rest of this code is all about building the error dialog
 
-    /* Creates a dialog for an error message */
+    /**
+     * Create a dialog to display an error message
+     * @param errorCode
+     */
     private void showErrorDialog(int errorCode) {
         // Create a fragment for the error dialog
         ErrorDialogFragment dialogFragment = new ErrorDialogFragment();
@@ -234,12 +247,16 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         dialogFragment.show(getFragmentManager(), "errordialog");
     }
 
-    /* Called from ErrorDialogFragment when the dialog is dismissed. */
+    /**
+     * Called from ErrorDialogFragment when the dialog is dismissed.
+     */
     public void onDialogDismissed() {
         mResolvingError = false;
     }
 
-    /* A fragment to display an error dialog */
+    /**
+     * This class represents the fragment to display an error message.
+     */
     public static class ErrorDialogFragment extends DialogFragment {
         public ErrorDialogFragment() { }
 
@@ -253,76 +270,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         @Override
         public void onDismiss(DialogInterface dialog) {
             ((LoginActivity)getActivity()).onDialogDismissed();
-        }
-    }
-
-
-
-
-    // AsyncTask that performs the post of the user
-    private class LoginPostTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... context) {
-            try {
-                return postUser();
-            } catch (IOException e) {
-                return "Unable to upload the route. URL may be invalid.";
-            }
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
-        }
-
-        private String postUser() throws IOException {
-            HttpURLConnection urlConnection = null;
-            try {
-                URL u = new URL(postURL);
-                urlConnection = (HttpURLConnection) u.openConnection();
-                urlConnection.setRequestMethod("POST");
-                urlConnection.setRequestProperty("Content-Type", "application/json");
-                urlConnection.setRequestProperty("Accept", "text/plain");
-                urlConnection.setReadTimeout(10000 /* milliseconds */);
-                urlConnection.setConnectTimeout(15000 /* milliseconds */);
-                urlConnection.setDoOutput(true);
-                urlConnection.setChunkedStreamingMode(0);
-                urlConnection.connect();
-                JSONObject jsonObject = new JSONObject();
-                try{
-                    jsonObject.put("name", name);
-                    jsonObject.put("surname", surname);
-                    jsonObject.put("email", email);
-                    jsonObject.put("imageURL", imageURL);
-                }
-                catch(JSONException e){/*not implemented yet*/ }
-                OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
-                out.write(jsonObject.toString());
-                out.close();
-                int httpResult = urlConnection.getResponseCode();
-                if (httpResult == HttpURLConnection.HTTP_OK) {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    String userID = br.readLine();
-                    Log.v(TAG, "userID: " + userID);
-                    br.close();
-                    SharedPreferences sharedPref = getSharedPreferences(USER, Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putInt(ID, Integer.parseInt(userID));
-                    editor.apply();
-                    Intent intent = new Intent(context, MainActivity.class);
-                    startActivityForResult(intent, MAPS_REQUEST);
-                    return "Welcome " + name.substring(0,1).toUpperCase() + name.substring(1) + "!";
-                }
-                else {
-                    // scrive un messaggio di errore con codice httpResult
-                    Log.v(TAG, " httpResult = " + httpResult);
-                    return "Error code: " + httpResult;
-                }
-            } finally {
-                if (urlConnection != null)
-                    urlConnection.disconnect();
-            }
         }
     }
 }

@@ -41,12 +41,7 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link EventsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link EventsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This is the fragment where is displayed the list of events (all, created by the user and ones the user has been invited to
  */
 public class EventsFragment extends android.support.v4.app.Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener, HttpGetTask.HttpGet {
     // TODO: Rename parameter arguments, choose names that match

@@ -45,6 +45,9 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * This is the activity where are displayed the details of a route.
+ */
 public class RouteActivity extends ActionBarActivity implements View.OnClickListener, HttpGetTask.HttpGet {
     public static final String ROUTE_URL = "http://mobike.ddns.net/SRV/routes/retrieve/";
 

@@ -312,8 +312,9 @@ public class SummaryActivity extends ActionBarActivity {
 }
 
 
-
-
+/**
+ * This async task get the location from <Latitude, Longitude> couple
+ */
 class GeocoderTask extends AsyncTask<LatLng, Void, String> {
     private Context context;
     private int request;

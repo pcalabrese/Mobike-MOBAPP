@@ -17,7 +17,9 @@ import android.widget.Toast;
 
 import com.mobike.mobike.utils.RangeSeekBar;
 
-
+/**
+ * This is the activity where the user can search for the routes
+ */
 public class RouteSearchActivity extends ActionBarActivity implements View.OnClickListener {
     private static final String TAG = "RouteSearchActivity";
     public static final String ROUTE_SEARCH_URL = "com.mobike.mobike.route_search_url";

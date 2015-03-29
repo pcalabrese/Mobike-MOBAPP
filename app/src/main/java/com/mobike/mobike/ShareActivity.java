@@ -15,7 +15,9 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.widget.FacebookDialog;
 import com.google.android.gms.plus.PlusShare;
 
-
+/**
+ * This activity lets the user share on social networks the route he just recorded
+ */
 public class ShareActivity extends ActionBarActivity implements View.OnClickListener {
 
     private String shareURL, routeName, location;

@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This Activity implements the route recording controls.
+ * This Fragment implements the route recording controls.
  */
 
 public class MapsFragment extends android.support.v4.app.Fragment implements

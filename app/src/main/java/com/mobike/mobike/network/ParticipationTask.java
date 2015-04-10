@@ -22,7 +22,7 @@ import java.net.URLEncoder;
  * Created by Andrea-PC on 22/03/2015.
  */
 public class ParticipationTask extends AsyncTask<String, Void, String> {
-    private static final String TAG = "UploadNewReviewTask";
+    private static final String TAG = "ParticipationTask";
     private static final String participationURL = "http://mobike.ddns.net/SRV/events/participation?op=";
     private Context context;
     private String eventID;

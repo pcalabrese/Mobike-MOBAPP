@@ -139,7 +139,7 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
             usersDeclined = getList(jsonEvent.getString("usersRefused"));
             acceptedSize = jsonEvent.getInt("acceptedSize");
             invitedSize = jsonEvent.getInt("invitedSize");
-            declinedSize = jsonEvent.getInt("declinedSize");
+            declinedSize = jsonEvent.getInt("refusedSize");
         } catch (JSONException e) {
         }
 
@@ -349,6 +349,7 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
                 removeTextviews();
                 state = Event.ACCEPTED;
                 inflateTextviews();
+                recreateActivity(Event.ACCEPTED);
                 break;
 
             case R.id.decline_accepted_event_button:
@@ -356,6 +357,7 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
                 removeTextviews();
                 state = Event.REFUSED;
                 inflateTextviews();
+                recreateActivity(Event.REFUSED);
                 break;
 
             case R.id.accepted_users_button:
@@ -425,6 +427,16 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
         }
     }
 
+    public void recreateActivity(int state) {
+        Bundle bundle = new Bundle();
+        bundle.putString(EventsFragment.EVENT_ID, eventID);
+        bundle.putInt(EventsFragment.EVENT_STATE, state);
+        bundle.putString(EventsFragment.ROUTE_ID, routeID);
+        Intent intent = getIntent();
+        intent.replaceExtras(bundle);
+        finish();
+        startActivity(intent);
+    }
 
 
     public static class ShowListDialog extends android.support.v4.app.DialogFragment {

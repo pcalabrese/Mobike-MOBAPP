@@ -3,7 +3,7 @@
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/accepted_event_textview"
-    android:text="Accepted"
+    android:text="@string/accepted"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_weight="9"

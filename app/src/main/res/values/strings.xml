@@ -5,16 +5,16 @@
     <string name="app_name">MoBike</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">MoBike</string>
-    <string name="start_button">Start</string>
-    <string name="pause_button">Pause</string>
-    <string name="stop_button">Stop</string>
-    <string name="resume_button">Resume</string>
+    <string name="start_button">START</string>
+    <string name="pause_button">PAUSE</string>
+    <string name="stop_button">STOP</string>
+    <string name="resume_button">RESUME</string>
     <string name="title_activity_summary">Route Summary</string>
-    <string name="delete">Delete</string>
-    <string name="save">Save</string>
+    <string name="delete">DELETE</string>
+    <string name="save">SAVE</string>
     <string name="title_activity_share">Share</string>
-    <string name="record_new_route">Record new route</string>
-    <string name="share">Share</string>
+    <string name="record_new_route">RECORD NEW ROUTE</string>
+    <string name="share">SHARE</string>
     <string name="share_textview">You can visualize the route at this URL:</string>
     <string name="shared_message">Hey! Look at motorcyle trip I just had </string>
     <string name="uploading_toast">Uplaoding...</string>
@@ -22,8 +22,8 @@
     <string name="title_activity_main">Mobike</string>
     <string name="hello_world">Hello world!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="join">Join</string>
-    <string name="decline">Decline</string>
+    <string name="join">JOIN</string>
+    <string name="decline">DECLINE</string>
     <string-array name="fragment_titles">
         <item>Record</item>
         <item>Routes</item>
@@ -42,9 +42,9 @@
     <string name="title_activity_route">Route</string>
     <string name="route_name_hint">Name*</string>
     <string name="route_description_hint">Description</string>
-    <string name="yes">Yes</string>
-    <string name="no">No</string>
-    <string name="stop">Stop</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="stop">STOP</string>
     <string name="stop_registration">Are you sure you want to stop the registration?</string>
     <string name="stop_registration_no_positions">Wait! There is no recorded position yet!\n Are you sure you want to stop the registration?</string>
     <string name="route_difficulty_hint">Difficulty* (number between 1 and 10)</string>
@@ -54,24 +54,24 @@
     <string name="event_name_hint">Name</string>
     <string name="event_description_hint">Description</string>
     <string name="event_date">Choose a date</string>
-    <string name="pick_date">Pick Date</string>
+    <string name="pick_date">PICK DATE</string>
     <string name="event_time">Choose time</string>
-    <string name="pick_time">Pick Time</string>
+    <string name="pick_time">PICK TIME</string>
     <string name="invite_user_hint">Invite other users</string>
-    <string name="invite">Invite</string>
-    <string name="cancel">Cancel</string>
-    <string name="create">Create</string>
-    <string name="pick_route">Pick Route</string>
+    <string name="invite">INVITE</string>
+    <string name="cancel">CANCEL</string>
+    <string name="create">CREATE</string>
+    <string name="pick_route">PICK ROUTE</string>
     <string name="title_activity_event_creation">Event Creation</string>
     <string name="event_start_location_hint">Start location</string>
-    <string name="load_more">Load more...</string>
+    <string name="load_more">LOAD MORE...</string>
     <string name="account">Account</string>
-    <string name="edit">Edit</string>
-    <string name="new_review">Review this route!</string>
+    <string name="edit">EDIT</string>
+    <string name="new_review">REVIEW THIS ROUTE!</string>
     <string name="title_activity_review_creation">ReviewCreationActivity</string>
     <string name="new_review_title">New Review</string>
     <string name="review_comment_hint">Comment</string>
-    <string name="send">Send</string>
+    <string name="send">SEND</string>
     <string name="title_activity_nickname">NicknameActivity</string>
     <string name="user_registration">Registration</string>
     <string name="nickname_hint">Nickname</string>
@@ -88,11 +88,11 @@
     <string name="destination">Destination</string>
     <string name="pick_this_route">Pick this route</string>
     <string name="title_activity_fragment">Select a route</string>
-    <string name="search">Search</string>
+    <string name="search">SEARCH</string>
     <string name="start_location">Start Location:</string>
     <string name="end_location">End Location:</string>
     <string name="required_fields">* fields are required</string>
-    <string name="view_route_details">View Route Details</string>
+    <string name="view_route_details">VIEW ROUTE DETAILS</string>
     <string name="created_on">Created on</string>
     <string name="created_by">Created by</string>
     <string name="difficulty">Difficulty:</string>
@@ -110,5 +110,7 @@
         <item>Costiero</item>
         <item>Pianeggiante</item>
     </string-array>
+    <string name="accepted">ACCEPTED</string>
+    <string name="declined">DECLINED</string>
 
 </resources>

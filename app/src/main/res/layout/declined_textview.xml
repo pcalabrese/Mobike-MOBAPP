@@ -3,7 +3,7 @@
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/declined_event_textview"
-    android:text="Declined"
+    android:text="@string/declined"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_weight="9"

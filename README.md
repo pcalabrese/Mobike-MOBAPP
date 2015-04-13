@@ -4,6 +4,9 @@ Mobike Repository for Mobile App (ANDROID)
 link to our webpage
 http://mobike.ddns.net/WAPP/landing
 
+Download our Mobile APP:
+http://mobike.ddns.net/downloads/app/app-debug.apk
+
 Milestone 1 - Proof of Concept
 ==============
 - [Presentation](https://drive.google.com/open?id=0B_1wI-LJKIS-VFlPNS12MUpuSzA&authuser=0)

@@ -90,19 +90,36 @@
 
     </android.support.v7.widget.CardView>
 
+    <ImageButton
+        android:id="@+id/places_nearby_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_above="@id/current_length_duration_card"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:src="@drawable/ic_magnify_white_24dp"
+        android:background="@drawable/oval_button"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginRight="5dp"
+        android:elevation="@dimen/default_elevation"
+        android:stateListAnimator="@anim/fab_animation"/>
 
     <!-- margin left and right 10dp -->
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/button_layout"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
+        android:layout_toRightOf="@+id/places_nearby_button"
+        android:layout_toLeftOf="@+id/new_poi_button"
         android:layout_above="@id/current_length_duration_card">
 
         <!-- margin left and right 70dp, bottom 20dp -->
-        <Button android:id="@+id/start_button"
+        <!--<Button android:id="@+id/start_button"
             android:text="@string/start_button"
             android:layout_height="48dp"
             android:layout_width="0dp"
@@ -119,7 +136,49 @@
             android:drawableStart="@drawable/ic_play_white_24dp"
             android:drawablePadding="15dp"
             android:paddingLeft="120dp"
-            android:paddingRight="120dp"/>
+            android:paddingRight="120dp"/>-->
+
+        <ImageButton android:id="@+id/start_button"
+            android:layout_height="40dp"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:textColor="@color/white"
+            android:background="@drawable/green_button"
+            android:elevation="@dimen/default_elevation"
+            android:stateListAnimator="@anim/fab_animation"
+            android:src="@drawable/ic_play_white_24dp" />
+
+        <!--<Button
+            android:id="@+id/start_button"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:drawableTop="@drawable/ic_play_white_24dp"
+            android:background="@drawable/oval_button"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
+            android:elevation="@dimen/default_elevation"
+            android:stateListAnimator="@anim/fab_animation"/>-->
 
     </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/new_poi_button"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_above="@id/current_length_duration_card"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_plus_white_24dp"
+        android:background="@drawable/oval_button"
+        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="5dp"
+        android:elevation="@dimen/default_elevation"
+        android:stateListAnimator="@anim/fab_animation"/>
 </RelativeLayout>

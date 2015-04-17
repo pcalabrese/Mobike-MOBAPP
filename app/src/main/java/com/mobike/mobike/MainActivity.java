@@ -1,8 +1,10 @@
 package com.mobike.mobike;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -10,6 +12,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,9 +22,15 @@ import android.widget.TextView;
 
 import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.tabs.SlidingTabLayout;
+import com.mobike.mobike.utils.Crypter;
+import com.mobike.mobike.utils.Event;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * This is the main activity, where you can reach all the features. It contains three tabs with rute recording, route list and event list.
@@ -30,6 +39,8 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
 
     private ViewPager mPager;
     private SlidingTabLayout mTabs;
+
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +56,7 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
 
         //getSupportActionBar().hide();
 
-        //new HttpGetTask(this).execute(EventsFragment.downloadInvitedEventsURL);
+        downloadEvents(EventsFragment.downloadInvitedEventsURL);
 
         // resetting the database
         GPSDatabase db = new GPSDatabase(this);
@@ -90,13 +101,35 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
         return super.onOptionsItemSelected(item);
     }
 
+    private void downloadEvents(String url) {
+        String user = "";
+        SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
+        int id = sharedPreferences.getInt(LoginActivity.ID, 0);
+        String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
+        Crypter crypter = new Crypter();
+
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("id", id);
+            jsonObject.put("nickname", nickname);
+            user = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
+            Log.v(TAG, "json per gli inviti pendenti: " + jsonObject.toString());
+        } catch (JSONException e) {
+            Log.v(TAG, "json exception in downloadEvents()");
+        }
+        catch (UnsupportedEncodingException uee) {}
+
+        new HttpGetTask(this).execute(url + user);
+        Log.v(TAG, "downloadEvents url: " + url + user);
+    }
 
     public void setResult(String result) {
         try {
-            JSONArray jsonArray = new JSONArray(result);
+            Crypter crypter = new Crypter();
+            JSONArray jsonArray = new JSONArray(crypter.decrypt(new JSONObject(result).getString("events")));
             TextView titleView = ((TextView) getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
             titleView.setText("Pending Invitations");
-            if (jsonArray.length() > 0) {
+            if (pendingInvitations(jsonArray)) {
                 new AlertDialog.Builder(this)
                         .setCustomTitle(titleView)
                         .setMessage("Hey! You have pending invitations to events, check them!")
@@ -109,6 +142,13 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
                         .show();
             }
         } catch (JSONException e) {}
+    }
+
+    private boolean pendingInvitations(JSONArray array) throws JSONException {
+        for (int i = 0; i < array.length(); i++)
+            if (array.getJSONObject(i).getInt("userState") == Event.INVITED)
+                return true;
+        return false;
     }
 
 

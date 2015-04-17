@@ -92,13 +92,13 @@
 
     <ImageButton
         android:id="@+id/places_nearby_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_above="@id/current_length_duration_card"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:src="@drawable/ic_magnify_white_24dp"
-        android:background="@drawable/oval_button"
+        android:background="@drawable/blue_button"
         android:layout_marginLeft="10dp"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="15dp"
@@ -138,7 +138,7 @@
             android:paddingLeft="120dp"
             android:paddingRight="120dp"/>-->
 
-        <ImageButton android:id="@+id/start_button"
+        <!--<ImageButton android:id="@+id/start_button"
             android:layout_height="40dp"
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -150,7 +150,9 @@
             android:background="@drawable/green_button"
             android:elevation="@dimen/default_elevation"
             android:stateListAnimator="@anim/fab_animation"
-            android:src="@drawable/ic_play_white_24dp" />
+            android:src="@drawable/ic_play_white_24dp" />-->
+
+        <include layout="@layout/start_button"/>
 
         <!--<Button
             android:id="@+id/start_button"
@@ -169,12 +171,12 @@
 
     <ImageButton
         android:id="@+id/new_poi_button"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
         android:layout_above="@id/current_length_duration_card"
         android:layout_alignParentRight="true"
         android:src="@drawable/ic_plus_white_24dp"
-        android:background="@drawable/oval_button"
+        android:background="@drawable/blue_button"
         android:layout_marginRight="10dp"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="15dp"

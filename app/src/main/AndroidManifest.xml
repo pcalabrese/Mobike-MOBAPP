@@ -57,9 +57,11 @@
             android:value="@string/facebook_app_id" />
 
         <!-- metadata required to use Places API -->
-        <!--<meta-data
+        <!--
+            <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key"/> -->
+            android:value="@string/google_maps_key"/>
+        -->
 
         <activity
             android:name=".SummaryActivity"
@@ -141,6 +143,15 @@
         <activity
             android:name=".FullScreenMapActivity"
             android:label="@string/title_activity_full_screen_map" >
+        </activity>
+        <activity
+            android:name=".POICreationActivity"
+            android:excludeFromRecents="true"
+            android:label="@string/title_activity_poicreation"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mobike.mobike.MainActivity" />
         </activity>
     </application>
 

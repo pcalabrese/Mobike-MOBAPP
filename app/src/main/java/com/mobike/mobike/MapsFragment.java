@@ -116,6 +116,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         state = State.BEGIN;
         start.setOnClickListener(this);
         ((ImageButton) getActivity().findViewById(R.id.places_nearby_button)).setOnClickListener(this);
+        ((ImageButton) getActivity().findViewById(R.id.new_poi_button)).setOnClickListener(this);
         //    setUpMapIfNeeded();
     }
 
@@ -283,6 +284,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
                 break;
             case R.id.places_nearby_button:
                 searchPlacesNearby();
+                break;
+            case R.id.new_poi_button:
+                startActivity(new Intent(getActivity(), POICreationActivity.class));
                 break;
         }
     }

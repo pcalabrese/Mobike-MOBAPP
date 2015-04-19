@@ -524,12 +524,12 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
             points = new ArrayList<>();
             route.setPoints(points);
 
-            GPSDatabase db = new GPSDatabase(getActivity());
-            db.deleteTable();
-            mCurrentLocation = null;
-            registered = false;
-            gpsService.setDistanceToZero();
-            db.close();
+        GPSDatabase db = new GPSDatabase(getActivity());
+        db.deleteTableLoc();
+        mCurrentLocation = null;
+        registered = false;
+        gpsService.setDistanceToZero();
+        db.close();
 
             back = true;
             Log.v(TAG, "onActivityResult()");

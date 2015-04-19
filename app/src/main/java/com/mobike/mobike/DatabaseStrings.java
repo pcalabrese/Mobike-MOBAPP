@@ -9,12 +9,19 @@ package com.mobike.mobike;
  */
 public class DatabaseStrings {
 
-    public static final String TABLENAME="locations";
-
+    public static final String TABLELOC="locations";
+    public static final String TABLEPOI="pointsofint";
+// The followings are the names of the locations table fields
     public static final String FIELD_ID = "order_id";
     public static final String FIELD_LAT = "latitude";
     public static final String FIELD_LNG = "longitude";
     public static final String FIELD_TIME = "instant";
     public static final String FIELD_ALT = "altitude";
     public static final String FIELD_DIST = "distance";
+    // The followings are the names of the pointsofint table fields
+    public static final String FIELD_ID_POI = "id";
+    public static final String FIELD_LAT_POI = "latitude";
+    public static final String FIELD_LNG_POI = "longitude";
+    public static final String FIELD_TITLE = "title";
+    public static final String FIELD_CAT = "category";
 }

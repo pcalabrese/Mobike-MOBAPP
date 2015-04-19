@@ -18,14 +18,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Iterator;
 
 import static com.mobike.mobike.DatabaseStrings.*;
 /**
@@ -41,12 +37,13 @@ public class GPSDatabase
     private DbHelper dbHelper; //the reference to the Helper object
 
     public final String DBNAME="gpsdb";
-    public final int DBVERSION=1;
+    public final int DBVERSION=2;
 
-    // The raw code to initialize the database and the (only) table it will use.
-    public final String CREATERDB="CREATE TABLE "+ TABLENAME+"("+ FIELD_ID +" INTEGER PRIMARY KEY, " +
+    // The raw code to initialize the database and the TWO tableS it will use.
+    public final String CREATERDB="CREATE TABLE "+ TABLELOC+"("+ FIELD_ID +" INTEGER PRIMARY KEY, " +
             FIELD_LAT+" VARCHAR NOT NULL, "+ FIELD_LNG+" VARCHAR NOT NULL, "+FIELD_ALT +" VARCHAR, " +
-            FIELD_TIME+" INTEGER, " + FIELD_DIST + " REAL);";
+            FIELD_TIME+" INTEGER, " + FIELD_DIST + " REAL);" +
+            "CREATE TABLE "+TABLEPOI+"("+FIELD_ID_POI+" INTEGER PRIMARY KEY, " + FIELD_LAT_POI+" VARCHAR NOT NULL, "+ FIELD_LNG_POI+" VARCHAR NOT NULL, "+ FIELD_TITLE+" VARCHAR NOT NULL, "+FIELD_CAT +" INTEGER);";
 
     private final String staticMapURL = "https://maps.googleapis.com/maps/api/staticmap?&path=weight:5%7Ccolor:0xff0000ff%7Cenc:";
     private final int maxEncodedPoints = 100;
@@ -96,13 +93,13 @@ public class GPSDatabase
     }
 
     /**
-     * This method adds a new row to the database.
+     * This method adds a new row to the locations table.
      * @param lat the latitude of the new location
      * @param lng the longitude of the new location
      * @param alt the latitude of the new location
-     * @return a random long
+     * @return some long value
      */
-    public long insertRow(double lat, double lng, double alt, float dist)
+    public long insertRowLoc(double lat, double lng, double alt, float dist)
     {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -114,7 +111,7 @@ public class GPSDatabase
         value.put(FIELD_TIME, System.currentTimeMillis());
         try
         {
-            long l = db.insert(TABLENAME, null, value);
+            long l = db.insert(TABLELOC, null, value);
             db.close();
             return l;
         }
@@ -126,33 +123,128 @@ public class GPSDatabase
     }
 
     /**
-     * This method performs a query for all the rows in the table TABLENAME.
+     * This method adds a new row to the Points of interest table.
+     *
+     * @param lat the latitude of the new POI
+     * @param lng the longitude of the new POI
+     * @param title the title of the new POI
+     * @param cat the category of the new POI (TBD)
+     * @return some long value
+     */
+    public long insertRowPOI(double lat, double lng, String title, int cat){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues value=new ContentValues();
+        value.put(FIELD_LAT_POI, lat + "");
+        value.put(FIELD_LNG_POI, lng + "");
+        value.put(FIELD_TITLE, title);
+        value.put(FIELD_CAT, cat + "");
+
+        try
+        {
+            long l = db.insert(TABLEPOI, null, value);
+            db.close();
+            return l;
+        }
+        catch (SQLiteException sqle)
+        {
+            db.close();
+            return -2;
+        }
+    }
+
+
+
+    /**
+     * This method performs a query for all the rows in the table TABLELOC.
      * @return cursor, a Cursor object.
      */
-    private Cursor getAllRows(){
+    private Cursor getAllRowsLoc(){
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        return db.query(TABLENAME,
+        return db.query(TABLELOC,
                 new String[]{FIELD_ID,FIELD_LAT,FIELD_LNG,FIELD_ALT, FIELD_TIME, FIELD_DIST}, null,null, null, null, null);
         //db.close();
     }
 
     /**
-     * This method deletes all the rows from the table.
+     * This method performs a query for all the rows in the table TABLEPOI.
+     * @return cursor, a Cursor object.
      */
-    public void deleteTable(){
+    private Cursor getAllRowsPOI(){
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        return db.query(TABLEPOI,
+                new String[]{FIELD_ID_POI,FIELD_LAT_POI,FIELD_LNG_POI,FIELD_TITLE, FIELD_CAT}, null,null, null, null, null);
+        //db.close();
+    }
+
+    /**
+     * This method deletes all the rows from the table OF locations.
+     */
+    public void deleteTableLoc(){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        db.execSQL("DELETE FROM " + TABLENAME);
+        db.execSQL("DELETE FROM " + TABLELOC);
         db.close();
     }
 
     /**
-     * This method creates a JSON that contains all the data in the database.
+     * This method deletes all the rows from the table of POIs.
+     */
+    public void deleteTablePOI(){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM " + TABLEPOI);
+        db.close();
+    }
+
+    /**
+     * This method creates a JSON that contains all the data in the table of locations.
      * @return JSONArray the jsonArray object representing the table
      */
-    private JSONArray getTableInJSON(){
+    private JSONArray getLocTableInJSON(){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor cursor = getAllRows();
+        Cursor cursor = getAllRowsLoc();
+        cursor.moveToFirst();
+
+        JSONArray resultSet = new JSONArray();
+        int totalColumn;
+
+        while (!cursor.isAfterLast()){
+            totalColumn = cursor.getColumnCount();
+
+            JSONObject rowObject = new JSONObject();
+
+            for( int i=0 ;  i< totalColumn ; i++ ){
+                if( cursor.getColumnName(i) != null ){
+                    try{
+                        if( cursor.getString(i) != null ){
+                            rowObject.put(cursor.getColumnName(i) ,  cursor.getString(i) );
+                        }
+                        else{
+                            rowObject.put( cursor.getColumnName(i) ,  JSONObject.NULL );
+                        }
+                    }
+                    catch( Exception e ){
+                        Log.d(TAG, e.getMessage());
+                    }
+                }
+            }
+            resultSet.put(rowObject);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        db.close();
+        Log.d(TAG, resultSet.toString() );
+        return resultSet;
+    }
+
+    /**
+     * This method creates a JSON that contains all the data in the table of POIs.
+     * @return JSONArray the jsonArray object representing the table
+     */
+    private JSONArray getPOITableInJSON(){
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor cursor = getAllRowsPOI();
         cursor.moveToFirst();
 
         JSONArray resultSet = new JSONArray();
@@ -195,7 +287,7 @@ public class GPSDatabase
     public ArrayList<LatLng> getAllLocations() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLENAME,
+        Cursor cursor = db.query(TABLELOC,
                 new String[]{FIELD_LAT, FIELD_LNG}, null, null, null, null, null);
 
         ArrayList<LatLng> returnLst = new ArrayList<>();
@@ -226,7 +318,7 @@ public class GPSDatabase
      */
     public float getTotalLength() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(TABLENAME, new String[]{FIELD_DIST}, null, null, null, null, null);
+        Cursor cursor = db.query(TABLELOC, new String[]{FIELD_DIST}, null, null, null, null, null);
         cursor.moveToLast();
         float totLen = Float.parseFloat(cursor.getString(0));
         cursor.close();
@@ -242,7 +334,7 @@ public class GPSDatabase
      */
     public long getTotalDuration() {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor cursor = db.query(TABLENAME, new String[]{FIELD_TIME}, null, null, null, null, null);
+        Cursor cursor = db.query(TABLELOC, new String[]{FIELD_TIME}, null, null, null, null, null);
         cursor.moveToFirst();
         long start = cursor.getLong(0);
         cursor.moveToLast();
@@ -260,7 +352,7 @@ public class GPSDatabase
      * @param description the description the user gave to the route
      * @return a String representing the route in the GPX 1.1 format
      */
-    private String getTableInGPX(String email, String name, String description) {
+    private String getLocTableInGPX(String email, String name, String description) {
         ArrayList<LatLng> waypoints = getWayPoints();
         String gpxString = "";
         gpxString += "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" standalone=\"no\"?>\n" +
@@ -303,7 +395,7 @@ public class GPSDatabase
                 "<trkseg>\n";
 
 
-        JSONArray array = getTableInJSON();
+        JSONArray array = getLocTableInJSON();
         String lat, lng, alt;
         long time;
         for (int i = 0; i < array.length(); i++) {
@@ -414,7 +506,7 @@ public class GPSDatabase
             route.put("startlocation", startLocation);
             route.put("endlocation", endLocation);
             //route.put("imgUrl", getEncodedPolylineURL());
-            route.put("gpxString", getTableInGPX(email, name, description));
+            route.put("gpxString", getLocTableInGPX(email, name, description));
 
             user.put("id", userID);
             user.put("nickname", nickname);

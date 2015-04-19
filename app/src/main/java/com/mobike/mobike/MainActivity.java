@@ -49,7 +49,7 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
 
         // resetting the database
         GPSDatabase db = new GPSDatabase(this);
-        db.deleteTable();
+        db.deleteTableLoc();
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));

@@ -470,7 +470,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         route.setPoints(points);
 
         GPSDatabase db = new GPSDatabase(getActivity());
-        db.deleteTable();
+        db.deleteTableLoc();
         mCurrentLocation = null;
         registered = false;
         gpsService.setDistanceToZero();

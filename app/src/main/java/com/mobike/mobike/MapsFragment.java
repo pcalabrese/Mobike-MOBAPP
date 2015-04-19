@@ -54,6 +54,10 @@ import java.util.List;
 public class MapsFragment extends android.support.v4.app.Fragment implements
         NewLocationListener, View.OnClickListener {
 
+    public static final String POI_LATITUDE = "com.mobike.mobike.poi_latitude";
+    public static final String POI_LONGITUDE = "com.mobike.mobike.poi_longitude";
+    public static final String POI_RECORDING = "com.mobike.mobike.poi_recording";
+
     private Location mCurrentLocation;
     private ActionBarActivity activity;
 
@@ -286,7 +290,12 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
                 searchPlacesNearby();
                 break;
             case R.id.new_poi_button:
-                startActivity(new Intent(getActivity(), POICreationActivity.class));
+                if (mCurrentLocation == null)
+                    mCurrentLocation = gpsService.getLocation();
+                if (mCurrentLocation != null)
+                    poiCreation();
+                else
+                    Toast.makeText(getActivity(), "There are no recorded positions yet!", Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -441,6 +450,17 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         } catch (GooglePlayServicesNotAvailableException e) {
             // ...
         }
+    }
+
+    private void poiCreation() {
+        Intent intent = new Intent(getActivity(), POICreationActivity.class);
+        if (state == State.RUNNING && registered) {
+            intent.putExtra(POI_LATITUDE, mCurrentLocation.getLatitude());
+            intent.putExtra(POI_LONGITUDE, mCurrentLocation.getLongitude());
+            intent.putExtra(POI_RECORDING, true);
+        } else
+            intent.putExtra(POI_RECORDING, false);
+        startActivity(intent);
     }
 
     /**

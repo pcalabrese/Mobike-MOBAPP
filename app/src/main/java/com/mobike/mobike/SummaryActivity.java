@@ -131,6 +131,7 @@ public class SummaryActivity extends ActionBarActivity {
                 //do nothing
             }
         });
+        type = "Montuoso";
 
         //set length and duration text views
         GPSDatabase db2 = new GPSDatabase(this);

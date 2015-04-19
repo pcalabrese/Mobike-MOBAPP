@@ -117,5 +117,10 @@
     <string name="poi_creation_message">Test</string>
     <string name="poi_title_hint">Name</string>
     <string name="create_poi_button">CREATE</string>
+    <string-array name="poi_categories">
+        <item>Panorama</item>
+        <item>Ristoro</item>
+        <item>Curve</item>
+    </string-array>
     
 </resources>

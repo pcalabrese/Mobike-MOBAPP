@@ -548,7 +548,6 @@ public class GPSDatabase
 
     public void close(){
         dbHelper.close();
-        //return true;
     }
 
     public String getEncodedPolylineURL() {

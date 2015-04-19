@@ -3,10 +3,9 @@
     <!-- file xml del bottone resume che verrà aggiunto al linear layout della MapsActivity -->
 
 <!--  bottom 20dp -->
-<Button android:id="@+id/resume_button"
+<ImageButton android:id="@+id/resume_button"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:text="@string/resume_button"
-    android:layout_height="match_parent"
+    android:layout_height="40dp"
     android:layout_width="0dp"
     android:layout_weight="0.5"
     android:layout_marginRight="10dp"
@@ -18,8 +17,6 @@
     android:background="@drawable/green_button"
     android:elevation="@dimen/default_elevation"
     android:stateListAnimator="@anim/fab_animation"
-    android:drawableLeft="@drawable/ic_play_white_24dp"
-    android:drawableStart="@drawable/ic_play_white_24dp"
-    android:drawablePadding="15dp"
+    android:src="@drawable/ic_play_white_24dp"
     android:paddingLeft="30dp"
     android:paddingRight="30dp"/>

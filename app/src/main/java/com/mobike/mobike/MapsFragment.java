@@ -1,5 +1,6 @@
 package com.mobike.mobike;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
@@ -14,6 +15,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -23,18 +25,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,13 +54,19 @@ import java.util.List;
 public class MapsFragment extends android.support.v4.app.Fragment implements
         NewLocationListener, View.OnClickListener {
 
+    public static final String POI_LATITUDE = "com.mobike.mobike.poi_latitude";
+    public static final String POI_LONGITUDE = "com.mobike.mobike.poi_longitude";
+    public static final String POI_RECORDING = "com.mobike.mobike.poi_recording";
+
     private Location mCurrentLocation;
     private ActionBarActivity activity;
 
     private static final int SUMMARY_REQUEST = 1;
+    private static final int REQUEST_PLACE_PICKER = 2;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LinearLayout buttonLayout;
-    private Button start, pause, stop, resume;
+    private ImageButton pause, stop, resume;
+    private ImageButton start;
 
 
     private enum State {BEGIN, RUNNING, PAUSED, STOPPED} // All the possible states
@@ -102,9 +116,11 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
     private void setUp(){
         buttonLayout = (LinearLayout) getView().findViewById(R.id.button_layout);
-        start = (Button) getView().findViewById(R.id.start_button);
+        start = (ImageButton) getView().findViewById(R.id.start_button);
         state = State.BEGIN;
         start.setOnClickListener(this);
+        ((ImageButton) getActivity().findViewById(R.id.places_nearby_button)).setOnClickListener(this);
+        ((ImageButton) getActivity().findViewById(R.id.new_poi_button)).setOnClickListener(this);
         //    setUpMapIfNeeded();
     }
 
@@ -270,6 +286,17 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
             case R.id.stop_button:
                 stopButtonPressed(view);
                 break;
+            case R.id.places_nearby_button:
+                searchPlacesNearby();
+                break;
+            case R.id.new_poi_button:
+                if (mCurrentLocation == null)
+                    mCurrentLocation = gpsService.getLocation();
+                if (mCurrentLocation != null)
+                    poiCreation();
+                else
+                    Toast.makeText(getActivity(), "There are no recorded positions yet!", Toast.LENGTH_SHORT).show();
+                break;
         }
     }
 
@@ -283,9 +310,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     public void startButtonPressed(View view) {
         if (view.getId() == R.id.start_button) {
             /*if (!mGoogleApiClient.isConnected()){mGoogleApiClient.connect(); }*/
-            ((Button) view).setVisibility(View.GONE);
-            pause = (Button) getActivity().getLayoutInflater().inflate(R.layout.pause_button, buttonLayout, false);
-            stop = (Button) getActivity().getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
+            view.setVisibility(View.GONE);
+            pause = (ImageButton) getActivity().getLayoutInflater().inflate(R.layout.pause_button, buttonLayout, false);
+            stop = (ImageButton) getActivity().getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
             buttonLayout.addView(pause);
             buttonLayout.addView(stop);
             pause.setOnClickListener(this);
@@ -306,8 +333,8 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         if (view.getId() == R.id.pause_button) {
             pause.setVisibility(View.GONE);
             stop.setVisibility(View.GONE);
-            resume = (Button) getActivity().getLayoutInflater().inflate(R.layout.resume_button, buttonLayout, false);
-            stop = (Button) getActivity().getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
+            resume = (ImageButton) getActivity().getLayoutInflater().inflate(R.layout.resume_button, buttonLayout, false);
+            stop = (ImageButton) getActivity().getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
             buttonLayout.addView(resume);
             buttonLayout.addView(stop);
             resume.setOnClickListener(this);
@@ -326,8 +353,8 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         if (view.getId() == R.id.resume_button) {
             resume.setVisibility(View.GONE);
             stop.setVisibility(View.GONE);
-            pause = (Button) getActivity().getLayoutInflater().inflate(R.layout.pause_button, buttonLayout, false);
-            stop = (Button) getActivity().getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
+            pause = (ImageButton) getActivity().getLayoutInflater().inflate(R.layout.pause_button, buttonLayout, false);
+            stop = (ImageButton) getActivity().getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
             buttonLayout.addView(pause);
             buttonLayout.addView(stop);
             pause.setOnClickListener(this);
@@ -396,7 +423,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         if (resume != null) resume.setVisibility(View.GONE);
         if (pause != null) pause.setVisibility(View.GONE);
         stop.setVisibility(View.GONE);
-        start = (Button) getActivity().getLayoutInflater().inflate(R.layout.start_button, buttonLayout, false);
+        start = (ImageButton) getActivity().getLayoutInflater().inflate(R.layout.start_button, buttonLayout, false);
         buttonLayout.addView(start);
         start.setOnClickListener(onClickListener);
 
@@ -407,6 +434,33 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
             state = State.STOPPED;
         }
         gpsService.stopRegistering();
+    }
+
+    private void searchPlacesNearby() {
+        // Construct an intent for the place picker
+        try {
+            PlacePicker.IntentBuilder intentBuilder = new PlacePicker.IntentBuilder();
+            Intent intent = intentBuilder.build(getActivity());
+            // Start the intent by requesting a result,
+            // identified by a request code.
+            startActivityForResult(intent, REQUEST_PLACE_PICKER);
+
+        } catch (GooglePlayServicesRepairableException e) {
+            // ...
+        } catch (GooglePlayServicesNotAvailableException e) {
+            // ...
+        }
+    }
+
+    private void poiCreation() {
+        Intent intent = new Intent(getActivity(), POICreationActivity.class);
+        if (state == State.RUNNING && registered) {
+            intent.putExtra(POI_LATITUDE, mCurrentLocation.getLatitude());
+            intent.putExtra(POI_LONGITUDE, mCurrentLocation.getLongitude());
+            intent.putExtra(POI_RECORDING, true);
+        } else
+            intent.putExtra(POI_RECORDING, false);
+        startActivity(intent);
     }
 
     /**
@@ -466,8 +520,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      * @param data nada
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        points = new ArrayList<>();
-        route.setPoints(points);
+        if (requestCode == SUMMARY_REQUEST) {
+            points = new ArrayList<>();
+            route.setPoints(points);
 
         GPSDatabase db = new GPSDatabase(getActivity());
         db.deleteTableLoc();
@@ -476,8 +531,24 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         gpsService.setDistanceToZero();
         db.close();
 
-        back = true;
-        Log.v(TAG, "onActivityResult()");
+            back = true;
+            Log.v(TAG, "onActivityResult()");
+        } else if (requestCode == REQUEST_PLACE_PICKER && resultCode == Activity.RESULT_OK) {
+            // The user has selected a place. Extract the name and address.
+            final Place place = PlacePicker.getPlace(data, getActivity());
+
+            final CharSequence name = place.getName();
+            final CharSequence address = place.getAddress();
+            String attributions = PlacePicker.getAttributions(data);
+            if (attributions == null) {
+                attributions = "";
+            }
+
+            String title = name.toString();
+            String snippet = address + "\n" + Html.fromHtml(attributions);
+
+            mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(title).snippet(snippet));
+        }
     }
 
 

@@ -3,80 +3,79 @@
 <FrameLayout
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:orientation="vertical" >
 
-    <!--<RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
 
-    <ImageButton
-        android:id="@+id/search_button"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/abc_ic_search_api_mtrl_alpha"
-        android:background="@color/colorAccent"/>
-    <Spinner
-        android:id="@+id/route_types"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toLeftOf="@+id/search_button"/>
+            <!--<RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/search_button"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/abc_ic_search_api_mtrl_alpha"
+                android:background="@color/colorAccent"/>
+            <Spinner
+                android:id="@+id/route_types"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/search_button"/>
 
 
 
-    </RelativeLayout> -->
+            </RelativeLayout> -->
 
-<!--     <Spinner
-        android:id="@+id/route_types"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/> -->
+            <!--     <Spinner
+                    android:id="@+id/route_types"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/> -->
 
-    <!-- divider -->
-<!--    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/colorAccent" /> -->
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            <!-- divider -->
+            <!--    <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/colorAccent" /> -->
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <ListView
-        android:id="@+id/list_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="9"
-        android:cacheColorHint="#00000000"
-        android:divider="@null"/>
+                <ListView
+                    android:id="@+id/list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="9"
+                    android:cacheColorHint="#00000000"
+                    android:divider="@null" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+            </android.support.v4.widget.SwipeRefreshLayout>
 
-<!--    <GridView
-        android:id="@+id/gridview"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="9"
-        android:verticalSpacing="2dp"
-        android:horizontalSpacing="2dp"
-        android:stretchMode="columnWidth"
-        android:numColumns="2"
-        android:background="@color/colorAccent"/> -->
+            <!--    <GridView
+                    android:id="@+id/gridview"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="9"
+                    android:verticalSpacing="2dp"
+                    android:horizontalSpacing="2dp"
+                    android:stretchMode="columnWidth"
+                    android:numColumns="2"
+                    android:background="@color/colorAccent"/> -->
 
-</LinearLayout>
-
+        </LinearLayout>
 
 
         <ImageButton
@@ -92,7 +91,7 @@
             android:layout_marginEnd="@dimen/fab_margin"
             android:layout_marginBottom="@dimen/fab_margin"
             android:elevation="@dimen/fab_elevation"
-            android:stateListAnimator="@anim/fab_animation"/>
+            android:stateListAnimator="@anim/fab_animation" />
 
     </RelativeLayout>
 </FrameLayout>

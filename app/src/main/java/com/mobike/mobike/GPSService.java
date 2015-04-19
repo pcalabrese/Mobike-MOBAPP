@@ -236,7 +236,7 @@ public class GPSService extends Service implements GoogleApiClient.ConnectionCal
         if(previousLocation != null){
             totalDistance = totalDistance + previousLocation.distanceTo(location);
         }
-        myDatabase.insertRow(lat, lng, alt, totalDistance);
+        myDatabase.insertRowLoc(lat, lng, alt, totalDistance);
         previousLocation = location;
         myDatabase.close();
     }

@@ -94,24 +94,26 @@ public class POICreationActivity extends ActionBarActivity implements View.OnCli
     }
 
     private void createPOI() {
-        if (recording)
-            savePOI();
-        else
-            sendPOI();
-    }
-
-    private void savePOI() {
-        String title = ((EditText) findViewById(R.id.title)).getText().toString();
-        // save POI in DB
-        finish();
-    }
-
-    private void sendPOI() {
         String title = ((EditText) findViewById(R.id.title)).getText().toString();
         if (title.length() == 0) {
             Toast.makeText(this, "Please insert a name", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (recording)
+            savePOI(title);
+        else
+            sendPOI(title);
+    }
+
+    private void savePOI(String title) {
+        // save POI in DB
+        GPSDatabase db = new GPSDatabase(this);
+        db.insertRowPOI(latitude, longitude, title, category);
+        db.close();
+        finish();
+    }
+
+    private void sendPOI(String title) {
         new POICreationTask(this, latitude, longitude, title, category).execute();
         finish();
     }

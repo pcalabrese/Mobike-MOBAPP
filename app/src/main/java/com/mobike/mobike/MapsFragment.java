@@ -37,7 +37,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -70,6 +72,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
 
     private enum State {BEGIN, RUNNING, PAUSED, STOPPED} // All the possible states
+
     private State state;        // The current state
     private static final String TAG = "MapsFragment";
     protected static final float CAMERA_ZOOM_VALUE = 15;    // The value of the map zoom. It must
@@ -114,7 +117,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     }
 
 
-    private void setUp(){
+    private void setUp() {
         buttonLayout = (LinearLayout) getView().findViewById(R.id.button_layout);
         start = (ImageButton) getView().findViewById(R.id.start_button);
         state = State.BEGIN;
@@ -145,17 +148,20 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     /**
      * This method checks the GPS status and if it is not enabled, shows the user a dialog.
      */
-    private void checkGPSStatus(){
+    private void checkGPSStatus() {
         LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         boolean isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if(!isGPSEnabled){ showSettingsAlert(); }
+        if (!isGPSEnabled) {
+            showSettingsAlert();
+        }
     }
 
     /**
      * This method updates the map, making it center on the last plocation known.
-     * @param location  the last location known.
+     *
+     * @param location the last location known.
      */
-    public void updateCamera(Location location){
+    public void updateCamera(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         // zooming to the current location
         CameraUpdate update = CameraUpdateFactory.newLatLngZoom(latLng, CAMERA_ZOOM_VALUE); //zoom value between 2(min zoom)-21(max zoom)
@@ -191,6 +197,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
     /**
      * This method creates the items of the options menu.
+     *
      * @param menu the options menu
      * @return true
      */
@@ -247,7 +254,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
     /**
      * This method sets the map up, initializing the route.
-     *
+     * <p/>
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
@@ -260,14 +267,15 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
     /**
      * This method updates the map, adding the last known location to the route drawn on it.
+     *
      * @param location the last known location.
      */
-    private void updateUIRoute(Location location, float length, long duration){
+    private void updateUIRoute(Location location, float length, long duration) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         points.add(latLng);
         route.setPoints(points);
-        ((TextView) getActivity().findViewById(R.id.current_length)).setText(String.format("%.01f", length/1000) + " km");
-        ((TextView) getActivity().findViewById(R.id.current_duration)).setText(String.valueOf(duration/3600) + " h " + String.valueOf((duration/60)%60) + " m " + String.valueOf(duration%60) + " s");
+        ((TextView) getActivity().findViewById(R.id.current_length)).setText(String.format("%.01f", length / 1000) + " km");
+        ((TextView) getActivity().findViewById(R.id.current_duration)).setText(String.valueOf(duration / 3600) + " h " + String.valueOf((duration / 60) % 60) + " m " + String.valueOf(duration % 60) + " s");
     }
 
 
@@ -347,6 +355,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     /**
      * This method is invoked when the "Resume" button is pressed.
      * The layout of the lower part of the screen changes and the route recording starts again.
+     *
      * @param view the view
      */
     public void resumeButtonPressed(View view) {
@@ -376,7 +385,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
             final View.OnClickListener onClickListener = this;
             TextView titleView = ((TextView) getActivity().getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
             titleView.setText(getResources().getString(R.string.stop));
-            if(registered) {
+            if (registered) {
                 //alert dialog to stop the registration
                 new AlertDialog.Builder(getActivity())
                         .setCustomTitle(titleView)
@@ -396,8 +405,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
                         })
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
-            }
-            else {
+            } else {
                 // dialog to stop the registration if there are no recorded positions
                 new AlertDialog.Builder(getActivity())
                         .setCustomTitle(titleView)
@@ -466,7 +474,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     /**
      * This method shows an alert inviting the user to activate the GPS in the settings menu.
      */
-    public void showSettingsAlert(){
+    public void showSettingsAlert() {
         TextView titleView = ((TextView) getActivity().getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
         titleView.setText("GPS in settings");
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
@@ -479,7 +487,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
         // On pressing Settings button
         alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog,int which) {
+            public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
             }
@@ -500,36 +508,42 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      * This method is called by the service whenever a new location is updated.
      * It makes the camera update and, if registering, the last location known
      * to be added to the route to be added on the map.
+     *
      * @param location The last location updated.
      */
-    public void onNewLocation(Location location, float length, long duration){
+    public void onNewLocation(Location location, float length, long duration) {
         if (location != null) {
             Log.v(TAG, "Location accuracy: " + String.valueOf(location.getAccuracy()));
-        //    Toast.makeText(getActivity(), "Location accuracy: " + String.valueOf(location.getAccuracy()), Toast.LENGTH_SHORT).show();
+            //    Toast.makeText(getActivity(), "Location accuracy: " + String.valueOf(location.getAccuracy()), Toast.LENGTH_SHORT).show();
         }
         updateCamera(location);
         updateUIRoute(location, length, duration);
         mCurrentLocation = location;
     }
-    public void setRegistered(){registered = true;}
+
+    public void setRegistered() {
+        registered = true;
+    }
 
     /**
-     *this method is called whenever the app comes back to MapsActivity from SummaryActivity
+     * this method is called whenever the app comes back to MapsActivity from SummaryActivity
+     *
      * @param requestCode boh
-     * @param resultCode dunno
-     * @param data nada
+     * @param resultCode  dunno
+     * @param data        nada
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SUMMARY_REQUEST) {
             points = new ArrayList<>();
             route.setPoints(points);
 
-        GPSDatabase db = new GPSDatabase(getActivity());
-        db.deleteTableLoc();
-        mCurrentLocation = null;
-        registered = false;
-        gpsService.setDistanceToZero();
-        db.close();
+            GPSDatabase db = new GPSDatabase(getActivity());
+            db.deleteTableLoc();
+            db.deleteTablePOI();
+            mCurrentLocation = null;
+            registered = false;
+            gpsService.setDistanceToZero();
+            db.close();
 
             back = true;
             Log.v(TAG, "onActivityResult()");
@@ -547,13 +561,14 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
             String title = name.toString();
             String snippet = address + "\n" + Html.fromHtml(attributions);
 
-            mMap.addMarker(new MarkerOptions().position(place.getLatLng()).title(title).snippet(snippet));
-        }
+            mMap.addMarker(new MarkerOptions().position(place.getLatLng())
+                    .title(title).snippet(snippet).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        } else if (resultCode == REQUEST_PLACE_PICKER)
+            Log.v(TAG, "resultCode di places API: " + resultCode + ", RESULT_OK = " + Activity.RESULT_OK);
     }
 
 
 }
-
 
 
 /**
@@ -562,6 +577,8 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
  */
 interface NewLocationListener {
     public void onNewLocation(Location location, float length, long duration);
+
     public void updateCamera(Location location);
+
     public void setRegistered();
 }

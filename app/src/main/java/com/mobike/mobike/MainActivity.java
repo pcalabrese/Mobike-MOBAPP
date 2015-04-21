@@ -59,8 +59,12 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
         downloadEvents(EventsFragment.downloadInvitedEventsURL);
 
         // resetting the database
-        GPSDatabase db = new GPSDatabase(this);
-        db.deleteTableLoc();
+        if (savedInstanceState == null) {
+            GPSDatabase db = new GPSDatabase(this);
+            db.deleteTableLoc();
+            db.deleteTablePOI();
+            Log.v(TAG, "deleting tables in db");
+        }
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));

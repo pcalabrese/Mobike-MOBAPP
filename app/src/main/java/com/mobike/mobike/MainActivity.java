@@ -20,6 +20,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.tabs.SlidingTabLayout;
 import com.mobike.mobike.utils.Crypter;
@@ -36,6 +42,8 @@ import java.net.URLEncoder;
  * This is the main activity, where you can reach all the features. It contains three tabs with rute recording, route list and event list.
  */
 public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpGet {
+
+    public static final String ALL_POIS_URL = "http://mobike.ddns.net/SRV/ ?token=";
 
     private ViewPager mPager;
     private SlidingTabLayout mTabs;
@@ -57,6 +65,7 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
         //getSupportActionBar().hide();
 
         downloadEvents(EventsFragment.downloadInvitedEventsURL);
+        //downloadPOIs(ALL_POIS_URL);
 
         // resetting the database
         if (savedInstanceState == null) {
@@ -105,7 +114,7 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
         return super.onOptionsItemSelected(item);
     }
 
-    private void downloadEvents(String url) {
+    private String generateToken() {
         String user = "";
         SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
         int id = sharedPreferences.getInt(LoginActivity.ID, 0);
@@ -120,11 +129,39 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
             Log.v(TAG, "json per gli inviti pendenti: " + jsonObject.toString());
         } catch (JSONException e) {
             Log.v(TAG, "json exception in downloadEvents()");
+        } catch (UnsupportedEncodingException uee) {
         }
-        catch (UnsupportedEncodingException uee) {}
 
+        return user;
+    }
+
+    private void downloadEvents(String url) {
+        String user = generateToken();
         new HttpGetTask(this).execute(url + user);
         Log.v(TAG, "downloadEvents url: " + url + user);
+    }
+
+    private void downloadPOIs(String url) {
+        String user = generateToken();
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url + user,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        savePOIs(response);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.v(TAG, "Errore nel download di tutti i POIs");
+                    }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+        Log.v(TAG, "downloadPOIs url: " + url + user);
     }
 
     public void setResult(String result) {
@@ -145,7 +182,8 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .show();
             }
-        } catch (JSONException e) {}
+        } catch (JSONException e) {
+        }
     }
 
     private boolean pendingInvitations(JSONArray array) throws JSONException {
@@ -153,6 +191,10 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
             if (array.getJSONObject(i).getInt("userState") == Event.INVITED)
                 return true;
         return false;
+    }
+
+    private void savePOIs(String result) {
+
     }
 
 
@@ -171,9 +213,12 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
         @Override
         public Fragment getItem(int position) {
             switch (position) {
-                case 0: return new MapsFragment();
-                case 1: return new SearchFragment();
-                case 2: return new EventsFragment();
+                case 0:
+                    return new MapsFragment();
+                case 1:
+                    return new SearchFragment();
+                case 2:
+                    return new EventsFragment();
             }
             return null;
         }

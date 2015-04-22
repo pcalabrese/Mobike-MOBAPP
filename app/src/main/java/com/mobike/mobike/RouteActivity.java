@@ -23,6 +23,12 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -107,9 +113,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
 
         ((ImageButton) findViewById(R.id.fullscreen_button)).setOnClickListener(this);
 
-        //new DownloadGpxTask(this).execute(routeID);
-        //new HttpGetTask(this).execute(ALL_REVIEWS_URL + userID + routeID); //prendere lo userID dalle shared pref
-        new HttpGetTask(this).execute(ROUTE_URL + routeID);
+        downloadRoute(ROUTE_URL + routeID);
     }
 
     // method to finish current activity at the pressure of top left back button
@@ -337,6 +341,30 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             Log.v(TAG, "jsonException");
         }
     }
+
+    private void downloadRoute(String url) {
+        //new HttpGetTask(this).execute(ROUTE_URL + routeID);
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        setResult(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.v(TAG, "Errore nel download della route");
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
+    }
+
 
     @Override
     public void onClick(View view) {

@@ -65,6 +65,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
     private static final int SUMMARY_REQUEST = 1;
     private static final int REQUEST_PLACE_PICKER = 2;
+    private static final int POI_CREATION_REQUEST = 3;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LinearLayout buttonLayout;
     private ImageButton pause, stop, resume;
@@ -462,13 +463,11 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
     private void poiCreation() {
         Intent intent = new Intent(getActivity(), POICreationActivity.class);
-        if (state == State.RUNNING && registered) {
-            intent.putExtra(POI_LATITUDE, mCurrentLocation.getLatitude());
-            intent.putExtra(POI_LONGITUDE, mCurrentLocation.getLongitude());
-            intent.putExtra(POI_RECORDING, true);
-        } else
-            intent.putExtra(POI_RECORDING, false);
-        startActivity(intent);
+        intent.putExtra(POI_LATITUDE, mCurrentLocation.getLatitude());
+        intent.putExtra(POI_LONGITUDE, mCurrentLocation.getLongitude());
+        intent.putExtra(POI_RECORDING, state == State.RUNNING && registered);
+
+        startActivityForResult(intent, POI_CREATION_REQUEST);
     }
 
     /**
@@ -534,39 +533,63 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == SUMMARY_REQUEST) {
-            points = new ArrayList<>();
-            route.setPoints(points);
-
-            GPSDatabase db = new GPSDatabase(getActivity());
-            db.deleteTableLoc();
-            db.deleteTablePOI();
-            mCurrentLocation = null;
-            registered = false;
-            gpsService.setDistanceToZero();
-            db.close();
-
-            back = true;
+            resetState();
             Log.v(TAG, "onActivityResult()");
-        } else if (requestCode == REQUEST_PLACE_PICKER && resultCode == Activity.RESULT_OK) {
+        }
+        else if (requestCode == REQUEST_PLACE_PICKER && resultCode == Activity.RESULT_OK) {
             // The user has selected a place. Extract the name and address.
-            final Place place = PlacePicker.getPlace(data, getActivity());
-
-            final CharSequence name = place.getName();
-            final CharSequence address = place.getAddress();
-            String attributions = PlacePicker.getAttributions(data);
-            if (attributions == null) {
-                attributions = "";
-            }
-
-            String title = name.toString();
-            String snippet = address + "\n" + Html.fromHtml(attributions);
-
-            mMap.addMarker(new MarkerOptions().position(place.getLatLng())
-                    .title(title).snippet(snippet).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
-        } else if (resultCode == REQUEST_PLACE_PICKER)
-            Log.v(TAG, "resultCode di places API: " + resultCode + ", RESULT_OK = " + Activity.RESULT_OK);
+            displayPickedPlace(data);
+        }
+        else if (requestCode == POI_CREATION_REQUEST && resultCode == Activity.RESULT_OK) {
+            displayCreatedPOI(data);
+        }
     }
 
+
+    private void resetState() {
+        points = new ArrayList<>();
+        route.setPoints(points);
+
+        GPSDatabase db = new GPSDatabase(getActivity());
+        db.deleteTableLoc();
+        db.deleteTablePOI();
+        mCurrentLocation = null;
+        registered = false;
+        gpsService.setDistanceToZero();
+        db.close();
+
+        back = true;
+    }
+
+
+    private void displayPickedPlace(Intent data) {
+        final Place place = PlacePicker.getPlace(data, getActivity());
+
+        final CharSequence name = place.getName();
+        final CharSequence address = place.getAddress();
+        String attributions = PlacePicker.getAttributions(data);
+        if (attributions == null) {
+            attributions = "";
+        }
+
+        String title = name.toString();
+        String snippet = address + "\n" + Html.fromHtml(attributions);
+
+        mMap.addMarker(new MarkerOptions().position(place.getLatLng())
+                .title(title).snippet(snippet).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+    }
+
+
+    private void displayCreatedPOI(Intent data) {
+        Bundle b = data.getExtras();
+        String title = b.getString(POICreationActivity.POI_TITLE);
+        Double latitude = b.getDouble(POICreationActivity.POI_LATITUDE);
+        Double longitude = b.getDouble(POICreationActivity.POI_LONGITUDE);
+        String category = POICreationActivity.getStringCategory(b.getInt(POICreationActivity.POI_CATEGORY));
+
+        mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
+                .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+    }
 
 }
 

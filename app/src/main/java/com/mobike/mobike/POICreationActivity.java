@@ -1,5 +1,6 @@
 package com.mobike.mobike;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -19,6 +20,11 @@ import com.mobike.mobike.network.POICreationTask;
 
 
 public class POICreationActivity extends ActionBarActivity implements View.OnClickListener {
+
+    public static final String POI_LATITUDE = "com.mobike.mobike.poi_latitude";
+    public static final String POI_LONGITUDE = "com.mobike.mobike.poi_longitude";
+    public static final String POI_TITLE = "com.mobike.mobike.poi_title";
+    public static final String POI_CATEGORY = "com.mobike.mobike.poi_category";
 
     private double latitude, longitude;
     private boolean recording;
@@ -110,11 +116,42 @@ public class POICreationActivity extends ActionBarActivity implements View.OnCli
         GPSDatabase db = new GPSDatabase(this);
         db.insertRowPOI(latitude, longitude, title, category);
         db.close();
+
+        Intent data = new Intent();
+        Bundle b = new Bundle();
+        b.putDouble(POI_LATITUDE, latitude);
+        b.putDouble(POI_LONGITUDE, longitude);
+        b.putString(POI_TITLE, title);
+        b.putInt(POI_CATEGORY, category);
+        data.putExtras(b);
+        setResult(RESULT_OK, data);
         finish();
     }
 
     private void sendPOI(String title) {
         new POICreationTask(this, latitude, longitude, title, category).execute();
+
+        Intent data = new Intent();
+        Bundle b = new Bundle();
+        b.putDouble(POI_LATITUDE, latitude);
+        b.putDouble(POI_LONGITUDE, longitude);
+        b.putString(POI_TITLE, title);
+        b.putInt(POI_CATEGORY, category);
+        data.putExtras(b);
+        setResult(RESULT_OK, data);
         finish();
+    }
+
+
+    public static String getStringCategory(int code) {
+        switch (code) {
+            case 0:
+                return "Panorama";
+            case 1:
+                return "Ristoro";
+            case 2:
+                return "Curve";
+        }
+        return "";
     }
 }

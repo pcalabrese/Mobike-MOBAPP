@@ -220,7 +220,6 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         if (id == R.id.map_settings) {
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

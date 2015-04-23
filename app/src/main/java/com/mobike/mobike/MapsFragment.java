@@ -200,7 +200,6 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      * This method creates the items of the options menu.
      *
      * @param menu the options menu
-     * @return true
      */
 
     @Override

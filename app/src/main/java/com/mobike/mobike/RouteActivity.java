@@ -114,6 +114,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         ((ImageButton) findViewById(R.id.fullscreen_button)).setOnClickListener(this);
 
         downloadRoute(ROUTE_URL + routeID);
+        //loadPOIsFromDB();
     }
 
     // method to finish current activity at the pressure of top left back button
@@ -362,6 +363,18 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         });
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
+
+    }
+
+    private void loadPOIsFromDB() {
+        //load and display all POIs in the map
+        GPSDatabase db = new GPSDatabase(this);
+        //JSONArray array = db.getTableAllPOIInJSON();
+
+    }
+
+
+    private void setRoutePOIs() {
 
     }
 

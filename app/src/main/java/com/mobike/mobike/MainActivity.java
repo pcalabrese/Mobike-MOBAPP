@@ -194,7 +194,8 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
     }
 
     private void savePOIs(String result) {
-
+        // cancella i POIs nel DB
+        //Save POIs in DB
     }
 
 

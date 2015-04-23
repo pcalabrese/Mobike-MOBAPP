@@ -25,6 +25,14 @@ import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.Route;
@@ -255,7 +263,28 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     private void downloadRoutes(String url) {
         if (mSwipeRefreshLayout != null)
             mSwipeRefreshLayout.setRefreshing(true);
-        new HttpGetTask(this).execute(url);
+        //new HttpGetTask(this).execute(url);
+
+        // Instantiate the RequestQueue.
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        setResult(response);
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.v(TAG, "Errore nel download delle routes");
+                    }
+                });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+
         Log.v(TAG, "downloadRoutes url: " + url);
     }
 

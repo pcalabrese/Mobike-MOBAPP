@@ -40,10 +40,13 @@ public class GPSDatabase
     public final int DBVERSION=2;
 
     // The raw code to initialize the database and the TWO tableS it will use.
-    public final String CREATERDB="CREATE TABLE "+ TABLELOC+"("+ FIELD_ID +" INTEGER PRIMARY KEY, " +
+    public final String CREATE_TABLE_LOC="CREATE TABLE "+ TABLELOC+"("+ FIELD_ID +" INTEGER PRIMARY KEY, " +
             FIELD_LAT+" VARCHAR NOT NULL, "+ FIELD_LNG+" VARCHAR NOT NULL, "+FIELD_ALT +" VARCHAR, " +
-            FIELD_TIME+" INTEGER, " + FIELD_DIST + " REAL);" +
-            "CREATE TABLE "+TABLEPOI+"("+FIELD_ID_POI+" INTEGER PRIMARY KEY, " + FIELD_LAT_POI+" VARCHAR NOT NULL, "+ FIELD_LNG_POI+" VARCHAR NOT NULL, "+ FIELD_TITLE+" VARCHAR NOT NULL, "+FIELD_CAT +" INTEGER);";
+            FIELD_TIME+" INTEGER, " + FIELD_DIST + " REAL);";
+
+    public final String CREATE_TABLE_POI = "CREATE TABLE "+TABLEPOI+"("+FIELD_ID_POI+" INTEGER PRIMARY KEY, " +
+            FIELD_LAT_POI+" VARCHAR NOT NULL, "+ FIELD_LNG_POI+" VARCHAR NOT NULL, "+ FIELD_TITLE +
+            " VARCHAR NOT NULL, "+FIELD_CAT +" INTEGER);";
 
     private final String staticMapURL = "https://maps.googleapis.com/maps/api/staticmap?&path=weight:5%7Ccolor:0xff0000ff%7Cenc:";
     private final int maxEncodedPoints = 100;
@@ -82,7 +85,8 @@ public class GPSDatabase
          */
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL(CREATERDB);
+            db.execSQL(CREATE_TABLE_LOC);
+            db.execSQL(CREATE_TABLE_POI);
         }
 
 

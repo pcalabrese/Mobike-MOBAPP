@@ -28,6 +28,8 @@ public class RouteSearchActivity extends ActionBarActivity implements View.OnCli
     private Boolean[] selected = new Boolean[4];
     private RangeSeekBar<Float> seekBar;
     private boolean oneSelected = false;
+    private ImageView selectedType;
+    private int selectedInt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,7 +105,7 @@ public class RouteSearchActivity extends ActionBarActivity implements View.OnCli
         Log.v(TAG, "onClick()");
 
         switch (view.getId()) {
-            case R.id.mountain_icon:
+        /*    case R.id.mountain_icon:
                 if (!selected[0] && !oneSelected) {
                     mountain.setColorFilter(null);
                     oneSelected = true;
@@ -154,6 +156,85 @@ public class RouteSearchActivity extends ActionBarActivity implements View.OnCli
                     coast.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
                     oneSelected = false;
                     selected[3] = !selected[3];
+                }
+                break;*/
+
+            case R.id.mountain_icon:
+                if (!selected[0]) {
+                    if (oneSelected) {
+                        selectedType.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
+                        selected[selectedInt] = false;
+                    }
+                    mountain.setColorFilter(null);
+                    oneSelected = true;
+                    selectedInt = 0;
+                    selectedType = mountain;
+                    selected[0] = true;
+                }
+                else {
+                    mountain.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
+                    oneSelected = false;
+                    selected[0] = false;
+                    Log.v(TAG, "1");
+                }
+
+                break;
+
+            case R.id.hill_icon:
+                if (!selected[1]) {
+                    if (oneSelected) {
+                        selectedType.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
+                        selected[selectedInt] = false;
+                    }
+                    hill.setColorFilter(null);
+                    oneSelected = true;
+                    selectedInt = 1;
+                    selectedType = hill;
+                    selected[1] = true;
+                }
+                else {
+                    hill.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
+                    oneSelected = false;
+                    selected[1] = false;
+                }
+
+                break;
+
+            case R.id.plain_icon:
+                if (!selected[2]) {
+                    if (oneSelected) {
+                        selectedType.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
+                        selected[selectedInt] = false;
+                    }
+                    plain.setColorFilter(null);
+                    oneSelected = true;
+                    selectedInt = 2;
+                    selectedType = plain;
+                    selected[2] = true;
+                }
+                else {
+                    plain.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
+                    oneSelected = false;
+                    selected[2] = false;
+                }
+                break;
+
+            case R.id.coast_icon:
+                if (!selected[3]) {
+                    if (oneSelected) {
+                        selectedType.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
+                        selected[selectedInt] = false;
+                    }
+                    coast.setColorFilter(null);
+                    oneSelected = true;
+                    selectedInt = 3;
+                    selectedType = coast;
+                    selected[3] = true;
+                }
+                else {
+                    coast.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
+                    oneSelected = false;
+                    selected[3] = false;
                 }
                 break;
 

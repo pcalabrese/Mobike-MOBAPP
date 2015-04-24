@@ -33,6 +33,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -43,6 +44,7 @@ import com.mobike.mobike.network.DownloadGpxTask;
 import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.CustomMapFragment;
+import com.mobike.mobike.utils.POI;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -114,7 +116,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         ((ImageButton) findViewById(R.id.fullscreen_button)).setOnClickListener(this);
 
         downloadRoute(ROUTE_URL + routeID);
-        //loadPOIsFromDB();
+        loadPOIsFromDB();
     }
 
     // method to finish current activity at the pressure of top left back button
@@ -223,10 +225,11 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
 
 
     public void setResult(String result) {
-        String name="", description="", creator="", length="", duration="", difficulty="", bends="", type="", gpx="", startLocation="", endLocation="";
+        String name="", description="", creator="", length="", duration="", difficulty="", bends="", type="", gpx="",
+                startLocation="", endLocation="";
         int ratingNumber = 0;
         double rating = 0;
-        JSONArray reviews = null;
+        JSONArray reviews = null, poisList = null;
         JSONObject jsonRoute, resultJSON;
         Crypter crypter = new Crypter();
 
@@ -256,6 +259,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             ratingNumber = jsonRoute.isNull("ratingnumber")? 0 : jsonRoute.getInt("ratingnumber");
             startLocation = jsonRoute.getString("startlocation");
             endLocation = jsonRoute.getString("endlocation");
+            poisList = jsonRoute.getJSONArray("poisLIst");
         } catch (JSONException e) {}
 
 
@@ -275,6 +279,8 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         mRating.setText(String.format("%.01f", rating));
         mRatingNumber.setText(ratingNumber + (ratingNumber == 1? " review" : " reviews"));
         mRatingBar.setRating(Float.parseFloat(String.valueOf(rating)));
+        if (poisList != null)
+            setRoutePOIs(poisList);
 
         Log.v(TAG, "setResult() completed");
     }
@@ -369,13 +375,45 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
     private void loadPOIsFromDB() {
         //load and display all POIs in the map
         GPSDatabase db = new GPSDatabase(this);
-        //JSONArray array = db.getTableAllPOIInJSON();
+        JSONArray array = db.getAllPOITableInJSON();
+        JSONObject poi;
+        double latitude, longitude;
+        String title, category;
+        try {
+            for (int i = 0; i < array.length(); i++) {
+                poi = array.getJSONObject(i);
+                title = poi.getString("title");
+                category = POI.intToStringType(poi.getInt("category"));
+                latitude = poi.getDouble("latitude");
+                longitude = poi.getDouble("longitude");
 
+                mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
+                        .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            }
+        } catch (JSONException e) {}
+
+        Log.v(TAG, "loadPOIsFromDB()");
     }
 
 
-    private void setRoutePOIs() {
+    private void setRoutePOIs(JSONArray array) {
+        JSONObject poi;
+        double latitude, longitude;
+        String title, category;
+        try {
+            for (int i = 0; i < array.length(); i++) {
+                poi = array.getJSONObject(i);
+                title = poi.getString("title");
+                category = POI.intToStringType(poi.getInt("category"));
+                latitude = poi.getDouble("latitude");
+                longitude = poi.getDouble("longitude");
 
+                mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
+                        .title(title).snippet(category));
+            }
+        } catch (JSONException e) {}
+
+        Log.v(TAG, "setRoutePOIs()");
     }
 
 

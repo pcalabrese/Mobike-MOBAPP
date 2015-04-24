@@ -86,6 +86,9 @@ public class UploadRouteTask extends AsyncTask<String, Void, String> {
                 Log.v(TAG, routeID);
                 br.close();
                 ((SummaryActivity) context).setRoute(routeID);
+
+                new POIListCreationTask(context, Integer.parseInt(routeID)).execute();
+
                 Intent intent = new Intent(context, ReviewCreationActivity.class);
                 intent.putExtra(SearchFragment.ROUTE_ID, routeID);
                 intent.putExtra(SearchFragment.REQUEST_CODE, SummaryActivity.REVIEW_REQUEST);

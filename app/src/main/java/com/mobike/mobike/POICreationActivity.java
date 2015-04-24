@@ -141,17 +141,4 @@ public class POICreationActivity extends ActionBarActivity implements View.OnCli
         setResult(RESULT_OK, data);
         finish();
     }
-
-
-    public static String getStringCategory(int code) {
-        switch (code) {
-            case 0:
-                return "Panorama";
-            case 1:
-                return "Ristoro";
-            case 2:
-                return "Curve";
-        }
-        return "";
-    }
 }

@@ -30,6 +30,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.maps.CameraUpdate;
@@ -45,6 +51,12 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.mobike.mobike.utils.Crypter;
+import com.mobike.mobike.utils.POI;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +71,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     public static final String POI_LATITUDE = "com.mobike.mobike.poi_latitude";
     public static final String POI_LONGITUDE = "com.mobike.mobike.poi_longitude";
     public static final String POI_RECORDING = "com.mobike.mobike.poi_recording";
+    public static final String ALL_POIS_URL = "http://mobike.ddns.net/SRV/pois/retrieveall";
 
     private Location mCurrentLocation;
     private ActionBarActivity activity;
@@ -112,8 +125,10 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     @Override
     public void onStart() {
         super.onStart();
-        if (!back)
+        if (!back) {
             setUp();
+            downloadPOIs(ALL_POIS_URL);
+        }
         Log.v(TAG, "onStart()");
     }
 
@@ -133,17 +148,6 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
         Log.v(TAG, "onCreateView()");
         return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-/*        FragmentManager fm = getActivity().getSupportFragmentManager();
-        SupportMapFragment fragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
-        FragmentTransaction ft = fm.beginTransaction();
-        ft.remove(fragment);
-        ft.commit();
-        Log.v(TAG, "onDestroyView()");*/
     }
 
     /**
@@ -209,20 +213,6 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         super.onCreateOptionsMenu(menu, inflater);
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.map_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     /**
      * Sets up the map if it is possible to do so (i.e., the Google Play services APK is correctly
      * installed) and the map has not already been instantiated.. This will ensure that we only ever
@@ -275,6 +265,77 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         route.setPoints(points);
         ((TextView) getActivity().findViewById(R.id.current_length)).setText(String.format("%.01f", length / 1000) + " km");
         ((TextView) getActivity().findViewById(R.id.current_duration)).setText(String.valueOf(duration / 3600) + " h " + String.valueOf((duration / 60) % 60) + " m " + String.valueOf(duration % 60) + " s");
+    }
+
+
+    private void downloadPOIs(String url) {
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        savePOIs(response);
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.v(TAG, "Errore nel download di tutti i POIs");
+            }
+        });
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
+        Log.v(TAG, "downloadPOIs url: " + url);
+    }
+
+    private void savePOIs(String result) {
+        // cancella i POIs nel DB
+        GPSDatabase db = new GPSDatabase(getActivity());
+        db.deleteTableALLPOI();
+
+        //Save POIs in DB
+        Crypter crypter = new Crypter();
+        JSONArray array;
+        JSONObject poi;
+        String title;
+        int type;
+        double latitude, longitude;
+        try {
+            array = new JSONArray(crypter.decrypt(new JSONObject(result).getString("pois")));
+            for (int i = 0; i < array.length(); i++) {
+                poi = array.getJSONObject(i);
+                title = poi.getString("title");
+                type = POI.stringToIntType(poi.getString("type"));
+                latitude = poi.getDouble("lat");
+                longitude = poi.getDouble("lon");
+                db.insertRowAllPOI(latitude, longitude, title, type);
+            }
+        } catch(JSONException e) {}
+        db.close();
+        Log.v(TAG, "savePOIs()");
+        displayAllPOIs();
+    }
+
+
+    private void displayAllPOIs() {
+        GPSDatabase db = new GPSDatabase(getActivity());
+        JSONArray array = db.getAllPOITableInJSON();
+        JSONObject poi;
+        String title, category;
+        double lat, lon;
+        try {
+            for (int i = 0; i < array.length(); i++) {
+                poi = array.getJSONObject(i);
+                lat = poi.getDouble("latitude");
+                lon = poi.getDouble("longitude");
+                title = poi.getString("title");
+                category = POI.intToStringType(poi.getInt("category"));
+
+                mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon))
+                        .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            }
+        } catch (JSONException e) {}
+        Log.v(TAG, "displayAllPOIs()");
     }
 
 
@@ -583,7 +644,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         String title = b.getString(POICreationActivity.POI_TITLE);
         Double latitude = b.getDouble(POICreationActivity.POI_LATITUDE);
         Double longitude = b.getDouble(POICreationActivity.POI_LONGITUDE);
-        String category = POICreationActivity.getStringCategory(b.getInt(POICreationActivity.POI_CATEGORY));
+        String category = POI.intToStringType(b.getInt(POICreationActivity.POI_CATEGORY));
 
         mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
                 .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));

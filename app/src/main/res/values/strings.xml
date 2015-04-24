@@ -118,9 +118,10 @@
     <string name="poi_title_hint">Name</string>
     <string name="create_poi_button">CREATE</string>
     <string-array name="poi_categories">
-        <item>Panorama</item>
-        <item>Ristoro</item>
-        <item>Curve</item>
+        <item>Viewpoint</item>
+        <item>Gas Station</item>
+        <item>Restaurant</item>
+        <item>Other</item>
     </string-array>
     
 </resources>

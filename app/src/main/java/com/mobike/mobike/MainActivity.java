@@ -30,6 +30,7 @@ import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.tabs.SlidingTabLayout;
 import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.Event;
+import com.mobike.mobike.utils.POI;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,8 +43,6 @@ import java.net.URLEncoder;
  * This is the main activity, where you can reach all the features. It contains three tabs with rute recording, route list and event list.
  */
 public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpGet {
-
-    public static final String ALL_POIS_URL = "http://mobike.ddns.net/SRV/ ?token=";
 
     private ViewPager mPager;
     private SlidingTabLayout mTabs;
@@ -65,7 +64,6 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
         //getSupportActionBar().hide();
 
         downloadEvents(EventsFragment.downloadInvitedEventsURL);
-        //downloadPOIs(ALL_POIS_URL);
 
         // resetting the database
         if (savedInstanceState == null) {
@@ -141,29 +139,6 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
         Log.v(TAG, "downloadEvents url: " + url + user);
     }
 
-    private void downloadPOIs(String url) {
-        String user = generateToken();
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url + user,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        savePOIs(response);
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.v(TAG, "Errore nel download di tutti i POIs");
-                    }
-        });
-        // Add the request to the RequestQueue.
-        queue.add(stringRequest);
-        Log.v(TAG, "downloadPOIs url: " + url + user);
-    }
-
     public void setResult(String result) {
         try {
             Crypter crypter = new Crypter();
@@ -191,11 +166,6 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
             if (array.getJSONObject(i).getInt("userState") == Event.INVITED)
                 return true;
         return false;
-    }
-
-    private void savePOIs(String result) {
-        // cancella i POIs nel DB
-        //Save POIs in DB
     }
 
 

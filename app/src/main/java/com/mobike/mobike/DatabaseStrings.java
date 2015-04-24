@@ -11,6 +11,7 @@ public class DatabaseStrings {
 
     public static final String TABLELOC="locations";
     public static final String TABLEPOI="pointsofint";
+    public static final String TABLEALLPOI = "allpointsofint";
 // The followings are the names of the locations table fields
     public static final String FIELD_ID = "order_id";
     public static final String FIELD_LAT = "latitude";

@@ -26,6 +26,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -34,6 +35,11 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.network.UploadRouteTask;
 import com.mobike.mobike.utils.CustomMapFragment;
+import com.mobike.mobike.utils.POI;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -80,6 +86,8 @@ public class SummaryActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
         setUpMapIfNeeded();
+
+        loadRoutePOIsFromDB();
 
         route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         GPSDatabase db = new GPSDatabase(this);
@@ -212,7 +220,8 @@ public class SummaryActivity extends ActionBarActivity {
                     strokeColor(Color.BLACK).radius(10));
             mMap.addCircle(new CircleOptions().center(end).fillColor(Color.RED).
                     strokeColor(Color.BLACK).radius(10)); */
-            mMap.addMarker(new MarkerOptions().position(start).title("Start"));
+            mMap.addMarker(new MarkerOptions().position(start).title("Start")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             mMap.addMarker(new MarkerOptions().position(end).title("End"));
 
             // Zooming on the route
@@ -233,6 +242,29 @@ public class SummaryActivity extends ActionBarActivity {
         }
 
         db.close();
+    }
+
+    private void loadRoutePOIsFromDB() {
+        //load and display all POIs in the map
+        GPSDatabase db = new GPSDatabase(this);
+        JSONArray array = db.getPOITableInJSON();
+        JSONObject poi;
+        double latitude, longitude;
+        String title, category;
+        try {
+            for (int i = 0; i < array.length(); i++) {
+                poi = array.getJSONObject(i);
+                title = poi.getString("title");
+                category = POI.intToStringType(poi.getInt("category"));
+                latitude = poi.getDouble("latitude");
+                longitude = poi.getDouble("longitude");
+
+                mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
+                        .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+            }
+        } catch (JSONException e) {}
+
+        Log.v(TAG, "loadRuotePOIsFromDB()");
     }
 
     /**

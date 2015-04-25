@@ -646,8 +646,12 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         Double longitude = b.getDouble(POICreationActivity.POI_LONGITUDE);
         String category = POI.intToStringType(b.getInt(POICreationActivity.POI_CATEGORY));
 
-        mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
-                .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+        if (b.getBoolean(POICreationActivity.POI_IS_ASSOCIATED))
+            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
+                    .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+        else
+            mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
+                    .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
     }
 
 }

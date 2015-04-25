@@ -187,7 +187,8 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             LatLng end = points.get(points.size() - 1);
 
             // Adding the start and end markers
-            mMap.addMarker(new MarkerOptions().position(start).title("Start"));
+            mMap.addMarker(new MarkerOptions().position(start).title("Start")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             mMap.addMarker(new MarkerOptions().position(end).title("End"));
             // Zooming on the route
             /*CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
@@ -404,12 +405,12 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             for (int i = 0; i < array.length(); i++) {
                 poi = array.getJSONObject(i);
                 title = poi.getString("title");
-                category = POI.intToStringType(poi.getInt("category"));
-                latitude = poi.getDouble("latitude");
-                longitude = poi.getDouble("longitude");
+                category = POI.intToStringType(poi.getInt("type"));
+                latitude = poi.getDouble("lat");
+                longitude = poi.getDouble("lon");
 
                 mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
-                        .title(title).snippet(category));
+                        .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
             }
         } catch (JSONException e) {}
 

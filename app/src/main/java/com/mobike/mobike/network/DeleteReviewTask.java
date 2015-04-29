@@ -22,6 +22,10 @@ import java.net.URL;
 /**
  * Created by Andrea-PC on 22/03/2015.
  */
+
+/**
+ * This class performs a HTTP POST to delete an existing Review
+ */
 public class DeleteReviewTask extends AsyncTask<String, Void, String> {
     private static final String TAG = "DeleteReviewTask";
     private static final String deleteReviewURL = "http://mobike.ddns.net/SRV/reviews/delete";
@@ -29,6 +33,13 @@ public class DeleteReviewTask extends AsyncTask<String, Void, String> {
     private float rate;
     private String comment, routeID;
 
+    /**
+     * Creates a new DeleteReviewTask
+     * @param context
+     * @param routeID
+     * @param comment
+     * @param rate
+     */
     public DeleteReviewTask(Context context, String routeID, String comment, float rate) {
         this.context = context;
         this.rate = rate;
@@ -36,22 +47,36 @@ public class DeleteReviewTask extends AsyncTask<String, Void, String> {
         this.routeID = routeID;
     }
 
+    /**
+     * Standard method of Async Task, calls deleteReview() method
+     * @param context
+     * @return String with a message for the user
+     */
     @Override
     protected String doInBackground(String... context) {
         try {
-            return editReview();
+            return deleteReview();
         } catch (IOException e) {
             return "Unable to edit the review. URL may be invalid.";
         }
     }
 
+    /**
+     * Standard method of Async Task, makes a Toast with the result String
+     * @param result String with a message for the user
+     */
     @Override
     protected void onPostExecute(String result) {
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
         ((RouteActivity) context).recreateActivity();
     }
 
-    private String editReview() throws IOException {
+    /**
+     * Performs the HTTP POST
+     * @return String with a message for the user
+     * @throws IOException
+     */
+    private String deleteReview() throws IOException {
         HttpURLConnection urlConnection = null;
         try {
             URL u = new URL(deleteReviewURL);

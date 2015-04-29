@@ -40,7 +40,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.network.DeleteReviewTask;
-import com.mobike.mobike.network.DownloadGpxTask;
 import com.mobike.mobike.network.HttpGetTask;
 import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.CustomMapFragment;
@@ -61,6 +60,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
 
     public static final String USER_RATE = "com.mobike.mobike.RouteActivity.user_rate";
     public static final String USER_MESSAGE = "com.mobike.mobike.RouteActivity.user_message";
+    public static final String POI_LIST = "com.mobike.mobike.RouteActivity.poi_list";
     public static final int EDIT_REVIEW_REQUEST = 1;
     public static final int NEW_REVIEW_REQUEST = 2;
     public static final String GPX = "com.mobike.mobike.gpx";
@@ -75,6 +75,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
     private RatingBar mRatingBar;
     private String routeID, userRate, userMessage, gpx;
     private boolean pickingRoute;
+    private String poiList;
 
     private static final String TAG = "RouteActivity";
 
@@ -116,7 +117,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         ((ImageButton) findViewById(R.id.fullscreen_button)).setOnClickListener(this);
 
         downloadRoute(ROUTE_URL + routeID);
-        loadPOIsFromDB();
+        //loadPOIsFromDB();
     }
 
     // method to finish current activity at the pressure of top left back button
@@ -260,7 +261,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             ratingNumber = jsonRoute.isNull("ratingnumber")? 0 : jsonRoute.getInt("ratingnumber");
             startLocation = jsonRoute.getString("startlocation");
             endLocation = jsonRoute.getString("endlocation");
-            poisList = jsonRoute.getJSONArray("poisLIst");
+            poisList = jsonRoute.getJSONArray("poisList");
         } catch (JSONException e) {}
 
 
@@ -280,8 +281,10 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         mRating.setText(String.format("%.01f", rating));
         mRatingNumber.setText(ratingNumber + (ratingNumber == 1? " review" : " reviews"));
         mRatingBar.setRating(Float.parseFloat(String.valueOf(rating)));
-        if (poisList != null)
+        if (poisList != null) {
+            poiList = poisList.toString();
             setRoutePOIs(poisList);
+        }
 
         Log.v(TAG, "setResult() completed");
     }
@@ -351,7 +354,8 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
     }
 
     private void downloadRoute(String url) {
-        //new HttpGetTask(this).execute(ROUTE_URL + routeID);
+        new HttpGetTask(this).execute(ROUTE_URL + routeID);
+        /*
         RequestQueue queue = Volley.newRequestQueue(this);
 
         // Request a string response from the provided URL.
@@ -369,7 +373,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             }
         });
         // Add the request to the RequestQueue.
-        queue.add(stringRequest);
+        queue.add(stringRequest);*/
 
     }
 
@@ -405,14 +409,18 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             for (int i = 0; i < array.length(); i++) {
                 poi = array.getJSONObject(i);
                 title = poi.getString("title");
-                category = POI.intToStringType(poi.getInt("type"));
+                category = poi.getString("type");
                 latitude = poi.getDouble("lat");
                 longitude = poi.getDouble("lon");
+
+                Log.v(TAG, "setRoutePOIs() iterazione");
 
                 mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
                         .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
             }
-        } catch (JSONException e) {}
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         Log.v(TAG, "setRoutePOIs()");
     }
@@ -469,6 +477,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
                 bun.putString(GPX, gpx);
                 intent1.putExtras(bun); */
                 RouteActivity.currentGpx = gpx;
+                intent1.putExtra(POI_LIST, poiList);
                 startActivity(intent1);
                 break;
         }

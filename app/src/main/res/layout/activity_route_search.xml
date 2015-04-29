@@ -29,11 +29,12 @@
         android:maxLines="2"
         android:background="@drawable/abc_edit_text_material"/>
 
-    <!-- bike -->
+    <!-- Località di arrivo -->
     <EditText
         android:id="@+id/destination"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textStyle="bold"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
@@ -51,9 +52,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
             android:layout_marginBottom="5dp"
             android:layout_alignParentLeft="true"
-            android:text="100 km"
+            android:layout_alignParentStart="true"
+            android:text="0 km"
             android:textStyle="bold"/>
 
         <TextView
@@ -61,8 +64,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="15dp"
+            android:layout_marginEnd="15dp"
             android:layout_marginBottom="5dp"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:text="500 km"
             android:textStyle="bold"/>
 
@@ -89,7 +94,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:src="@drawable/mountain_colour"/>
 
         <com.mobike.mobike.SquareImageView
@@ -98,6 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:src="@drawable/hill_colour"/>
 
         <com.mobike.mobike.SquareImageView
@@ -106,6 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginRight="10dp"
+            android:layout_marginEnd="10dp"
             android:src="@drawable/plain_colour"/>
 
     <!--    <com.mobike.mobike.SquareImageView
@@ -121,6 +130,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:src="@drawable/coast_colour"/>
 
     </LinearLayout>

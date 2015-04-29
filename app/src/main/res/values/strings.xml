@@ -105,16 +105,19 @@
     <string name="title_activity_full_screen_map">Route Map</string>
     <string name="nickname_already_exists">The nickname you entered already exists, please choose another one.</string>
     <string-array name="route_type_selection">
-        <item>Montuoso</item>
-        <item>Collinare</item>
-        <item>Costiero</item>
-        <item>Pianeggiante</item>
+        <item>Mountain</item>
+        <item>Hill</item>
+        <item>Coast</item>
+        <item>Plain</item>
+        <item>Mixed</item>
     </string-array>
     <string name="accepted">ACCEPTED</string>
     <string name="declined">DECLINED</string>
     <string name="title_activity_poicreation">POICreationActivity</string>
     <string name="poi_creation_title">New POI</string>
-    <string name="poi_creation_message">Test</string>
+    <string name="poi_creation_message_not_recording">Create a new Point Of Interest at the current location and it will be visible to everybody!</string>
+    <string name="poi_creation_message_recording">Create a new Point Of Interest  at the current location, it will be associated with the route you are recording so everybody will know abuot this place!</string>
+    <string name="poi_creation_category">Category:</string>
     <string name="poi_title_hint">Name</string>
     <string name="create_poi_button">CREATE</string>
     <string-array name="poi_categories">
@@ -123,5 +126,6 @@
         <item>Restaurant</item>
         <item>Other</item>
     </string-array>
+    <string name="logout">Logout</string>
     
 </resources>

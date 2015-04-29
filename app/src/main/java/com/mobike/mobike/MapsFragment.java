@@ -104,9 +104,8 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      * This method is called when the activity is created.
      * It initializes the layout, the map the route to be drawn on the map and the state.
      *
-     * @param savedInstanceState I don't know
+     * @param savedInstanceState bundle for previous saved state
      */
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,6 +121,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         Log.v(TAG, "onCreate()");
     }
 
+    /**
+     * Fragment lifecycle method, starts download of all POIs and setup the UI
+     */
     @Override
     public void onStart() {
         super.onStart();
@@ -132,7 +134,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         Log.v(TAG, "onStart()");
     }
 
-
+    /**
+     * Initializes the UI
+     */
     private void setUp() {
         buttonLayout = (LinearLayout) getView().findViewById(R.id.button_layout);
         start = (ImageButton) getView().findViewById(R.id.start_button);
@@ -143,6 +147,13 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         //    setUpMapIfNeeded();
     }
 
+    /**
+     * Fragment lifecycle method
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_maps, container, false);
@@ -173,6 +184,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         mMap.animateCamera(update);
     }
 
+    /**
+     * Fragment lifecycle method
+     */
     @Override
     public void onResume() {
         super.onResume();
@@ -184,6 +198,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         Log.v(TAG, "onResume()");
     }
 
+    /**
+     * Fragment lifecycle method
+     */
     @Override
     public void onPause() {
         super.onPause();
@@ -193,7 +210,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         Log.v(TAG, "onPause()");
     }
 
-
+    /**
+     * Fragment lifecycle method
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -267,7 +286,10 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         ((TextView) getActivity().findViewById(R.id.current_duration)).setText(String.valueOf(duration / 3600) + " h " + String.valueOf((duration / 60) % 60) + " m " + String.valueOf(duration % 60) + " s");
     }
 
-
+    /**
+     * Send a HTTP GET request at this url
+     * @param url
+     */
     private void downloadPOIs(String url) {
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         // Request a string response from the provided URL.
@@ -288,6 +310,10 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         Log.v(TAG, "downloadPOIs url: " + url);
     }
 
+    /**
+     * Saves downloaded POIs
+     * @param result
+     */
     private void savePOIs(String result) {
         // cancella i POIs nel DB
         GPSDatabase db = new GPSDatabase(getActivity());
@@ -316,7 +342,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         displayAllPOIs();
     }
 
-
+    /**
+     * Displays all the POIs on the map
+     */
     private void displayAllPOIs() {
         GPSDatabase db = new GPSDatabase(getActivity());
         JSONArray array = db.getAllPOITableInJSON();
@@ -338,7 +366,10 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         Log.v(TAG, "displayAllPOIs()");
     }
 
-
+    /**
+     * Called when a button is clicked
+     * @param view
+     */
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -375,7 +406,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      *
      * @param view the view
      */
-    public void startButtonPressed(View view) {
+    private void startButtonPressed(View view) {
         if (view.getId() == R.id.start_button) {
             /*if (!mGoogleApiClient.isConnected()){mGoogleApiClient.connect(); }*/
             view.setVisibility(View.GONE);
@@ -397,7 +428,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      *
      * @param view the view
      */
-    public void pauseButtonPressed(View view) {
+    private void pauseButtonPressed(View view) {
         if (view.getId() == R.id.pause_button) {
             pause.setVisibility(View.GONE);
             stop.setVisibility(View.GONE);
@@ -418,7 +449,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      *
      * @param view the view
      */
-    public void resumeButtonPressed(View view) {
+    private void resumeButtonPressed(View view) {
         if (view.getId() == R.id.resume_button) {
             resume.setVisibility(View.GONE);
             stop.setVisibility(View.GONE);
@@ -440,7 +471,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      *
      * @param view the view
      */
-    public void stopButtonPressed(View view) {
+    private void stopButtonPressed(View view) {
         if (view.getId() == R.id.stop_button) {
             final View.OnClickListener onClickListener = this;
             TextView titleView = ((TextView) getActivity().getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
@@ -487,6 +518,10 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         }
     }
 
+    /**
+     * Stops the registration of the route
+     * @param onClickListener
+     */
     private void stopRegistration(View.OnClickListener onClickListener) {
         if (resume != null) resume.setVisibility(View.GONE);
         if (pause != null) pause.setVisibility(View.GONE);
@@ -504,6 +539,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         gpsService.stopRegistering();
     }
 
+    /**
+     * Search places nearby using Google Places API
+     */
     private void searchPlacesNearby() {
         // Construct an intent for the place picker
         try {
@@ -520,13 +558,21 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         }
     }
 
+    /**
+     * Starts POICreationActivity to create a new POI
+     */
     private void poiCreation() {
         Intent intent = new Intent(getActivity(), POICreationActivity.class);
         intent.putExtra(POI_LATITUDE, mCurrentLocation.getLatitude());
         intent.putExtra(POI_LONGITUDE, mCurrentLocation.getLongitude());
-        intent.putExtra(POI_RECORDING, state == State.RUNNING && registered);
+        intent.putExtra(POI_RECORDING, (state == State.RUNNING) && registered);
 
         startActivityForResult(intent, POI_CREATION_REQUEST);
+
+        Log.v(TAG, "poiCreation(), recording: " + ((state == State.RUNNING) && registered));
+        Toast.makeText(getActivity(),
+                "recording: " + ((state == State.RUNNING) && registered) + ", registered: " + registered + ", state == State.RUNNING: " + (state == State.RUNNING),
+                Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -579,12 +625,15 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         mCurrentLocation = location;
     }
 
+    /**
+     * Set the variable "registered" to true
+     */
     public void setRegistered() {
         registered = true;
     }
 
     /**
-     * this method is called whenever the app comes back to MapsActivity from SummaryActivity
+     * This method is called whenever the app comes back to MapsActivity from another activity started for result
      *
      * @param requestCode boh
      * @param resultCode  dunno
@@ -604,7 +653,9 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         }
     }
 
-
+    /**
+     * Reset the recording state
+     */
     private void resetState() {
         points = new ArrayList<>();
         route.setPoints(points);
@@ -617,10 +668,16 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         gpsService.setDistanceToZero();
         db.close();
 
+        ((TextView) getActivity().findViewById(R.id.current_length)).setText(getResources().getString(R.string.initial_length));
+        ((TextView) getActivity().findViewById(R.id.current_duration)).setText(getResources().getString(R.string.initial_duration));
+
         back = true;
     }
 
-
+    /**
+     * Displays picked place taken from Google Places API
+     * @param data
+     */
     private void displayPickedPlace(Intent data) {
         final Place place = PlacePicker.getPlace(data, getActivity());
 
@@ -635,10 +692,13 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         String snippet = address + "\n" + Html.fromHtml(attributions);
 
         mMap.addMarker(new MarkerOptions().position(place.getLatLng())
-                .title(title).snippet(snippet).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+                .title(title).snippet(snippet));
     }
 
-
+    /**
+     * Displays the created POI
+     * @param data
+     */
     private void displayCreatedPOI(Intent data) {
         Bundle b = data.getExtras();
         String title = b.getString(POICreationActivity.POI_TITLE);

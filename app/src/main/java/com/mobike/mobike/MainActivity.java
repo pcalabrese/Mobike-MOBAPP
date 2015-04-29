@@ -105,7 +105,9 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
                 Intent intent = new Intent(this, AccountDetailsActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.action_settings:
+            case R.id.action_logout:
+                setResult(LoginActivity.DISCONNECT, null);
+                finish();
                 break;
         }
 

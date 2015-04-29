@@ -28,12 +28,24 @@ import java.net.URLEncoder;
 /**
  * Created by Andrea-PC on 09/03/2015.
  */
+
+/**
+ * This class performs a HTTP GET to check whether the user is already registered or not
+ */
 public class LoginUserTask extends AsyncTask<String, Void, String> {
     private String name, surname, email, imgURL;
     private Context context;
     public static final String loginUserURL = "http://mobike.ddns.net/SRV/users/auth";
     private final static String TAG = "LoginUserTask";
 
+    /**
+     * Creates a new LoginUserTask
+     * @param context
+     * @param name
+     * @param surname
+     * @param email
+     * @param imgURL
+     */
     public LoginUserTask(Context context, String name, String surname, String email, String imgURL) {
         this.context = context;
         this.name = name;
@@ -42,6 +54,11 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
         this.imgURL = imgURL;
     }
 
+    /**
+     * Standard method of Async Task, calls getUser() method
+     * @param url
+     * @return String with a message for the user
+     */
     @Override
     protected String doInBackground(String... url) {
         try {
@@ -52,12 +69,21 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
         }
     }
 
+    /**
+     * Standard method of Async Task, makes a Toast with the result String
+     * @param result String with a message for the user
+     */
     @Override
     protected void onPostExecute(String result) {
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
         Log.v(TAG, result);
     }
 
+    /**
+     * Performs the HTTP GET
+     * @return String with a message for the user
+     * @throws IOException
+     */
     private String getUser() throws IOException {
         HttpURLConnection urlConnection = null;
         String result = "";

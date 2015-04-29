@@ -22,6 +22,10 @@ import java.net.URL;
 /**
  * Created by Andrea-PC on 04/03/2015.
  */
+
+/**
+ * This class performs a HTTP POST to create a new Review associated with an existing route
+ */
 public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
     private static final String TAG = "UploadNewReviewTask";
     private static final String postNewReviewURL = "http://mobike.ddns.net/SRV/reviews/create";
@@ -29,6 +33,13 @@ public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
     private float rate;
     private String comment, routeID;
 
+    /**
+     * Creates a new UploadNewReviewTask
+     * @param context
+     * @param routeID
+     * @param comment
+     * @param rate
+     */
     public UploadNewReviewTask(Context context, String routeID, String comment, float rate) {
         this.context = context;
         this.rate = rate;
@@ -36,6 +47,11 @@ public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
         this.routeID = routeID;
     }
 
+    /**
+     * Standard method of Async Task, calls postReview() method
+     * @param context
+     * @return String with a message for the user
+     */
     @Override
     protected String doInBackground(String... context) {
         try {
@@ -45,11 +61,20 @@ public class UploadNewReviewTask extends AsyncTask<String, Void, String> {
         }
     }
 
+    /**
+     * Standard method of Async Task, makes a Toast with the result String
+     * @param result String with a message for the user
+     */
     @Override
     protected void onPostExecute(String result) {
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Performs the HTTP POST
+     * @return String with a message for the user
+     * @throws IOException
+     */
     private String postReview() throws IOException {
         HttpURLConnection urlConnection = null;
         try {

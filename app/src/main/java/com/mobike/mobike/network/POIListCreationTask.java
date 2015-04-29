@@ -23,39 +23,62 @@ import java.net.URL;
 /**
  * Created by Andrea-PC on 24/04/2015.
  */
+
+/**
+ * This class performs a HTTP POST to create a list of POIs associated with an existing route
+ */
 public class POIListCreationTask extends AsyncTask<String, Void, String> {
     private static final String TAG = "POIListCreationTask";
-    private static final String postNewReviewURL = "http://mobike.ddns.net/SRV/pois/create";
+    private static final String postPOIListURL = "http://mobike.ddns.net/SRV/pois/createlist";
     private Context context;
     private double latitude, longitude;
     private String title;
     private int category;
     private int routeID;
 
+    /**
+     * Creates a new POIListCreationTask
+     * @param context Context
+     * @param routeID Route's id
+     */
     public POIListCreationTask(Context context, int routeID) {
         this.context = context;
         this.routeID = routeID;
     }
 
+    /**
+     * Standard method of Async Task, calls postPOIs() method
+     * @param context
+     * @return String with a message for the user
+     */
     @Override
     protected String doInBackground(String... context) {
         try {
             return postPOIs();
         } catch (IOException e) {
-            return "Unable to upload the route. URL may be invalid.";
+            return "Unable to upload the POIs associated with the route. URL may be invalid.";
         }
     }
 
+    /**
+     * Standard method of Async Task, makes a Toast with the result String
+     * @param result String with a message for the user
+     */
     @Override
     protected void onPostExecute(String result) {
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Performs the HTTP POST
+     * @return String with a message for the user
+     * @throws IOException
+     */
     private String postPOIs() throws IOException {
         HttpURLConnection urlConnection = null;
         try {
             Log.v(TAG, "POIListCreationTask");
-            URL u = new URL(postNewReviewURL);
+            URL u = new URL(postPOIListURL);
             urlConnection = (HttpURLConnection) u.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -76,6 +99,9 @@ public class POIListCreationTask extends AsyncTask<String, Void, String> {
             GPSDatabase db = new GPSDatabase(context);
             JSONArray arrayInDB = db.getPOITableInJSON();
             db.close();
+
+            if (arrayInDB == null || arrayInDB.length() == 0)
+                return "No POIs associated with the route";
 
             try{
                 user.put("id", userID);
@@ -104,12 +130,10 @@ public class POIListCreationTask extends AsyncTask<String, Void, String> {
             OutputStreamWriter out = new OutputStreamWriter(urlConnection.getOutputStream());
             out.write(jsonObject.toString().replace("\\/", "/").replace("\\\"", "\""));
             out.close();
+
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {
-                /*BufferedReader br = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                String response = br.readLine();
-                br.close();*/
-                Log.v(TAG, "POI caricato correttamente");
+                Log.v(TAG, "POI list caricata correttamente");
                 return "POIs uploaded successfully";
             }
             else {

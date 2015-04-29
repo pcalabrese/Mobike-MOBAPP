@@ -27,12 +27,26 @@ import java.net.URL;
 /**
  * Created by Andrea-PC on 08/03/2015.
  */
+
+/**
+ * This class performs a HTTP POST to create a new account for the user
+ */
 public class RegisterUserTask extends AsyncTask<String, Void, String> {
     private String name, surname, nickname, email, imageURL, bike;
     private Context context;
     private static final String TAG = "RegisterUserTask";
     public static final String registerUserURL = "http://mobike.ddns.net/SRV/users/create";
 
+    /**
+     * Creates a new RegisterUserTask
+     * @param context
+     * @param name
+     * @param surname
+     * @param nickname
+     * @param email
+     * @param imageURL
+     * @param bike
+     */
     public RegisterUserTask(Context context, String name, String surname, String nickname, String email, String imageURL, String bike) {
         this.context = context;
         this.name = name;
@@ -43,6 +57,11 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
         this.bike = bike;
     }
 
+    /**
+     * Standard method of Async Task, calls postUser() method
+     * @param context
+     * @return String with a message for the user
+     */
     @Override
     protected String doInBackground(String... context) {
         try {
@@ -52,6 +71,10 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
         }
     }
 
+    /**
+     * Standard method of Async Task, makes a Toast with the result String
+     * @param result String with a message for the user
+     */
     @Override
     protected void onPostExecute(String result) {
 
@@ -62,6 +85,11 @@ public class RegisterUserTask extends AsyncTask<String, Void, String> {
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Performs the HTTP POST
+     * @return String with a message for the user
+     * @throws IOException
+     */
     private String postUser() throws IOException {
         HttpURLConnection urlConnection = null;
         try {

@@ -23,7 +23,10 @@ import java.net.URL;
 /**
  * Created by Andrea-PC on 21/02/2015.
  */
-// AsyncTask that performs the upload of the route
+
+/**
+ * This class performs a HTTP POST to create a new route
+ */
 public class UploadRouteTask extends AsyncTask<String, Void, String> {
     private Context context;
     private String email, name, description, difficulty, bends, type, startLocation, endLocation;
@@ -32,6 +35,18 @@ public class UploadRouteTask extends AsyncTask<String, Void, String> {
     private final static String UploadRouteURL = "http://mobike.ddns.net/SRV/routes/create";
     private final static String TAG = "UploadRouteTask";
 
+    /**
+     * Creates a new UploadRouteTask
+     * @param context
+     * @param email
+     * @param name
+     * @param description
+     * @param difficulty
+     * @param bends
+     * @param type
+     * @param startLocation
+     * @param endLocation
+     */
     public UploadRouteTask(Context context, String email, String name, String description, String difficulty, String bends, String type, String startLocation, String endLocation) {
         this.context = context;
         this.email = email;
@@ -44,6 +59,11 @@ public class UploadRouteTask extends AsyncTask<String, Void, String> {
         this.endLocation = endLocation;
     }
 
+    /**
+     * Standard method of Async Task, calls uploadRoute() method
+     * @param strings
+     * @return String with a message for the user
+     */
     @Override
     protected String doInBackground(String... strings) {
         try {
@@ -54,11 +74,20 @@ public class UploadRouteTask extends AsyncTask<String, Void, String> {
         }
     }
 
+    /**
+     * Standard method of Async Task, makes a Toast with the result String
+     * @param result String with a message for the user
+     */
     @Override
     protected void onPostExecute(String result) {
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Performs the HTTP POST
+     * @return String with a message for the user
+     * @throws IOException
+     */
     private String uploadRoute() throws IOException {
         HttpURLConnection urlConnection = null;
         try {

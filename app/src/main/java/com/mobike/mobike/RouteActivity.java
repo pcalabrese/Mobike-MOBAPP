@@ -279,7 +279,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         setReviews(reviews);
         setGpx(gpx);
         mRating.setText(String.format("%.01f", rating));
-        mRatingNumber.setText(ratingNumber + (ratingNumber == 1? " review" : " reviews"));
+        mRatingNumber.setText(ratingNumber + " " + getResources().getString(ratingNumber == 1? R.string.review : R.string.reviews));
         mRatingBar.setRating(Float.parseFloat(String.valueOf(rating)));
         if (poisList != null) {
             poiList = poisList.toString();

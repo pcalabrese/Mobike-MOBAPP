@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.mobike.mobike.LoginActivity;
+import com.mobike.mobike.R;
 import com.mobike.mobike.utils.Event;
 
 import java.io.BufferedReader;
@@ -102,7 +103,7 @@ public class UploadEventTask extends AsyncTask<String, Void, String> {
                 eventID = br.readLine();
                 Log.v(TAG, "Event created: " + eventID);
                 br.close();
-                return "Event created!";
+                return context.getResources().getString(R.string.event_created);
             }
             else {
                 // scrive un messaggio di errore con codice httpResult

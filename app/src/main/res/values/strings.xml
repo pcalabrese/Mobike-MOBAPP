@@ -15,13 +15,11 @@
     <string name="title_activity_share">Share</string>
     <string name="record_new_route">RECORD NEW ROUTE</string>
     <string name="share">SHARE</string>
-    <string name="share_textview">You can visualize the route at this URL:</string>
-    <string name="shared_message">Hey! Look at motorcyle trip I just had </string>
+    <string name="share_textview">You can visualize the route juts recorded at this URL:</string>
+    <string name="shared_message">Hey! Look at motorcyle trip I just had!</string>
     <string name="uploading_toast">Uplaoding...</string>
     <string name="logging_in">Logging in...</string>
     <string name="title_activity_main">Mobike</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="join">JOIN</string>
     <string name="decline">DECLINE</string>
     <string-array name="fragment_titles">
@@ -87,7 +85,7 @@
     <string name="start">Start</string>
     <string name="destination">Destination</string>
     <string name="pick_this_route">Pick this route</string>
-    <string name="title_activity_fragment">Select a route</string>
+    <string name="title_activity_fragment">Select Route</string>
     <string name="search">SEARCH</string>
     <string name="start_location">Start Location:</string>
     <string name="end_location">End Location:</string>
@@ -127,5 +125,29 @@
         <item>Other</item>
     </string-array>
     <string name="logout">Logout</string>
+    <string name="review"> review</string>
+    <string name="reviews"> reviews</string>
+    <string name="users_accepted">ACCEPTED</string>
+    <string name="users_invited">INVITED</string>
+    <string name="users_declined">DECLINED</string>
+    <string name="pending_inivtations_dialog_title">Pending Invitations</string>
+    <string name="pending_invitations_dialog_message">Hey! You have pending invitations to events, check them!</string>
+    <string name="no_recorded_positions_message">There are no recorded positions yet!</string>
+    <string name="gps_settings_dialog_title">GPS Settings</string>
+    <string name="gps_settings_dialog_message">GPS is not enabled. Do you want to go to settings menu?</string>
+    <string name="settings">SETTINGS</string>
+    <string name="gps_settings_dialog_cancel">CANCEL</string>
+    <string name="login_welcome_back_message">Welcome back</string>
+    <string name="login_not_registered_message">You are not registered yet, please create an account!</string>
+    <string name="registration_welcome_message">Welcome</string>
+    <string name="review_deleted_successfully">Review deleted successfully</string>
+    <string name="review_edited_successfully">Review edited successfully</string>
+    <string name="participation_sent_successfully">Participation sent successfully</string>
+    <string name="poi_created_successfully">POI created successfully</string>
+    <string name="no_pois_associated_with_route">No POIs associated with the route</string>
+    <string name="pois_uploaded_successfully">POIs uploaded successfully</string>
+    <string name="event_created">Event created!</string>
+    <string name="review_uploaded_successfully">Review uploaded successfully</string>
+    <string name="upload_completed">Upload completed!</string>
     
 </resources>

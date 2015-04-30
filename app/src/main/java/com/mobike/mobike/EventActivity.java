@@ -31,6 +31,7 @@ import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.CustomMapFragment;
 import com.mobike.mobike.utils.Event;
 import com.mobike.mobike.utils.Route;
+import com.mobike.mobike.utils.SquareImageView;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
@@ -87,7 +88,7 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
         mInvited = (TextView) findViewById(R.id.event_invited);
         mStartLocation = (TextView) findViewById(R.id.start_location);
         mCreationDate = (TextView) findViewById(R.id.creation_date);
-        mThumbnail = (com.mobike.mobike.SquareImageView) findViewById(R.id.event_map);
+        mThumbnail = (SquareImageView) findViewById(R.id.event_map);
         mDisplayRouteButton = ((Button) findViewById(R.id.display_route_button));
         mAcceptedButton = ((Button) findViewById(R.id.accepted_users_button));
         mInvitedButton = ((Button) findViewById(R.id.pending_users_button));
@@ -166,9 +167,9 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
         mDate.setText(new SimpleDateFormat("EEEE, d MMMM yyyy\nkk:mm").format(eventDate));
         mCreator.setText(creator);
         mDescription.setText(description);
-        mAcceptedButton.setText(String.valueOf(acceptedSize) + "\nACCEPTED");
-        mInvitedButton.setText(String.valueOf(invitedSize) + "\nINVITED");
-        mDeclinedButton.setText(String.valueOf(declinedSize) + "\nDECLINED");
+        mAcceptedButton.setText(String.valueOf(acceptedSize) + "\n" + getResources().getString(R.string.users_accepted));
+        mInvitedButton.setText(String.valueOf(invitedSize) + "\n" + getResources().getString(R.string.users_invited));
+        mDeclinedButton.setText(String.valueOf(declinedSize) + "\n" + getResources().getString(R.string.users_declined));
         mStartLocation.setText(startLocation);
         mCreationDate.setText(new SimpleDateFormat("EEEE, d MMMM yyyy").format(mDateCreation));
         Picasso.with(this).load(thumbnailURL).into(mThumbnail);

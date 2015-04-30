@@ -394,7 +394,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
                 if (mCurrentLocation != null)
                     poiCreation();
                 else
-                    Toast.makeText(getActivity(), "There are no recorded positions yet!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), getResources().getString(R.string.no_recorded_positions_message), Toast.LENGTH_SHORT).show();
                 break;
         }
     }
@@ -570,9 +570,11 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         startActivityForResult(intent, POI_CREATION_REQUEST);
 
         Log.v(TAG, "poiCreation(), recording: " + ((state == State.RUNNING) && registered));
+        /*
         Toast.makeText(getActivity(),
                 "recording: " + ((state == State.RUNNING) && registered) + ", registered: " + registered + ", state == State.RUNNING: " + (state == State.RUNNING),
                 Toast.LENGTH_LONG).show();
+        */
     }
 
     /**
@@ -580,17 +582,17 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
      */
     public void showSettingsAlert() {
         TextView titleView = ((TextView) getActivity().getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
-        titleView.setText("GPS in settings");
+        titleView.setText(getResources().getString(R.string.gps_settings_dialog_title));
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(getActivity());
 
         // Setting Dialog Title
         alertDialog.setCustomTitle(titleView);
 
         // Setting Dialog Message
-        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+        alertDialog.setMessage(getResources().getString(R.string.gps_settings_dialog_message));
 
         // On pressing Settings button
-        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+        alertDialog.setPositiveButton(getResources().getString(R.string.settings), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                 startActivity(intent);
@@ -598,7 +600,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         });
 
         // on pressing cancel button
-        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton(getResources().getString(R.string.gps_settings_dialog_cancel), new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }

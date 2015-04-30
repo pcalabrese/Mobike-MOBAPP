@@ -110,7 +110,7 @@ public class SummaryActivity extends ActionBarActivity {
         routeStartLocation = (EditText) findViewById(R.id.start_location);
         routeEndLocation = (EditText) findViewById(R.id.end_location);
 
-        types = getResources().getStringArray(R.array.route_types);
+        types = getResources().getStringArray(R.array.route_type_selection);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.route_type_selection, android.R.layout.simple_spinner_item);

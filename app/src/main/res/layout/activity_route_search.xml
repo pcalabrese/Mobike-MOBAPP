@@ -88,7 +88,7 @@
         android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
-        <com.mobike.mobike.SquareImageView
+        <com.mobike.mobike.utils.SquareImageView
             android:id="@+id/mountain_icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
             android:layout_marginEnd="10dp"
             android:src="@drawable/mountain_colour"/>
 
-        <com.mobike.mobike.SquareImageView
+        <com.mobike.mobike.utils.SquareImageView
             android:id="@+id/hill_icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
             android:layout_marginEnd="10dp"
             android:src="@drawable/hill_colour"/>
 
-        <com.mobike.mobike.SquareImageView
+        <com.mobike.mobike.utils.SquareImageView
             android:id="@+id/plain_icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -117,14 +117,7 @@
             android:layout_marginEnd="10dp"
             android:src="@drawable/plain_colour"/>
 
-    <!--    <com.mobike.mobike.SquareImageView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginRight="10dp"
-            android:src="@drawable/staticmap"/> -->
-
-        <com.mobike.mobike.SquareImageView
+        <com.mobike.mobike.utils.SquareImageView
             android:id="@+id/coast_icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

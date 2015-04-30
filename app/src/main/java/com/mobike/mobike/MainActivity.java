@@ -146,11 +146,11 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
             Crypter crypter = new Crypter();
             JSONArray jsonArray = new JSONArray(crypter.decrypt(new JSONObject(result).getString("events")));
             TextView titleView = ((TextView) getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
-            titleView.setText("Pending Invitations");
+            titleView.setText(getResources().getString(R.string.pending_inivtations_dialog_title));
             if (pendingInvitations(jsonArray)) {
                 new AlertDialog.Builder(this)
                         .setCustomTitle(titleView)
-                        .setMessage("Hey! You have pending invitations to events, check them!")
+                        .setMessage(getResources().getString(R.string.pending_invitations_dialog_message))
                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int which) {
                                 // do nothing

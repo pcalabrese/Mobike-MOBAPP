@@ -8,6 +8,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobike.mobike.LoginActivity;
+import com.mobike.mobike.R;
 import com.mobike.mobike.RouteActivity;
 import com.mobike.mobike.utils.Crypter;
 
@@ -118,7 +119,7 @@ public class DeleteReviewTask extends AsyncTask<String, Void, String> {
                 String response = br.readLine();
                 br.close();*/
                 Log.v(TAG, "Recensione eliminata correttamente");
-                return "Review deleted successfully";
+                return context.getResources().getString(R.string.review_deleted_successfully);
             }
             else {
                 // scrive un messaggio di errore con codice httpResult

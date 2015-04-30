@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.mobike.mobike.LoginActivity;
 import com.mobike.mobike.MainActivity;
 import com.mobike.mobike.NicknameActivity;
+import com.mobike.mobike.R;
 import com.mobike.mobike.utils.Crypter;
 
 import org.json.JSONException;
@@ -126,7 +127,7 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                 editor.apply();
                 Intent intent = new Intent(context, MainActivity.class);
                 ((Activity) context).startActivityForResult(intent, LoginActivity.MAPS_REQUEST);
-                return "Welcome  back " + name.substring(0,1).toUpperCase() + name.substring(1) + "!";
+                return context.getResources().getString(R.string.login_welcome_back_message) + " " + name.substring(0,1).toUpperCase() + name.substring(1) + "!";
             }
             else if (httpResult == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 // l'utente non è registrato, fa partire la registrazione
@@ -135,7 +136,7 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                 // uso startActivityForResult così se NicknameActivity termina esce dall'applicazione
                 // può terminare per due motivi, o termina la main activity o l'utente non inserisce il nickname
                 ((Activity) context).startActivityForResult(intent, LoginActivity.REGISTRATION_REQUEST);
-                return "You are not registered yet, please create an account!";
+                return context.getResources().getString(R.string.login_not_registered_message);
             } else {
                 Log.v(TAG, " httpResult = " + httpResult);
                 return "Error code: " + httpResult;

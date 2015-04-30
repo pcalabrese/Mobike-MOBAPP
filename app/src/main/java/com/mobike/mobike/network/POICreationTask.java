@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.mobike.mobike.LoginActivity;
+import com.mobike.mobike.R;
 import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.POI;
 
@@ -121,7 +122,7 @@ public class POICreationTask extends AsyncTask<String, Void, String> {
                 String response = br.readLine();
                 br.close();*/
                 Log.v(TAG, "POI caricato correttamente");
-                return "POI created successfully";
+                return context.getResources().getString(R.string.poi_created_successfully);
             }
             else {
                 // scrive un messaggio di errore con codice httpResult

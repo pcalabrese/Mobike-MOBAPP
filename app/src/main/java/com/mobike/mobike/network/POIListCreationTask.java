@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.mobike.mobike.GPSDatabase;
 import com.mobike.mobike.LoginActivity;
+import com.mobike.mobike.R;
 import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.POI;
 
@@ -101,7 +102,7 @@ public class POIListCreationTask extends AsyncTask<String, Void, String> {
             db.close();
 
             if (arrayInDB == null || arrayInDB.length() == 0)
-                return "No POIs associated with the route";
+                return context.getResources().getString(R.string.no_pois_associated_with_route);
 
             try{
                 user.put("id", userID);
@@ -134,7 +135,7 @@ public class POIListCreationTask extends AsyncTask<String, Void, String> {
             int httpResult = urlConnection.getResponseCode();
             if (httpResult == HttpURLConnection.HTTP_OK) {
                 Log.v(TAG, "POI list caricata correttamente");
-                return "POIs uploaded successfully";
+                return context.getResources().getString(R.string.pois_uploaded_successfully);
             }
             else {
                 // scrive un messaggio di errore con codice httpResult

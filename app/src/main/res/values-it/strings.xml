@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="facebook_app_id">613824922094851</string>
+
+    <string name="app_name">MoBike</string>
+    <string name="action_settings">Impostazioni</string>
+    <string name="title_activity_maps">MoBike</string>
+    <string name="start_button">START</string>
+    <string name="pause_button">PAUSE</string>
+    <string name="stop_button">STOP</string>
+    <string name="resume_button">RESUME</string>
+    <string name="title_activity_summary">Riepilogo Percorso</string>
+    <string name="delete">CANCELLA</string>
+    <string name="save">SALVA</string>
+    <string name="title_activity_share">Condividi</string>
+    <string name="record_new_route">REGISTRA NUOVO PERCORSO</string>
+    <string name="share">CONDIVIDI</string>
+    <string name="share_textview">Puoi visualizzare il percorso appena registrato a questo URL:</string>
+    <string name="shared_message">Hey! Guarda il percorso che ho appena fatto in moto!</string>
+    <string name="uploading_toast">Uplaoding...</string>
+    <string name="logging_in">Logging in...</string>
+    <string name="title_activity_main">Mobike</string>
+    <string name="join">ACCETTA</string>
+    <string name="decline">RIFIUTA</string>
+    <string-array name="fragment_titles">
+        <item>Registra</item>
+        <item>Percorsi</item>
+        <item>Eventi</item>
+    </string-array>
+    <string-array name="route_types">
+        <item>Tutti i Percorsi</item>
+        <item>Miei Percorsi</item>
+    </string-array>
+    <string-array name="event_types">
+        <item>Tutti gli Eventi</item>
+        <item>Miei Eventi</item>
+        <item>Inviti</item>
+    </string-array>
+    <string name="title_activity_event">Evento</string>
+    <string name="title_activity_route">Percorso</string>
+    <string name="route_name_hint">Nome*</string>
+    <string name="route_description_hint">Descrizione</string>
+    <string name="yes">SI</string>
+    <string name="no">NO</string>
+    <string name="stop">Stop</string>
+    <string name="stop_registration">Sei sicuro di voler interrompere la registrazione?</string>
+    <string name="stop_registration_no_positions">Aspetta! Non sono ancora state registrate posizioni!\n Sei sicuro di voler interrompere la registrazione?</string>
+    <string name="route_difficulty_hint">Difficoltà* (numero compreso tra 1 e 10)</string>
+    <string name="route_bends_hint">Curve* (numero compreso tra 1 e 10)</string>
+    <string name="route_type_hint">Tipo Percorso</string>
+    <string name="new_event">Nuovo Evento</string>
+    <string name="event_name_hint">Nome</string>
+    <string name="event_description_hint">Descrizione</string>
+    <string name="event_date">Scegli una data</string>
+    <string name="pick_date">SCEGLI DATA</string>
+    <string name="event_time">Scegli un orario</string>
+    <string name="pick_time">SCEGLI ORA</string>
+    <string name="invite_user_hint">Invita altri utenti</string>
+    <string name="invite">INVITA</string>
+    <string name="cancel">CANCELLA</string>
+    <string name="create">CREA</string>
+    <string name="pick_route">SCEGLI PERCORSO</string>
+    <string name="title_activity_event_creation">Creazione Evento</string>
+    <string name="event_start_location_hint">Località di partenza</string>
+    <string name="load_more">LOAD MORE...</string>
+    <string name="account">Account</string>
+    <string name="edit">MODIFICA</string>
+    <string name="new_review">SCRIVI UNA RECENSIONE!</string>
+    <string name="title_activity_review_creation">ReviewCreationActivity</string>
+    <string name="new_review_title">Nuova Recensione</string>
+    <string name="review_comment_hint">Commento</string>
+    <string name="send">INVIA</string>
+    <string name="title_activity_nickname">NicknameActivity</string>
+    <string name="user_registration">Registrazione</string>
+    <string name="nickname_hint">Nickname</string>
+    <string name="bike_hint">Modello della moto</string>
+    <string name="title_activity_account_details">Dettagli Account</string>
+    <string name="nickname_activity_string">Benvenuto in MoBike!\nÈ la prima volta che accedi e non sei ancora registrato, inserisci il tuo nickname e il modello della moto e premi INVIA. Il nickname verrà visualizzato al posto del tuo nome reale.</string>
+    <string name="review_after_upload_text">Puoi inserire la prima recensione del percorso che hai appena registrato!</string>
+    <string name="name">Nome</string>
+    <string name="nickname">Nickname</string>
+    <string name="email">Email</string>
+    <string name="bike">Moto</string>
+    <string name="title_activity_route_search">Ricerca Percorso</string>
+    <string name="start">Partenza</string>
+    <string name="destination">Destinazione</string>
+    <string name="pick_this_route">Scegli questo percorso</string>
+    <string name="title_activity_fragment">Scegli Percorso</string>
+    <string name="search">CERCA</string>
+    <string name="start_location">Località di Partenza:</string>
+    <string name="end_location">Località di Arrivo:</string>
+    <string name="required_fields">* campi obbligatori</string>
+    <string name="view_route_details">VISUALIZZA DETTAGLI PERCORSO</string>
+    <string name="created_on">Creato il</string>
+    <string name="created_by">Creato da</string>
+    <string name="difficulty">Difficoltà:</string>
+    <string name="bends">Curve:</string>
+    <string name="type">Tipo:</string>
+    <string name="initial_length">0,0 km</string>
+    <string name="initial_duration">0 h 0 m 0 s</string>
+    <string name="to">A</string>
+    <string name="from">Da</string>
+    <string name="title_activity_full_screen_map">Mappa Percorso</string>
+    <string name="nickname_already_exists">Il nickname da te inserito è già esistente, per favore scegline un altro.</string>
+    <string-array name="route_type_selection">
+        <item>Mountain</item>
+        <item>Hill</item>
+        <item>Coast</item>
+        <item>Plain</item>
+        <item>Mixed</item>
+    </string-array>
+    <string name="accepted">ACCETTATO</string>
+    <string name="declined">RIFIUTATO</string>
+    <string name="title_activity_poicreation">POICreationActivity</string>
+    <string name="poi_creation_title">Nuovo POI</string>
+    <string name="poi_creation_message_not_recording">Crea un nuovo Punto Di Interesse (POI) nella posizione attuale che sarà visibile a tutti!</string>
+    <string name="poi_creation_message_recording">Crea un nuovo Punto Di Interesse (POI) nella posizione attuale, sarà associato al percorso che stai registrando così tutti potranno conoscere questo posto!</string>
+    <string name="poi_creation_category">Categoria:</string>
+    <string name="poi_title_hint">Nome</string>
+    <string name="create_poi_button">CREA</string>
+    <string-array name="poi_categories">
+        <item>Viewpoint</item>
+        <item>Gas Station</item>
+        <item>Restaurant</item>
+        <item>Other</item>
+    </string-array>
+    <string name="logout">Logout</string>
+    <string name="review"> recensione</string>
+    <string name="reviews"> recensioni</string>
+    <string name="users_accepted">ACCETTATI</string>
+    <string name="users_invited">INVITATI</string>
+    <string name="users_declined">RIFIUTATI</string>
+    <string name="pending_inivtations_dialog_title">Inviti Pendenti</string>
+    <string name="pending_invitations_dialog_message">Hey! Hai alcuni inviti pendenti ad eventi, controllali!</string>
+    <string name="no_recorded_positions_message">Ancora non sono state registrate delle posizioni!</string>
+    <string name="gps_settings_dialog_title">Impostazioni GPS</string>
+    <string name="gps_settings_dialog_message">Il GPS non è attivo. Vuoi andare nelle impostazioni per attivarlo?</string>
+    <string name="settings">IMPOSTAZIONI</string>
+    <string name="gps_settings_dialog_cancel">INDIETRO</string>
+    <string name="login_welcome_back_message">Bentornato</string>
+    <string name="login_not_registered_message">Non sei ancora registrato, crea un account!</string>
+    <string name="registration_welcome_message">Benvenuto</string>
+    <string name="review_deleted_successfully">Recensione eliminata correttamente</string>
+    <string name="review_edited_successfully">Recensione modificata correttamente</string>
+    <string name="participation_sent_successfully">Partecipazione iniviata correttamente</string>
+    <string name="poi_created_successfully">POI creato correttamente</string>
+    <string name="no_pois_associated_with_route">Non c\'è alcun POI associato al percorso</string>
+    <string name="pois_uploaded_successfully">POIs caricati correttamente</string>
+    <string name="event_created">Evento creato!</string>
+    <string name="review_uploaded_successfully">Recensione caricata correttamente</string>
+    <string name="upload_completed">Caricamento completato!</string>
+
+</resources>

@@ -26,4 +26,4 @@ Milestone 3 - Final
 Final Submission
 ==============
  - [Android app manual] (https://drive.google.com/file/d/0B_1wI-LJKIS-aVktVUwwTUxCSWc/view?usp=sharing)
- - [Web app manual] (https://drive.google.com/file/d/0B0jdXB8d2b4pbEtQSWJLU2o5M3M/view?usp=sharing)
+ - [Web app manual] (https://drive.google.com/file/d/0B_1wI-LJKIS-bFdZMGxoWTNnaWs/view?usp=sharing)

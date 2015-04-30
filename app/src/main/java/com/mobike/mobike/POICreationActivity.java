@@ -25,6 +25,7 @@ public class POICreationActivity extends ActionBarActivity implements View.OnCli
     public static final String POI_LONGITUDE = "com.mobike.mobike.poi_longitude";
     public static final String POI_TITLE = "com.mobike.mobike.poi_title";
     public static final String POI_CATEGORY = "com.mobike.mobike.poi_category";
+    public static final String POI_IS_ASSOCIATED = "com.mobike.mobike.poi_is_associated";
 
     private double latitude, longitude;
     private boolean recording;
@@ -47,6 +48,9 @@ public class POICreationActivity extends ActionBarActivity implements View.OnCli
         longitude = intent.getDoubleExtra(MapsFragment.POI_LONGITUDE, 300);
         recording = intent.getBooleanExtra(MapsFragment.POI_RECORDING, false);
 
+        if (recording)
+            ((TextView) findViewById(R.id.message_textview)).setText(getResources().getString(R.string.poi_creation_message_recording));
+
         categorySpinner = (Spinner) findViewById(R.id.poi_category);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.poi_categories, android.R.layout.simple_spinner_item);
@@ -67,28 +71,6 @@ public class POICreationActivity extends ActionBarActivity implements View.OnCli
             }
         });
         category = 0;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_poicreation, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     public void onClick(View view) {
@@ -123,6 +105,7 @@ public class POICreationActivity extends ActionBarActivity implements View.OnCli
         b.putDouble(POI_LONGITUDE, longitude);
         b.putString(POI_TITLE, title);
         b.putInt(POI_CATEGORY, category);
+        b.putBoolean(POI_IS_ASSOCIATED, true);
         data.putExtras(b);
         setResult(RESULT_OK, data);
         finish();
@@ -137,6 +120,7 @@ public class POICreationActivity extends ActionBarActivity implements View.OnCli
         b.putDouble(POI_LONGITUDE, longitude);
         b.putString(POI_TITLE, title);
         b.putInt(POI_CATEGORY, category);
+        b.putBoolean(POI_IS_ASSOCIATED, false);
         data.putExtras(b);
         setResult(RESULT_OK, data);
         finish();

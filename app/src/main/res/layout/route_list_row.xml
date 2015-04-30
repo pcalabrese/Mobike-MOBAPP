@@ -30,7 +30,7 @@
                 android:src="@color/routePlain" />
 
             <!-- 110x105 -->
-            <com.mobike.mobike.SquareImageView
+            <com.mobike.mobike.utils.SquareImageView
                 android:id="@+id/route_image"
                 android:layout_width="96dp"
                 android:layout_height="96dp"

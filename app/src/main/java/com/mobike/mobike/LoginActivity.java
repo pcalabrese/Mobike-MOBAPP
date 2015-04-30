@@ -23,6 +23,8 @@ import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.mobike.mobike.network.LoginUserTask;
@@ -36,6 +38,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+
+import javax.net.ssl.SSLEngineResult;
 
 /**
  * This is the first activity, where the user logs in or create a new account
@@ -56,12 +60,13 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     public static final String IMAGEURL = "com.mobike.mobike.imageurl";
     public static final int MAPS_REQUEST = 1;
     public static final int REGISTRATION_REQUEST = 2;
+    public static final int DISCONNECT = 99;
 
     private GoogleApiClient mGoogleApiClient;
     private ConnectionResult mConnectionResult;
     private boolean mResolvingError = false;
     private String email, name, surname, imageURL;
-    private Context context = this;
+    private NetworkInfo.State state = NetworkInfo.State.CONNECTING;
 
     private static final String postURL = "http://mobike.ddns.net/SRV/users/auth";
 
@@ -161,48 +166,74 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     // method called in case of successful connection
     @Override
     public void onConnected(Bundle bundle) {
-        // Abbiamo risolto ogni errore di connessione.
-        email = Plus.AccountApi.getAccountName(mGoogleApiClient);
-        Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
-        name = person.getName().getGivenName();
-        surname = person.getName().getFamilyName();
-        if (person != null) {
+        if (state == NetworkInfo.State.CONNECTING) {
+            // Abbiamo risolto ogni errore di connessione.
+            email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+            Person person = Plus.PeopleApi.getCurrentPerson(mGoogleApiClient);
+            name = person.getName().getGivenName();
+            surname = person.getName().getFamilyName();
+
             Log.v(TAG, "onConnected(), Name = " + person.getDisplayName());
             Log.v(TAG, "onConnected(), Name = " + person.getName());
             if (person.hasLanguage())
                 Log.v(TAG, "onConnected(), Language = " + person.getLanguage());
-            if(person.hasGender())
+            if (person.hasGender())
                 Log.v(TAG, "onConnected(), Gender = " + person.getGender());
             if (person.hasImage()) {
                 imageURL = person.getImage().getUrl();
                 Log.v(TAG, "onConnected(), ImageURL = " + person.getImage().getUrl());
             }
+
+
+            // Salvo l'account name nelle shared preferences
+            SharedPreferences sharedPref = getSharedPreferences(USER, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(EMAIL, email);
+            editor.putString(NAME, name);
+            editor.putString(SURNAME, surname);
+            editor.putString(IMAGEURL, imageURL);
+            editor.apply();
+
+            ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+            if (networkInfo != null && networkInfo.isConnected())
+                new LoginUserTask(this, name, surname, email, imageURL).execute();
+            else
+                Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
         }
+        else {
+            state = NetworkInfo.State.CONNECTING;
+            signOutFromGplus();
+        }
+    }
 
-        // Salvo l'account name nelle shared preferences
-        SharedPreferences sharedPref = getSharedPreferences(USER, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putString(EMAIL, email);
-        editor.putString(NAME, name);
-        editor.putString(SURNAME, surname);
-        editor.putString(IMAGEURL, imageURL);
-        editor.apply();
+    private void signOutFromGplus() {
+        if (mGoogleApiClient.isConnected()) {
+            // clearCookies();
+            Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
+            //mGoogleApiClient.disconnect();
+            /*Plus.AccountApi.revokeAccessAndDisconnect(mGoogleApiClient)
+                    .setResultCallback(new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status arg0) {
+                            Log.e(TAG, "User access revoked!");
+                            mGoogleApiClient.connect();
+                        }
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected()) {
-            new LoginUserTask(this, name, surname, email, imageURL).execute();
-            //new LoginPostTask().execute();
-        } else
-            Toast.makeText(this, "No network connection available", Toast.LENGTH_SHORT).show();
+                    }); */
+            mGoogleApiClient.clearDefaultAccountAndReconnect();
+            //mGoogleApiClient.connect();
 
+            Log.v(TAG, "signOutFromGplus()");
+        }
     }
 
     /**
      * This method close the app if the user navigates back to login activity, in addiction it handles Google login connection problems.
+     *
      * @param requestCode request code of the terminated activity
-     * @param resultCode result code of the terminated activity
-     * @param intent intent containing result data
+     * @param resultCode  result code of the terminated activity
+     * @param intent      intent containing result data
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
@@ -215,6 +246,11 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                 }
             }
         } else if (requestCode == MAPS_REQUEST) {
+            if (resultCode == DISCONNECT) {
+                state = NetworkInfo.State.DISCONNECTING;
+                Log.v(TAG, "state changed");
+                return;
+            }
             finish();
         } else if (requestCode == REGISTRATION_REQUEST)
             finish();
@@ -229,12 +265,11 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     }
 
 
-
-
     // The rest of this code is all about building the error dialog
 
     /**
      * Create a dialog to display an error message
+     *
      * @param errorCode
      */
     private void showErrorDialog(int errorCode) {
@@ -258,7 +293,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
      * This class represents the fragment to display an error message.
      */
     public static class ErrorDialogFragment extends DialogFragment {
-        public ErrorDialogFragment() { }
+        public ErrorDialogFragment() {
+        }
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -269,7 +305,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
 
         @Override
         public void onDismiss(DialogInterface dialog) {
-            ((LoginActivity)getActivity()).onDialogDismissed();
+            ((LoginActivity) getActivity()).onDialogDismissed();
         }
     }
 }

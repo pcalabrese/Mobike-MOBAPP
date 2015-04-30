@@ -26,6 +26,7 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -34,6 +35,11 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.network.UploadRouteTask;
 import com.mobike.mobike.utils.CustomMapFragment;
+import com.mobike.mobike.utils.POI;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -59,6 +65,7 @@ public class SummaryActivity extends ActionBarActivity {
     public static final String ROUTE_ID = "com.mobike.mobike.ROUTE_ID";
     public static final String ROUTE_NAME = "com.mobike.mobike.route_name";
     public static final String ROUTE_LOCATION = "com.mobike.mobike.route_location";
+
     private  EditText routeNameText, routeDescriptionText, routeDifficulty, routeBends, routeStartLocation, routeEndLocation;
     private Spinner typeSpinner;
     private TextView length, duration;
@@ -68,6 +75,7 @@ public class SummaryActivity extends ActionBarActivity {
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline route; // the recorded route
     private List<LatLng> points; // the points of the route
+    private String[] types;
 
     /**
      * This method is called when the activity is created; it checks if the map is set up
@@ -80,6 +88,8 @@ public class SummaryActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_summary);
         setUpMapIfNeeded();
+
+        loadRoutePOIsFromDB();
 
         route = mMap.addPolyline(new PolylineOptions().width(6).color(Color.BLUE));
         GPSDatabase db = new GPSDatabase(this);
@@ -100,6 +110,8 @@ public class SummaryActivity extends ActionBarActivity {
         routeStartLocation = (EditText) findViewById(R.id.start_location);
         routeEndLocation = (EditText) findViewById(R.id.end_location);
 
+        types = getResources().getStringArray(R.array.route_type_selection);
+
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.route_type_selection, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
@@ -110,20 +122,7 @@ public class SummaryActivity extends ActionBarActivity {
         typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                switch (position) {
-                    case 0:
-                        type = "Montuoso";
-                        break;
-                    case 1:
-                        type = "Collinare";
-                        break;
-                    case 2:
-                        type = "Costiero";
-                        break;
-                    case 3:
-                        type = "Pianeggiante";
-                        break;
-                }
+                    type = types[position];
             }
 
             @Override
@@ -131,7 +130,7 @@ public class SummaryActivity extends ActionBarActivity {
                 //do nothing
             }
         });
-        type = "Montuoso";
+        type = types[0];
 
         //set length and duration text views
         GPSDatabase db2 = new GPSDatabase(this);
@@ -208,11 +207,8 @@ public class SummaryActivity extends ActionBarActivity {
             LatLng end = points.get(points.size() - 1);
 
             // Adding the start and end markers
-/*            mMap.addCircle(new CircleOptions().center(start).fillColor(Color.GREEN).
-                    strokeColor(Color.BLACK).radius(10));
-            mMap.addCircle(new CircleOptions().center(end).fillColor(Color.RED).
-                    strokeColor(Color.BLACK).radius(10)); */
-            mMap.addMarker(new MarkerOptions().position(start).title("Start"));
+            mMap.addMarker(new MarkerOptions().position(start).title("Start")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             mMap.addMarker(new MarkerOptions().position(end).title("End"));
 
             // Zooming on the route
@@ -233,6 +229,29 @@ public class SummaryActivity extends ActionBarActivity {
         }
 
         db.close();
+    }
+
+    private void loadRoutePOIsFromDB() {
+        //load and display all POIs in the map
+        GPSDatabase db = new GPSDatabase(this);
+        JSONArray array = db.getPOITableInJSON();
+        JSONObject poi;
+        double latitude, longitude;
+        String title, category;
+        try {
+            for (int i = 0; i < array.length(); i++) {
+                poi = array.getJSONObject(i);
+                title = poi.getString("title");
+                category = POI.intToStringType(poi.getInt("category"));
+                latitude = poi.getDouble("latitude");
+                longitude = poi.getDouble("longitude");
+
+                mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
+                        .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+            }
+        } catch (JSONException e) {}
+
+        Log.v(TAG, "loadRuotePOIsFromDB()");
     }
 
     /**

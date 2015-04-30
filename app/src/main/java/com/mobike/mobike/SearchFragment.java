@@ -409,29 +409,6 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     }
 }
 
-/**
- * Class for custom implementation of squared images
- */
-class SquareImageView extends ImageView {
-    public SquareImageView(Context context) {
-        super(context);
-    }
-
-    public SquareImageView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public SquareImageView(Context context, AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
-
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth()); //Snap to width
-    }
-}
-
 
 /**
  * This is the adapter for routes visualization in the list

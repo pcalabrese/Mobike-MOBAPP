@@ -10,10 +10,11 @@ import com.mobike.mobike.R;
 public class Route {
     private String name, id, description, creator, length, duration, gpx, difficulty, bends, type, thumbnailURL, startLocation, endLocation;
     private int rating, ratingNumber;
-    public static final String MOUNTAIN = "montuoso";
-    public static final String PLAIN = "pianeggiante";
-    public static final String COAST = "costiero";
-    public static final String HILL = "collinare";
+    public static final String MOUNTAIN = "Mountain";
+    public static final String PLAIN = "Plain";
+    public static final String COAST = "Coast";
+    public static final String HILL = "Hill";
+    public static final String MIXED = "Mixed";
 
     public Route(String name, String id, String description, String creator, String length, String duration, String difficulty, String bends, String type, String thumbnailURL, String startLocation, String endLocation, int rating, int ratingNumber) {
         this.name = name;
@@ -51,7 +52,7 @@ public class Route {
     public String getType() { return type; }
 
     public int getTypeColor() {
-        String t = type.toLowerCase();
+        String t = type;
 
         if (t.equals(MOUNTAIN))
             return R.color.routeMountain;
@@ -61,8 +62,10 @@ public class Route {
             return R.color.routeHill;
         else if (t.equals(COAST))
             return R.color.routeCoast;
+        else if (t.equals(MIXED))
+            return R.color.routeMixed;
 
-        return R.color.routePlain;
+        return R.color.routeMixed;
     }
 
     public String getID() { return id; }
@@ -86,7 +89,9 @@ public class Route {
             return R.color.routeHill;
         else if (t.equals(COAST))
             return R.color.routeCoast;
+        else if (t.equals(MIXED))
+            return R.color.routeMixed;
 
-        return R.color.routePlain;
+        return R.color.routeMixed;
     }
 }

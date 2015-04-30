@@ -12,11 +12,16 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -47,6 +52,8 @@ public class FullScreenMapActivity extends ActionBarActivity implements View.OnC
         db.close();
 
         setUpMapIfNeeded();
+
+        setRoutePOIs(getIntent().getStringExtra(RouteActivity.POI_LIST));
 
         ((ImageButton) findViewById(R.id.fullscreen_exit_button)).setOnClickListener(this);
     }
@@ -109,7 +116,8 @@ public class FullScreenMapActivity extends ActionBarActivity implements View.OnC
             LatLng end = points.get(points.size() - 1);
 
             // Adding the start and end markers
-            mMap.addMarker(new MarkerOptions().position(start).title("Start"));
+            mMap.addMarker(new MarkerOptions().position(start).title("Start")
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
             mMap.addMarker(new MarkerOptions().position(end).title("End"));
             // Zooming on the route
             /*CameraUpdate update = CameraUpdateFactory.newLatLngZoom(points.get(points.size() / 2),
@@ -133,5 +141,31 @@ public class FullScreenMapActivity extends ActionBarActivity implements View.OnC
                 finish();
                 break;
         }
+    }
+
+    private void setRoutePOIs(String poiList) {
+        JSONObject poi;
+        JSONArray array;
+        double latitude, longitude;
+        String title, category;
+        try {
+            array = new JSONArray(poiList);
+            for (int i = 0; i < array.length(); i++) {
+                poi = array.getJSONObject(i);
+                title = poi.getString("title");
+                category = poi.getString("type");
+                latitude = poi.getDouble("lat");
+                longitude = poi.getDouble("lon");
+
+                Log.v(TAG, "setRoutePOIs() iterazione");
+
+                mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))
+                        .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE)));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.v(TAG, "setRoutePOIs()");
     }
 }

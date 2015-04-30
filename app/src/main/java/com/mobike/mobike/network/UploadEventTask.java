@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.mobike.mobike.LoginActivity;
+import com.mobike.mobike.R;
 import com.mobike.mobike.utils.Event;
 
 import java.io.BufferedReader;
@@ -21,6 +22,10 @@ import java.util.HashMap;
 /**
  * Created by Andrea-PC on 22/02/2015.
  */
+
+/**
+ * This class performs a HTTP POST to create a new Event
+ */
 public class UploadEventTask extends AsyncTask<String, Void, String> {
     private Event event;
     private Context context;
@@ -29,12 +34,23 @@ public class UploadEventTask extends AsyncTask<String, Void, String> {
     private final static String UploadEventURL = "http://mobike.ddns.net/SRV/events/create";
     private final static String TAG = "UploadEventTask";
 
+    /**
+     * Creates a new UploadEventTask
+     * @param context
+     * @param event
+     * @param usersMap
+     */
     public UploadEventTask(Context context, Event event, HashMap<String, Integer> usersMap) {
         this.event = event;
         this.context = context;
         this.usersMap = usersMap;
     }
 
+    /**
+     * Standard method of Async Task, calls uploadEvent() method
+     * @param strings
+     * @return String with a message for the user
+     */
     @Override
     protected String doInBackground(String... strings) {
         try {
@@ -45,11 +61,20 @@ public class UploadEventTask extends AsyncTask<String, Void, String> {
         }
     }
 
+    /**
+     * Standard method of Async Task, makes a Toast with the result String
+     * @param result String with a message for the user
+     */
     @Override
     protected void onPostExecute(String result) {
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Performs the HTTP POST
+     * @return String with a message for the user
+     * @throws IOException
+     */
     private String uploadEvent() throws IOException {
         HttpURLConnection urlConnection = null;
         try {
@@ -78,7 +103,7 @@ public class UploadEventTask extends AsyncTask<String, Void, String> {
                 eventID = br.readLine();
                 Log.v(TAG, "Event created: " + eventID);
                 br.close();
-                return "Event created!";
+                return context.getResources().getString(R.string.event_created);
             }
             else {
                 // scrive un messaggio di errore con codice httpResult

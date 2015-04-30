@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.mobike.mobike.LoginActivity;
+import com.mobike.mobike.R;
 import com.mobike.mobike.utils.Crypter;
 
 import org.json.JSONException;
@@ -21,17 +22,31 @@ import java.net.URLEncoder;
 /**
  * Created by Andrea-PC on 22/03/2015.
  */
+
+/**
+ * This class performs a HTTP POST to set the participation of the user to the event
+ */
 public class ParticipationTask extends AsyncTask<String, Void, String> {
     private static final String TAG = "ParticipationTask";
     private static final String participationURL = "http://mobike.ddns.net/SRV/events/participation?op=";
     private Context context;
     private String eventID;
 
+    /**
+     * Creates a new ParticipationTask
+     * @param context
+     * @param eventID
+     */
     public ParticipationTask(Context context, String eventID) {
         this.context = context;
         this.eventID = eventID;
     }
 
+    /**
+     * Standard method of Async Task, calls postParticipation() method
+     * @param command
+     * @return String with a message for the user
+     */
     @Override
     protected String doInBackground(String... command) {
         try {
@@ -41,11 +56,21 @@ public class ParticipationTask extends AsyncTask<String, Void, String> {
         }
     }
 
+    /**
+     * Standard method of Async Task, makes a Toast with the result String
+     * @param result String with a message for the user
+     */
     @Override
     protected void onPostExecute(String result) {
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Performs the HTTP POST
+     * @param command
+     * @return String with a message for the user
+     * @throws IOException
+     */
     private String postParticipation(String command) throws IOException {
         HttpURLConnection urlConnection = null;
         try {
@@ -84,7 +109,7 @@ public class ParticipationTask extends AsyncTask<String, Void, String> {
                 String response = br.readLine();
                 br.close();*/
                 Log.v(TAG, "Partecipazione inviata correttamente");
-                return "Participation sent successfully";
+                return context.getResources().getString(R.string.participation_sent_successfully);
             }
             else {
                 // scrive un messaggio di errore con codice httpResult

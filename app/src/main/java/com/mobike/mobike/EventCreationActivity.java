@@ -49,7 +49,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
-
+/**
+ * This is the activity for the creation of a new Event, where the user insert all datas, select invited users and pick the associated route
+ */
 public class EventCreationActivity extends ActionBarActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, HttpGetTask.HttpGet {
     private String startDate, startTime;
     private int routeID = 0;
@@ -63,6 +65,10 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
     public static final String ALL_NICKNAMES_URL = "http://mobike.ddns.net/SRV/users/retrieveall";
     public static final int ROUTE_REQUEST = 1;
 
+    /**
+     * Activity lifecycle method, initializes the UI and downloads all users
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,16 +91,13 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 return false;
             }
         });
-
-        /*ArrayList<String> data=new ArrayList<String>();
-        data.add("Andrea Donati");
-        data.add("Marco Esposito");
-        data.add("Bruno Vispi");
-        data.add("Paolo Calabrese");
-
-        setUsersHints(data); */
     }
 
+    /**
+     * Handles click events on buttons and uplaods the event if all data required have been inserted
+     * @param view
+     */
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.cancel:
@@ -174,6 +177,9 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         }
     }
 
+    /**
+     * Starts the upload of the new event
+     */
     public void createEvent() {
         String name, description, startLocation, invited, creationDate;
         name = ((EditText) findViewById(R.id.name)).getText().toString();
@@ -193,18 +199,36 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         finish();
     }
 
+    /**
+     * Method called when the user selects a Date
+     * @param view
+     * @param year
+     * @param month
+     * @param day
+     */
+    @Override
     public void onDateSet(DatePicker view, int year, int month, int day) {
         TextView dateText = (TextView) findViewById(R.id.date);
         dateText.setText(String.format("%02d", day) + "/" + String.format("%02d", month+1) + "/" + String.format("%04d", year));
         startDate = String.format("%04d", year) + "/" + String.format("%02d", month+1) + "/" + String.format("%02d", day);
     }
 
+    /**
+     * Method called when the user selects a Time
+     * @param view
+     * @param hourOfDay
+     * @param minute
+     */
+    @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         TextView timeText = (TextView) findViewById(R.id.time);
         timeText.setText(String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute));
         startTime = String.format("%02d", hourOfDay) + ":" + String.format("%02d", minute) + ":00";
     }
 
+    /**
+     * Starts the download of all users used for invitation
+     */
     public void downloadUsers() {
         String name, surname, email, imgURL;
         SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.USER, MODE_PRIVATE);
@@ -231,6 +255,11 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         }
     }
 
+    /**
+     * Method called from HttpGetTask to set the result of HTTP GET
+     * @param result
+     */
+    @Override
     public void setResult(String result) {
         userList = new ArrayList<>();
         usersMap = new HashMap<>();
@@ -264,6 +293,13 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         textView.setTokenizer(tokenizer);
     }*/
 
+    /**
+     * Method called when an activity started for result ends, it displays the picked route
+     * @param requestCode
+     * @param resultCode
+     * @param intent
+     */
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         if (requestCode == ROUTE_REQUEST) {
             if (resultCode == RESULT_OK) {
@@ -288,8 +324,9 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
     }
 
 
-
-
+    /**
+     * Dialog where the user can select the date for the event
+     */
     public static class DatePickerFragment extends android.support.v4.app.DialogFragment {
         private DatePickerDialog.OnDateSetListener listener;
 
@@ -311,6 +348,9 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
     }
 
 
+    /**
+     * Dialog where the user can select the time for the event
+     */
     public static class TimePickerFragment extends android.support.v4.app.DialogFragment {
         private TimePickerDialog.OnTimeSetListener listener;
 

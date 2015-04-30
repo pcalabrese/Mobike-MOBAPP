@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.mobike.mobike.LoginActivity;
+import com.mobike.mobike.R;
 import com.mobike.mobike.utils.Crypter;
 import com.mobike.mobike.utils.POI;
 
@@ -21,14 +22,26 @@ import java.net.URL;
 /**
  * Created by Andrea-PC on 19/04/2015.
  */
+
+/**
+ * This class performs a HTTP POST to create a new POI
+ */
 public class POICreationTask extends AsyncTask<String, Void, String> {
     private static final String TAG = "POICreationTask";
-    private static final String postNewReviewURL = "http://mobike.ddns.net/SRV/pois/create";
+    private static final String postNewPOIURL = "http://mobike.ddns.net/SRV/pois/create";
     private Context context;
     private double latitude, longitude;
     private String title;
     private int category;
 
+    /**
+     * Creates a new POICreationTask
+     * @param context
+     * @param latitude
+     * @param longitude
+     * @param title
+     * @param category
+     */
     public POICreationTask(Context context, double latitude, double longitude, String title, int category) {
         this.context = context;
         this.latitude = latitude;
@@ -37,25 +50,39 @@ public class POICreationTask extends AsyncTask<String, Void, String> {
         this.category = category;
     }
 
+    /**
+     * Standard method of Async Task, calls postPOI() method
+     * @param context
+     * @return String with a message for the user
+     */
     @Override
     protected String doInBackground(String... context) {
         try {
             return postPOI();
         } catch (IOException e) {
-            return "Unable to upload the route. URL may be invalid.";
+            return "Unable to upload the POI. URL may be invalid.";
         }
     }
 
+    /**
+     * Standard method of Async Task, makes a Toast with the result String
+     * @param result String with a message for the user
+     */
     @Override
     protected void onPostExecute(String result) {
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Performs the HTTP POST
+     * @return String with a message for the user
+     * @throws IOException
+     */
     private String postPOI() throws IOException {
         HttpURLConnection urlConnection = null;
         try {
             Log.v(TAG, "POICreationTask");
-            URL u = new URL(postNewReviewURL);
+            URL u = new URL(postNewPOIURL);
             urlConnection = (HttpURLConnection) u.openConnection();
             urlConnection.setRequestMethod("POST");
             urlConnection.setRequestProperty("Content-Type", "application/json");
@@ -95,7 +122,7 @@ public class POICreationTask extends AsyncTask<String, Void, String> {
                 String response = br.readLine();
                 br.close();*/
                 Log.v(TAG, "POI caricato correttamente");
-                return "POI created successfully";
+                return context.getResources().getString(R.string.poi_created_successfully);
             }
             else {
                 // scrive un messaggio di errore con codice httpResult

@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.mobike.mobike.LoginActivity;
 import com.mobike.mobike.MainActivity;
 import com.mobike.mobike.NicknameActivity;
+import com.mobike.mobike.R;
 import com.mobike.mobike.utils.Crypter;
 
 import org.json.JSONException;
@@ -28,12 +29,24 @@ import java.net.URLEncoder;
 /**
  * Created by Andrea-PC on 09/03/2015.
  */
+
+/**
+ * This class performs a HTTP GET to check whether the user is already registered or not
+ */
 public class LoginUserTask extends AsyncTask<String, Void, String> {
     private String name, surname, email, imgURL;
     private Context context;
     public static final String loginUserURL = "http://mobike.ddns.net/SRV/users/auth";
     private final static String TAG = "LoginUserTask";
 
+    /**
+     * Creates a new LoginUserTask
+     * @param context
+     * @param name
+     * @param surname
+     * @param email
+     * @param imgURL
+     */
     public LoginUserTask(Context context, String name, String surname, String email, String imgURL) {
         this.context = context;
         this.name = name;
@@ -42,6 +55,11 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
         this.imgURL = imgURL;
     }
 
+    /**
+     * Standard method of Async Task, calls getUser() method
+     * @param url
+     * @return String with a message for the user
+     */
     @Override
     protected String doInBackground(String... url) {
         try {
@@ -52,12 +70,21 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
         }
     }
 
+    /**
+     * Standard method of Async Task, makes a Toast with the result String
+     * @param result String with a message for the user
+     */
     @Override
     protected void onPostExecute(String result) {
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
         Log.v(TAG, result);
     }
 
+    /**
+     * Performs the HTTP GET
+     * @return String with a message for the user
+     * @throws IOException
+     */
     private String getUser() throws IOException {
         HttpURLConnection urlConnection = null;
         String result = "";
@@ -100,7 +127,7 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                 editor.apply();
                 Intent intent = new Intent(context, MainActivity.class);
                 ((Activity) context).startActivityForResult(intent, LoginActivity.MAPS_REQUEST);
-                return "Welcome  back " + name.substring(0,1).toUpperCase() + name.substring(1) + "!";
+                return context.getResources().getString(R.string.login_welcome_back_message) + " " + name.substring(0,1).toUpperCase() + name.substring(1) + "!";
             }
             else if (httpResult == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 // l'utente non è registrato, fa partire la registrazione
@@ -109,7 +136,7 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                 // uso startActivityForResult così se NicknameActivity termina esce dall'applicazione
                 // può terminare per due motivi, o termina la main activity o l'utente non inserisce il nickname
                 ((Activity) context).startActivityForResult(intent, LoginActivity.REGISTRATION_REQUEST);
-                return "You are not registered yet, please create an account!";
+                return context.getResources().getString(R.string.login_not_registered_message);
             } else {
                 Log.v(TAG, " httpResult = " + httpResult);
                 return "Error code: " + httpResult;

@@ -7,6 +7,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.mobike.mobike.LoginActivity;
+import com.mobike.mobike.R;
 import com.mobike.mobike.utils.Crypter;
 
 import org.json.JSONException;
@@ -20,6 +21,10 @@ import java.net.URL;
 /**
  * Created by Andrea-PC on 22/03/2015.
  */
+
+/**
+ * This class performs a HTTP POST to edit an existing Review
+ */
 public class EditReviewTask extends AsyncTask<String, Void, String> {
     private static final String TAG = "EditReviewTask";
     private static final String editReviewURL = "http://mobike.ddns.net/SRV/reviews/update";
@@ -27,6 +32,13 @@ public class EditReviewTask extends AsyncTask<String, Void, String> {
     private float rate;
     private String comment, routeID;
 
+    /**
+     * Creates a new EditReviewTask
+     * @param context
+     * @param routeID
+     * @param comment
+     * @param rate
+     */
     public EditReviewTask(Context context, String routeID, String comment, float rate) {
         this.context = context;
         this.rate = rate;
@@ -34,6 +46,11 @@ public class EditReviewTask extends AsyncTask<String, Void, String> {
         this.routeID = routeID;
     }
 
+    /**
+     * Standard method of Async Task, calls editReview() method
+     * @param context
+     * @return String with a message for the user
+     */
     @Override
     protected String doInBackground(String... context) {
         try {
@@ -43,11 +60,20 @@ public class EditReviewTask extends AsyncTask<String, Void, String> {
         }
     }
 
+    /**
+     * Standard method of Async Task, makes a Toast with the result String
+     * @param result String with a message for the user
+     */
     @Override
     protected void onPostExecute(String result) {
         Toast.makeText(context, result, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Performs the HTTP POST
+     * @return String with a message for the user
+     * @throws IOException
+     */
     private String editReview() throws IOException {
         HttpURLConnection urlConnection = null;
         try {
@@ -89,7 +115,7 @@ public class EditReviewTask extends AsyncTask<String, Void, String> {
                 String response = br.readLine();
                 br.close();*/
                 Log.v(TAG, "Recensione modificata correttamente");
-                return "Review edited successfully";
+                return context.getResources().getString(R.string.review_edited_successfully);
             }
             else {
                 // scrive un messaggio di errore con codice httpResult

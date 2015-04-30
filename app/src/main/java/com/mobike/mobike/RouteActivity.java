@@ -405,11 +405,12 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         JSONObject poi;
         double latitude, longitude;
         String title, category;
+        String[] types = getResources().getStringArray(R.array.poi_categories);
         try {
             for (int i = 0; i < array.length(); i++) {
                 poi = array.getJSONObject(i);
                 title = poi.getString("title");
-                category = poi.getString("type");
+                category = types[POI.stringToIntType(poi.getString("type"))];
                 latitude = poi.getDouble("lat");
                 longitude = poi.getDouble("lon");
 

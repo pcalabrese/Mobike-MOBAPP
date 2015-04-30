@@ -103,11 +103,11 @@
     <string name="title_activity_full_screen_map">Mappa Percorso</string>
     <string name="nickname_already_exists">Il nickname da te inserito è già esistente, per favore scegline un altro.</string>
     <string-array name="route_type_selection">
-        <item>Mountain</item>
-        <item>Hill</item>
-        <item>Coast</item>
-        <item>Plain</item>
-        <item>Mixed</item>
+        <item>Montuoso</item>
+        <item>Collinare</item>
+        <item>Costiero</item>
+        <item>Pianeggiante</item>
+        <item>Misto</item>
     </string-array>
     <string name="accepted">ACCETTATO</string>
     <string name="declined">RIFIUTATO</string>
@@ -119,10 +119,10 @@
     <string name="poi_title_hint">Nome</string>
     <string name="create_poi_button">CREA</string>
     <string-array name="poi_categories">
-        <item>Viewpoint</item>
-        <item>Gas Station</item>
-        <item>Restaurant</item>
-        <item>Other</item>
+        <item>Panorama</item>
+        <item>Benzinaio</item>
+        <item>Ristorante</item>
+        <item>Altro</item>
     </string-array>
     <string name="logout">Logout</string>
     <string name="review"> recensione</string>

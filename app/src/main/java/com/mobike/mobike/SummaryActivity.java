@@ -36,6 +36,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.mobike.mobike.network.UploadRouteTask;
 import com.mobike.mobike.utils.CustomMapFragment;
 import com.mobike.mobike.utils.POI;
+import com.mobike.mobike.utils.Route;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -71,11 +72,9 @@ public class SummaryActivity extends ActionBarActivity {
     private TextView length, duration;
     private long durationInSeconds;
     private String routeName, routeDescription, email, routeID, difficulty, bends, type, startLocation, endLocation;
-    private Context context = this;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private Polyline route; // the recorded route
     private List<LatLng> points; // the points of the route
-    private String[] types;
 
     /**
      * This method is called when the activity is created; it checks if the map is set up
@@ -110,8 +109,6 @@ public class SummaryActivity extends ActionBarActivity {
         routeStartLocation = (EditText) findViewById(R.id.start_location);
         routeEndLocation = (EditText) findViewById(R.id.end_location);
 
-        types = getResources().getStringArray(R.array.route_type_selection);
-
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.route_type_selection, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
@@ -122,7 +119,23 @@ public class SummaryActivity extends ActionBarActivity {
         typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                    type = types[position];
+                    switch (position) {
+                        case 0:
+                            type = Route.MOUNTAIN;
+                            break;
+                        case 1:
+                            type = Route.HILL;
+                            break;
+                        case 2:
+                            type = Route.COAST;
+                            break;
+                        case 3:
+                            type = Route.PLAIN;
+                            break;
+                        case 4:
+                            type = Route.MIXED;
+                            break;
+                    }
             }
 
             @Override
@@ -130,7 +143,7 @@ public class SummaryActivity extends ActionBarActivity {
                 //do nothing
             }
         });
-        type = types[0];
+        type = Route.MOUNTAIN;
 
         //set length and duration text views
         GPSDatabase db2 = new GPSDatabase(this);
@@ -238,11 +251,12 @@ public class SummaryActivity extends ActionBarActivity {
         JSONObject poi;
         double latitude, longitude;
         String title, category;
+        String[] types = getResources().getStringArray(R.array.poi_categories);
         try {
             for (int i = 0; i < array.length(); i++) {
                 poi = array.getJSONObject(i);
                 title = poi.getString("title");
-                category = POI.intToStringType(poi.getInt("category"));
+                category = types[poi.getInt("category")];
                 latitude = poi.getDouble("latitude");
                 longitude = poi.getDouble("longitude");
 

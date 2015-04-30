@@ -706,7 +706,8 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         String title = b.getString(POICreationActivity.POI_TITLE);
         Double latitude = b.getDouble(POICreationActivity.POI_LATITUDE);
         Double longitude = b.getDouble(POICreationActivity.POI_LONGITUDE);
-        String category = POI.intToStringType(b.getInt(POICreationActivity.POI_CATEGORY));
+        String[] types = getResources().getStringArray(R.array.poi_categories);
+        String category = types[b.getInt(POICreationActivity.POI_CATEGORY)];
 
         if (b.getBoolean(POICreationActivity.POI_IS_ASSOCIATED))
             mMap.addMarker(new MarkerOptions().position(new LatLng(latitude, longitude))

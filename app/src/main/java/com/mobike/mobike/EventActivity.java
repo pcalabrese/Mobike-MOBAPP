@@ -171,7 +171,8 @@ public class EventActivity extends ActionBarActivity implements HttpGetTask.Http
         mInvitedButton.setText(String.valueOf(invitedSize) + "\n" + getResources().getString(R.string.users_invited));
         mDeclinedButton.setText(String.valueOf(declinedSize) + "\n" + getResources().getString(R.string.users_declined));
         mStartLocation.setText(startLocation);
-        mCreationDate.setText(new SimpleDateFormat("EEEE, d MMMM yyyy").format(mDateCreation));
+        if (mDateCreation != null)
+            mCreationDate.setText(new SimpleDateFormat("EEEE, d MMMM yyyy").format(mDateCreation));
         Picasso.with(this).load(thumbnailURL).into(mThumbnail);
     }
 

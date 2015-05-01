@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.mobike.mobike.utils.RangeSeekBar;
+import com.mobike.mobike.utils.Route;
 
 /**
  * This is the activity where the user can search for the routes
@@ -257,10 +258,10 @@ public class RouteSearchActivity extends ActionBarActivity implements View.OnCli
                 url += "&maxLength=" + String.format("%.0f", seekBar.getSelectedMaxValue()*1000);
                 if (oneSelected) url += "&type=";
 
-                if (selected[0]) url += "Montuoso";
-                if (selected[1]) url += "Collinare";
-                if (selected[2]) url += "Pianura";
-                if (selected[3]) url += "Costiero";
+                if (selected[0]) url += Route.MOUNTAIN;
+                if (selected[1]) url += Route.HILL;
+                if (selected[2]) url += Route.PLAIN;
+                if (selected[3]) url += Route.COAST;
 
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();

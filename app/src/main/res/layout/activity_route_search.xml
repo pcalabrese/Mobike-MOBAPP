@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context="com.mobike.mobike.RouteSearchActivity"
+    tools:context="com.mobiketeam.mobike.RouteSearchActivity"
     android:orientation="vertical">
 
     <TextView android:text="@string/title_activity_route_search"
@@ -88,7 +88,7 @@
         android:layout_marginBottom="10dp"
         android:orientation="horizontal">
 
-        <com.mobike.mobike.utils.SquareImageView
+        <com.mobiketeam.mobike.utils.SquareImageView
             android:id="@+id/mountain_icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
             android:layout_marginEnd="10dp"
             android:src="@drawable/mountain_colour"/>
 
-        <com.mobike.mobike.utils.SquareImageView
+        <com.mobiketeam.mobike.utils.SquareImageView
             android:id="@+id/hill_icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -108,7 +108,7 @@
             android:layout_marginEnd="10dp"
             android:src="@drawable/hill_colour"/>
 
-        <com.mobike.mobike.utils.SquareImageView
+        <com.mobiketeam.mobike.utils.SquareImageView
             android:id="@+id/plain_icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -117,7 +117,7 @@
             android:layout_marginEnd="10dp"
             android:src="@drawable/plain_colour"/>
 
-        <com.mobike.mobike.utils.SquareImageView
+        <com.mobiketeam.mobike.utils.SquareImageView
             android:id="@+id/coast_icon"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

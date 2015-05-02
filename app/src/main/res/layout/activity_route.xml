@@ -28,10 +28,10 @@
                         <!-- map whit the route associated with the event -->
                         <fragment
                             android:id="@+id/map"
-                            android:name="com.mobike.mobike.utils.CustomMapFragment"
+                            android:name="com.mobiketeam.mobike.utils.CustomMapFragment"
                             android:layout_width="match_parent"
                             android:layout_height="300dp"
-                            tools:context="com.mobike.mobike.RouteActivity" />
+                            tools:context="com.mobiketeam.mobike.RouteActivity" />
 
                         <ImageButton
                             android:id="@+id/fullscreen_button"

@@ -5,7 +5,7 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "com.mobike.mobike"
+        applicationId "com.mobiketeam.mobike"
         minSdkVersion 14
         targetSdkVersion 21
         versionCode 1

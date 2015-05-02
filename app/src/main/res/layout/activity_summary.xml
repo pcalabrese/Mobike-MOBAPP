@@ -14,11 +14,11 @@
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/summary_map"
-            android:name="com.mobike.mobike.utils.CustomMapFragment"
+            android:name="com.mobiketeam.mobike.utils.CustomMapFragment"
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_marginBottom="20dp"
-            tools:context="com.mobike.mobike.SummaryActivity" />
+            tools:context="com.mobiketeam.mobike.SummaryActivity" />
 
         <LinearLayout
             android:layout_width="match_parent"

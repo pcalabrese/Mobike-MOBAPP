@@ -65,7 +65,9 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
             return getUser();
         } catch (IOException e) {
             Log.v(TAG, "exception  message: " + e.getMessage() + " exception class: " + e.getClass());
+            e.printStackTrace();
             return "Unable to complete login. URL may be invalid.";
+            //return "exception  message: " + e.getMessage() + " exception class: " + e.getClass() + ", \nstack trace: " + e.getStackTrace();
         }
     }
 
@@ -95,7 +97,8 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                 jsonObject.put("surname", surname);
                 jsonObject.put("email", email);
                 jsonObject.put("imgurl", imgURL);
-            } catch (JSONException e) {}
+            } catch (JSONException e) {
+            }
             Log.v(TAG, "json: " + jsonObject.toString());
 
             String token = URLEncoder.encode(crypter.encrypt(jsonObject.toString()), "utf-8");
@@ -117,7 +120,8 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                     json = new JSONObject(crypter.decrypt((new JSONObject(response)).getString("user")));
                     userID = json.getInt("id");
                     nickname = json.getString("nickname");
-                } catch (JSONException e) {}
+                } catch (JSONException e) {
+                }
                 Log.v(TAG, "userID: " + userID + "\nnickname: " + nickname);
                 SharedPreferences sharedPref = context.getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPref.edit();
@@ -126,9 +130,8 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                 editor.apply();
                 Intent intent = new Intent(context, MainActivity.class);
                 ((Activity) context).startActivityForResult(intent, LoginActivity.MAPS_REQUEST);
-                return context.getResources().getString(R.string.login_welcome_back_message) + " " + name.substring(0,1).toUpperCase() + name.substring(1) + "!";
-            }
-            else if (httpResult == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                return context.getResources().getString(R.string.login_welcome_back_message) + " " + name.substring(0, 1).toUpperCase() + name.substring(1) + "!";
+            } else if (httpResult == HttpURLConnection.HTTP_UNAUTHORIZED) {
                 // l'utente non è registrato, fa partire la registrazione
                 Log.v(TAG, " httpResult = " + httpResult);
                 Intent intent = new Intent(context, NicknameActivity.class);
@@ -140,10 +143,22 @@ public class LoginUserTask extends AsyncTask<String, Void, String> {
                 Log.v(TAG, " httpResult = " + httpResult);
                 return "Error code: " + httpResult;
             }
+        } catch (IOException e) {
+            int httpResult = urlConnection.getResponseCode();
+            if (httpResult == HttpURLConnection.HTTP_UNAUTHORIZED) {
+                // l'utente non è registrato, fa partire la registrazione
+                Log.v(TAG, " httpResult = " + httpResult);
+                Intent intent = new Intent(context, NicknameActivity.class);
+                // uso startActivityForResult così se NicknameActivity termina esce dall'applicazione
+                // può terminare per due motivi, o termina la main activity o l'utente non inserisce il nickname
+                ((Activity) context).startActivityForResult(intent, LoginActivity.REGISTRATION_REQUEST);
+                return context.getResources().getString(R.string.login_not_registered_message);
+            }
         } finally {
             if (urlConnection != null)
                 urlConnection.disconnect();
         }
+        return "";
     }
 
     private String convertInputStreamToString(InputStream inputStream) throws IOException {

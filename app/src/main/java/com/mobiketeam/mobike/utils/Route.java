@@ -1,5 +1,7 @@
 package com.mobiketeam.mobike.utils;
 
+import android.content.Context;
+
 import com.mobiketeam.mobike.R;
 
 /**
@@ -49,18 +51,19 @@ public class Route {
 
     public String getType() { return type; }
 
-    public int getTypeColor() {
+    public int getTypeColor(Context context) {
         String t = type;
+        String[] array = context.getResources().getStringArray(R.array.route_type_selection);
 
-        if (t.equals(MOUNTAIN))
+        if (t.equals(MOUNTAIN) || t.equals(array[0]) || t.equals("Montagna"))
             return R.color.routeMountain;
-        else if (t.equals(PLAIN))
+        else if (t.equals(PLAIN) || t.equals(array[1]))
             return R.color.routePlain;
-        else if (t.equals(HILL))
+        else if (t.equals(HILL) || t.equals(array[2]))
             return R.color.routeHill;
-        else if (t.equals(COAST))
+        else if (t.equals(COAST) || t.equals(array[3]))
             return R.color.routeCoast;
-        else if (t.equals(MIXED))
+        else if (t.equals(MIXED) || t.equals(array[4]))
             return R.color.routeMixed;
 
         return R.color.routeMixed;
@@ -76,18 +79,19 @@ public class Route {
 
     public int getRatingNumber() { return ratingNumber; }
 
-    public static int getStaticTypeColor(String type) {
+    public static int getStaticTypeColor(Context context, String type) {
         String t = type.toLowerCase();
+        String[] array = context.getResources().getStringArray(R.array.route_type_selection);
 
-        if (t.equals(MOUNTAIN))
+        if (t.equals(MOUNTAIN) || t.equals(array[0]))
             return R.color.routeMountain;
-        else if (t.equals(PLAIN))
+        else if (t.equals(PLAIN) || t.equals(array[1]))
             return R.color.routePlain;
-        else if (t.equals(HILL))
+        else if (t.equals(HILL) || t.equals(array[2]))
             return R.color.routeHill;
-        else if (t.equals(COAST))
+        else if (t.equals(COAST) || t.equals(array[3]))
             return R.color.routeCoast;
-        else if (t.equals(MIXED))
+        else if (t.equals(MIXED) || t.equals(array[4]))
             return R.color.routeMixed;
 
         return R.color.routeMixed;

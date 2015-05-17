@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.CardView;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,8 +21,12 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -76,6 +81,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     private LinearLayout buttonLayout;
     private ImageButton pause, stop, resume;
     private ImageButton start;
+    private CardView currentLengthDurationCard;
 
 
     private enum State {BEGIN, RUNNING, PAUSED, STOPPED} // All the possible states
@@ -142,6 +148,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
     /**
      * Fragment lifecycle method
+     *
      * @param inflater
      * @param container
      * @param savedInstanceState
@@ -275,12 +282,17 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         points.add(latLng);
         route.setPoints(points);
-        ((TextView) getActivity().findViewById(R.id.current_length)).setText(String.format("%.01f", length / 1000) + " km");
-        ((TextView) getActivity().findViewById(R.id.current_duration)).setText(String.valueOf(duration / 3600) + " h " + String.valueOf((duration / 60) % 60) + " m " + String.valueOf(duration % 60) + " s");
+        TextView l = (TextView) getActivity().findViewById(R.id.current_length);
+        TextView d = (TextView) getActivity().findViewById(R.id.current_duration);
+        if (l != null)
+            l.setText(String.format("%.01f", length / 1000) + " km");
+        if (d != null)
+            d.setText(String.valueOf(duration / 3600) + " h " + String.valueOf((duration / 60) % 60) + " m " + String.valueOf(duration % 60) + " s");
     }
 
     /**
      * Send a HTTP GET request at this url
+     *
      * @param url
      */
     private void downloadPOIs(String url) {
@@ -305,6 +317,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
     /**
      * Saves downloaded POIs
+     *
      * @param result
      */
     private void savePOIs(String result) {
@@ -329,7 +342,8 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
                 longitude = poi.getDouble("lon");
                 db.insertRowAllPOI(latitude, longitude, title, type);
             }
-        } catch(JSONException e) {}
+        } catch (JSONException e) {
+        }
         db.close();
         Log.v(TAG, "savePOIs()");
         displayAllPOIs();
@@ -350,17 +364,19 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
                 lat = poi.getDouble("latitude");
                 lon = poi.getDouble("longitude");
                 title = poi.getString("title");
-                category = POI.intToStringType(poi.getInt("category"));
+                category = POI.intToStringTypeLocalized(getActivity(), poi.getInt("category"));
 
                 mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon))
                         .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
             }
-        } catch (JSONException e) {}
+        } catch (JSONException e) {
+        }
         Log.v(TAG, "displayAllPOIs()");
     }
 
     /**
      * Called when a button is clicked
+     *
      * @param view
      */
     @Override
@@ -407,6 +423,21 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
             stop = (ImageButton) getActivity().getLayoutInflater().inflate(R.layout.stop_button, buttonLayout, false);
             buttonLayout.addView(pause);
             buttonLayout.addView(stop);
+
+            RelativeLayout cardLayout = (RelativeLayout) getActivity().findViewById(R.id.current_length_duration_card_layout);
+            currentLengthDurationCard = (CardView) getActivity().getLayoutInflater().inflate(R.layout.current_length_duration_card, cardLayout, false);
+            cardLayout.addView(currentLengthDurationCard);
+            Animation animation = AnimationUtils.makeInChildBottomAnimation(getActivity());
+            animation.setDuration(300);
+            currentLengthDurationCard.startAnimation(animation);
+
+            TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, currentLengthDurationCard.getHeight(), 0);
+            translateAnimation.setDuration(300);
+            pause.startAnimation(translateAnimation);
+            stop.startAnimation(translateAnimation);
+            getActivity().findViewById(R.id.new_poi_button).setAnimation(translateAnimation);
+            getActivity().findViewById(R.id.places_nearby_button).setAnimation(translateAnimation);
+
             pause.setOnClickListener(this);
             stop.setOnClickListener(this);
             state = State.RUNNING;
@@ -513,6 +544,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
     /**
      * Stops the registration of the route
+     *
      * @param onClickListener
      */
     private void stopRegistration(View.OnClickListener onClickListener) {
@@ -523,12 +555,29 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         buttonLayout.addView(start);
         start.setOnClickListener(onClickListener);
 
-        if (state == State.RUNNING) {
+        //CardView card = (CardView) getActivity().findViewById(R.id.current_length_duration_card);
+        /*Animation animation = AnimationUtils.makeInChildBottomAnimation(getActivity());
+        animation.setDuration(100);
+        card.startAnimation(animation);*/
+
+        TranslateAnimation translateAnimation = new TranslateAnimation(0, 0, -currentLengthDurationCard.getHeight(), 0);
+        translateAnimation.setDuration(300);
+        //card.startAnimation(translateAnimation);
+        start.startAnimation(translateAnimation);
+        getActivity().findViewById(R.id.new_poi_button).setAnimation(translateAnimation);
+        getActivity().findViewById(R.id.places_nearby_button).setAnimation(translateAnimation);
+
+        currentLengthDurationCard.setVisibility(View.GONE);
+
+
+        /*if (state == State.RUNNING) {
             state = State.STOPPED;
             gpsService.stopRegistering();
         } else {
             state = State.STOPPED;
-        }
+        }*/
+
+        state = State.STOPPED;
         gpsService.stopRegistering();
     }
 
@@ -638,12 +687,10 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         if (requestCode == SUMMARY_REQUEST) {
             resetState();
             Log.v(TAG, "onActivityResult()");
-        }
-        else if (requestCode == REQUEST_PLACE_PICKER && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == REQUEST_PLACE_PICKER && resultCode == Activity.RESULT_OK) {
             // The user has selected a place. Extract the name and address.
             displayPickedPlace(data);
-        }
-        else if (requestCode == POI_CREATION_REQUEST && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == POI_CREATION_REQUEST && resultCode == Activity.RESULT_OK) {
             displayCreatedPOI(data);
         }
     }
@@ -671,6 +718,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
     /**
      * Displays picked place taken from Google Places API
+     *
      * @param data
      */
     private void displayPickedPlace(Intent data) {
@@ -692,6 +740,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
 
     /**
      * Displays the created POI
+     *
      * @param data
      */
     private void displayCreatedPOI(Intent data) {

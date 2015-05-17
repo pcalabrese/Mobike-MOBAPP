@@ -115,7 +115,7 @@ public class POIListCreationTask extends AsyncTask<String, Void, String> {
                     poi.put("lat", poiInDB.getDouble("latitude"));
                     poi.put("lon", poiInDB.getDouble("longitude"));
                     poi.put("title", poiInDB.getString("title"));
-                    poi.put("type", POI.intToStringType(poiInDB.getInt("category")));
+                    poi.put("type", POI.intToStringTypeEnglish(poiInDB.getInt("category")));
                     poi.put("owner", owner);
                     JSONArray route = new JSONArray();
                     route.put(new JSONObject().put("id", routeID));

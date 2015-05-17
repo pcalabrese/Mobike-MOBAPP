@@ -1,5 +1,9 @@
 package com.mobiketeam.mobike.utils;
 
+import android.content.Context;
+
+import com.mobiketeam.mobike.R;
+
 /**
  * Created by Andrea-PC on 23/04/2015.
  */
@@ -20,7 +24,7 @@ public class POI {
             return 3;
     }
 
-    public static String intToStringType(int type) {
+    public static String intToStringTypeEnglish(int type) {
         switch (type) {
             case 0:
                 return VIEWPOINT;
@@ -32,5 +36,11 @@ public class POI {
                 return OTHER;
         }
         return OTHER;
+    }
+
+    public static String intToStringTypeLocalized(Context context, int type) {
+        String[] array = context.getResources().getStringArray(R.array.poi_categories);
+
+        return array[type];
     }
 }

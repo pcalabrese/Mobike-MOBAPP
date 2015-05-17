@@ -312,7 +312,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
                 ((TextView) findViewById(R.id.route_length)).setText(bundle.getString(SearchFragment.ROUTE_LENGTH));
                 ((TextView) findViewById(R.id.route_duration)).setText(bundle.getString(SearchFragment.ROUTE_DURATION));
                 ((TextView) findViewById(R.id.route_creator)).setText(bundle.getString(SearchFragment.ROUTE_CREATOR));
-                ((ImageView) findViewById(R.id.route_type)).setImageResource(Route.getStaticTypeColor(bundle.getString(SearchFragment.ROUTE_TYPE)));
+                ((ImageView) findViewById(R.id.route_type)).setImageResource(Route.getStaticTypeColor(this, bundle.getString(SearchFragment.ROUTE_TYPE)));
                 ((ImageView) findViewById(R.id.route_image)).setImageBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.staticmap));
                 ((RatingBar) findViewById(R.id.rating_bar)).setRating(bundle.getFloat(SearchFragment.ROUTE_RATING));
                 Log.v(TAG, "route name: " + bundle.getString(SearchFragment.ROUTE_NAME));

@@ -375,7 +375,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             for (int i = 0; i < array.length(); i++) {
                 poi = array.getJSONObject(i);
                 title = poi.getString("title");
-                category = POI.intToStringType(poi.getInt("category"));
+                category = POI.intToStringTypeLocalized(this, poi.getInt("category"));
                 latitude = poi.getDouble("latitude");
                 longitude = poi.getDouble("longitude");
 

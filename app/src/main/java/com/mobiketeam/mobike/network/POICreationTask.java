@@ -106,7 +106,7 @@ public class POICreationTask extends AsyncTask<String, Void, String> {
                 poi.put("lat", latitude);
                 poi.put("lon", longitude);
                 poi.put("title", title);
-                poi.put("type", POI.intToStringType(category));
+                poi.put("type", POI.intToStringTypeEnglish(category));
                 poi.put("owner", owner);
                 jsonObject.put("user", crypter.encrypt(user.toString()));
                 jsonObject.put("poi", crypter.encrypt(poi.toString()));

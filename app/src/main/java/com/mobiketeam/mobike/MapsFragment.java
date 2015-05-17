@@ -364,7 +364,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
                 lat = poi.getDouble("latitude");
                 lon = poi.getDouble("longitude");
                 title = poi.getString("title");
-                category = POI.intToStringType(poi.getInt("category"));
+                category = POI.intToStringTypeLocalized(getActivity(), poi.getInt("category"));
 
                 mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon))
                         .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));

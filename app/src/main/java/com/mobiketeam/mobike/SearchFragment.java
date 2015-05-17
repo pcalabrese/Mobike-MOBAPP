@@ -457,7 +457,7 @@ class RouteAdapter extends ArrayAdapter<Route> {
             if (creator != null)
                 creator.setText(p.getCreator());
             if (type != null)
-                type.setImageResource(p.getTypeColor());
+                type.setImageResource(p.getTypeColor(context));
             if (thumbnailView != null)
                 Picasso.with(context).load(p.getThumbnailURL()).into(thumbnailView);
             if (ratingBar != null)

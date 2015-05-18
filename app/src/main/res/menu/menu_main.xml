@@ -15,4 +15,14 @@
         app:showAsAction="never"
         android:orderInCategory="2" />
 
+    <item android:id="@+id/action_bug_report"
+        android:title="@string/bug_report"
+        app:showAsAction="never"
+        android:orderInCategory="3" />
+
+    <item android:id="@+id/action_send_email"
+        android:title="@string/send_email"
+        app:showAsAction="never"
+        android:orderInCategory="4"/>
+
 </menu>

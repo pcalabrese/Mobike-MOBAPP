@@ -483,7 +483,7 @@ public class GPSDatabase
         for(int j = 1; j < waypoints.size() - 1; j++){
             wlat = waypoints.get(j).latitude;
             wlng = waypoints.get(j).longitude;
-            gpxString += "<wpt lat=\"" + wlat + "\" lon=\"" + wlng + "\">\n";
+            gpxString += "<wpt lat=\"" + wlat + "\" lon=\"" + wlng + "\"></wpt>\n";
         }
 
         gpxString += "<wpt lat=\"" + endLat + "\" lon=\"" + endLng + "\">"+

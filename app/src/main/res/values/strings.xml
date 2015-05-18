@@ -149,5 +149,7 @@
     <string name="event_created">Event created!</string>
     <string name="review_uploaded_successfully">Review uploaded successfully</string>
     <string name="upload_completed">Upload completed!</string>
+    <string name="bug_report">Send bug report</string>
+    <string name="send_email">Contact us!</string>
     
 </resources>

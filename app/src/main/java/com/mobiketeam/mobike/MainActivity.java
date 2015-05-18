@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -98,9 +99,28 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
                 setResult(LoginActivity.DISCONNECT, null);
                 finish();
                 break;
+            case R.id.action_bug_report:
+                sendBugReport();
+                break;
+            case R.id.action_send_email:
+                sendEmail();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void sendBugReport() {
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto", "mobiketeam@gmail.com", null));
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "BUG REPORT");
+        startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.bug_report) + "..."));
+    }
+
+    public void sendEmail() {
+        Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                "mailto", "mobiketeam@gmail.com", null));
+        startActivity(Intent.createChooser(emailIntent, getResources().getString(R.string.send_email)));
     }
 
     private String generateToken() {

@@ -24,6 +24,8 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -44,11 +46,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.maps.android.clustering.ClusterManager;
 import com.mobiketeam.mobike.utils.Crypter;
 import com.mobiketeam.mobike.utils.POI;
 
@@ -77,12 +81,17 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     private static final int SUMMARY_REQUEST = 1;
     private static final int REQUEST_PLACE_PICKER = 2;
     private static final int POI_CREATION_REQUEST = 3;
+
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private LinearLayout buttonLayout;
     private ImageButton pause, stop, resume;
     private ImageButton start;
     private CardView currentLengthDurationCard;
 
+    private ArrayList<Marker> viewpoint = new ArrayList<>();
+    private ArrayList<Marker> gasStation = new ArrayList<>();
+    private ArrayList<Marker> restaurant = new ArrayList<>();
+    private ArrayList<Marker> other = new ArrayList<>();
 
     private enum State {BEGIN, RUNNING, PAUSED, STOPPED} // All the possible states
 
@@ -143,7 +152,62 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
         start.setOnClickListener(this);
         ((ImageButton) getActivity().findViewById(R.id.places_nearby_button)).setOnClickListener(this);
         ((ImageButton) getActivity().findViewById(R.id.new_poi_button)).setOnClickListener(this);
+
+        CheckBox checkBox = (CheckBox) getActivity().findViewById(R.id.viewpoint_checkbox);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (!isChecked)
+                    showHiddenPOIs(viewpoint);
+                else
+                    hideDisplayedPOIs(viewpoint);
+            }
+        });
+
+        checkBox = (CheckBox) getActivity().findViewById(R.id.gas_station_checkbox);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (!isChecked)
+                    showHiddenPOIs(gasStation);
+                else
+                    hideDisplayedPOIs(gasStation);
+            }
+        });
+
+        checkBox = (CheckBox) getActivity().findViewById(R.id.restaurant_checkbox);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (!isChecked)
+                    showHiddenPOIs(restaurant);
+                else
+                    hideDisplayedPOIs(restaurant);
+            }
+        });
+
+        checkBox = (CheckBox) getActivity().findViewById(R.id.other_checkbox);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (!isChecked)
+                    showHiddenPOIs(other);
+                else
+                    hideDisplayedPOIs(other);
+            }
+        });
+
         //    setUpMapIfNeeded();
+    }
+
+    private void showHiddenPOIs(ArrayList<Marker> array) {
+        for (Marker m: array)
+            m.setVisible(false);
+    }
+
+    private void hideDisplayedPOIs(ArrayList<Marker> array) {
+        for (Marker m: array)
+            m.setVisible(true);
     }
 
     /**
@@ -366,8 +430,23 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
                 title = poi.getString("title");
                 category = POI.intToStringTypeLocalized(getActivity(), poi.getInt("category"));
 
-                mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon))
+                Marker marker = mMap.addMarker(new MarkerOptions().position(new LatLng(lat, lon))
                         .title(title).snippet(category).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+
+                switch (poi.getInt("category")) {
+                    case 0:
+                        viewpoint.add(marker);
+                        break;
+                    case 1:
+                        gasStation.add(marker);
+                        break;
+                    case 2:
+                        restaurant.add(marker);
+                        break;
+                    case 3:
+                        other.add(marker);
+                        break;
+                }
             }
         } catch (JSONException e) {
         }

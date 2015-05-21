@@ -480,11 +480,15 @@ public class GPSDatabase
                 "<name>Start</name></wpt>\n";
         double wlat, wlng;
 
-        for(int j = 1; j < waypoints.size() - 1; j++){
+        gpxString += "<rte>\n";
+
+        for(int j = 0; j < waypoints.size(); j++){
             wlat = waypoints.get(j).latitude;
             wlng = waypoints.get(j).longitude;
-            gpxString += "<wpt lat=\"" + wlat + "\" lon=\"" + wlng + "\"></wpt>\n";
+            gpxString += "<rtept lat=\"" + wlat + "\" lon=\"" + wlng + "\"></rtept>\n";
         }
+
+        gpxString += "</rte>\n";
 
         gpxString += "<wpt lat=\"" + endLat + "\" lon=\"" + endLng + "\">"+
                 "<name>End</name></wpt>\n";

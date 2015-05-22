@@ -5,7 +5,7 @@ link to our webpage
 http://mobike.ddns.net/WAPP/landing
 
 Download our Mobile APP:
-http://mobike.ddns.net/downloads/app/app-debug.apk
+https://play.google.com/store/apps/details?id=com.mobiketeam.mobike&hl=it
 
 Milestone 1 - Proof of Concept
 ==============

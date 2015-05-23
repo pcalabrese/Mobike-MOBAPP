@@ -8,6 +8,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -61,6 +64,16 @@ public class Event {
 
     public String getStartDate() {
         return startDate;
+    }
+
+    public Date getStartDateObject() {
+        Date mDate = null;
+        SimpleDateFormat s1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+        try {
+            mDate = s1.parse(getStartDate());
+        } catch (ParseException e ) { }
+
+        return mDate;
     }
 
     public String getCreator() {

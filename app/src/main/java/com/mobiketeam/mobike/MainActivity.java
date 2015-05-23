@@ -53,7 +53,7 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
 
         //getSupportActionBar().hide();
 
-        downloadEvents(EventsFragment.downloadInvitedEventsURL);
+        checkPendingEvents(EventsFragment.downloadInvitedEventsURL);
 
         // resetting the database
         if (savedInstanceState == null) {
@@ -144,7 +144,7 @@ public class MainActivity extends ActionBarActivity implements HttpGetTask.HttpG
         return user;
     }
 
-    private void downloadEvents(String url) {
+    private void checkPendingEvents(String url) {
         String user = generateToken();
         new HttpGetTask(this).execute(url + user);
         Log.v(TAG, "downloadEvents url: " + url + user);

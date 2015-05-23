@@ -1,5 +1,6 @@
 package com.mobiketeam.mobike;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -43,6 +45,8 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     public static final String NICKNAME = "com.mobike.mobike.nickname";
     public static final String ID = "com.mobike.mobike.id";
     public static final String IMAGEURL = "com.mobike.mobike.imageurl";
+    public static final String IS_FIRST_RUN = "com.mobike.mobike.is_first_run";
+
     public static final int MAPS_REQUEST = 1;
     public static final int REGISTRATION_REQUEST = 2;
     public static final int DISCONNECT = 99;
@@ -53,7 +57,6 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     private String email, name, surname, imageURL;
     private NetworkInfo.State state = NetworkInfo.State.CONNECTING;
 
-    private static final String postURL = "http://mobike.ddns.net/SRV/users/auth";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,42 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
         mGoogleApiClient = new GoogleApiClient.Builder(this).addApi(Plus.API, options).addScope(Plus.SCOPE_PLUS_LOGIN).addConnectionCallbacks(this).addOnConnectionFailedListener(this).build();
 
         mResolvingError = savedInstanceState != null && savedInstanceState.getBoolean(STATE_RESOLVING_ERROR, false);
+
+        checkFirstRun();
+        onPause();
+    }
+
+    public void checkFirstRun() {
+        boolean isFirstRun = getSharedPreferences("PREFERENCE", MODE_PRIVATE).getBoolean(IS_FIRST_RUN, true);
+        if (isFirstRun){
+            state = NetworkInfo.State.SUSPENDED;
+            TextView titleView = ((TextView) getLayoutInflater().inflate(R.layout.list_dialog_title, null, false));
+            titleView.setText(getResources().getString(R.string.first_time_welcome_title));
+
+            final LoginActivity activity = this;
+
+            new AlertDialog.Builder(this)
+                    .setCustomTitle(titleView)
+                    .setMessage(getResources().getString(R.string.first_time_welcome_message))
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // do nothing
+                            state = NetworkInfo.State.CONNECTING;
+                            activity.firstRunCompleted();
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
+
+            getSharedPreferences("PREFERENCE", MODE_PRIVATE)
+                    .edit()
+                    .putBoolean(IS_FIRST_RUN, false)
+                    .apply();
+        }
+    }
+
+    public void firstRunCompleted() {
+        onStart();
     }
 
     public void onClick(View view) {
@@ -115,10 +154,9 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
     protected void onStart() {
         super.onStart();
         Log.v(TAG, "onStart()");
-        if (!mResolvingError) {
+        if (!mResolvingError && state != NetworkInfo.State.SUSPENDED) {
             mGoogleApiClient.connect();
         }
-
     }
 
     @Override
@@ -230,6 +268,7 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                     mGoogleApiClient.connect();
                 }
             }
+
         } else if (requestCode == MAPS_REQUEST) {
             if (resultCode == DISCONNECT) {
                 state = NetworkInfo.State.DISCONNECTING;
@@ -237,8 +276,17 @@ public class LoginActivity extends ActionBarActivity implements View.OnClickList
                 return;
             }
             finish();
-        } else if (requestCode == REGISTRATION_REQUEST)
+
+        } else if (requestCode == REGISTRATION_REQUEST) {
+            if (resultCode == DISCONNECT) {
+                state = NetworkInfo.State.DISCONNECTING;
+                Log.v(TAG, "state changed");
+                mGoogleApiClient.disconnect();
+                mGoogleApiClient.connect();
+                return;
+            }
             finish();
+        }
     }
 
     @Override

@@ -32,6 +32,8 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
@@ -298,6 +300,15 @@ public class EventsFragment extends android.support.v4.app.Fragment implements A
             }
         }
 
+        //Sorting
+        Collections.sort(list, new Comparator<Event>() {
+            @Override
+            public int compare(Event e1, Event e2) {
+
+                return e2.getStartDateObject().compareTo(e1.getStartDateObject());
+            }
+        });
+
         ListView listView = (ListView) getView().findViewById(R.id.list_view);
 
         ListAdapter listAdapter = new ListAdapter(getActivity(), R.layout.event_list_row, list);
@@ -376,7 +387,7 @@ class ListAdapter extends ArrayAdapter<Event> {
                 name.setText(p.getName());
             }
             if (date != null) {
-                Date mDate = null, mDateCreation = null;
+                Date mDate = null;
                 SimpleDateFormat s1 = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 try {
                     mDate = s1.parse(p.getStartDate());

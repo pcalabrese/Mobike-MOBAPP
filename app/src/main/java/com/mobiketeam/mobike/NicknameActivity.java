@@ -31,6 +31,7 @@ public class NicknameActivity extends ActionBarActivity implements View.OnClickL
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         ((Button) findViewById(R.id.send)).setOnClickListener(this);
+        ((Button) findViewById(R.id.change_account)).setOnClickListener(this);
         //((EditText) findViewById(R.id.nickname)).getBackground().setColorFilter(getResources().getColor(R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
     }
 
@@ -77,6 +78,11 @@ public class NicknameActivity extends ActionBarActivity implements View.OnClickL
                     String imageUrl = sharedPreferences.getString(LoginActivity.IMAGEURL, "");
                     new RegisterUserTask(this, name, surname, nickname, email, imageUrl, bike).execute();
                 }
+                break;
+
+            case R.id.change_account:
+                setResult(LoginActivity.DISCONNECT, null);
+                finish();
                 break;
         }
     }

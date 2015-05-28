@@ -157,5 +157,8 @@
     <string name="upload_completed">Upload completed!</string>
     <string name="bug_report">Send bug report</string>
     <string name="send_email">Contact us!</string>
-    
+    <string name="first_time_welcome_title">Welcome!</string>
+    <string name="first_time_welcome_message">Welcome to MoBike!\nThe application is still under development and we are sorry for any bugs/errors that may occur.\Thank you and have fun!</string>
+    <string name="change_account_button">CHANGE ACCOUNT</string>
+
 </resources>

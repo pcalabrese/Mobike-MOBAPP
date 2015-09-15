@@ -106,60 +106,6 @@ public class RouteSearchActivity extends ActionBarActivity implements View.OnCli
         Log.v(TAG, "onClick()");
 
         switch (view.getId()) {
-        /*    case R.id.mountain_icon:
-                if (!selected[0] && !oneSelected) {
-                    mountain.setColorFilter(null);
-                    oneSelected = true;
-                    selected[0] = !selected[0];
-                }
-                else if (selected[0]) {
-                    mountain.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
-                    oneSelected = false;
-                    selected[0] = !selected[0];
-                }
-
-                break;
-
-            case R.id.hill_icon:
-                if (!selected[1] && !oneSelected) {
-                    hill.setColorFilter(null);
-                    oneSelected = true;
-                    selected[1] = !selected[1];
-                }
-                else if (selected[1]) {
-                    hill.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
-                    oneSelected = false;
-                    selected[1] = !selected[1];
-                }
-
-                break;
-
-            case R.id.plain_icon:
-                if (!selected[2] && !oneSelected) {
-                    plain.setColorFilter(null);
-                    oneSelected = true;
-                    selected[2] = !selected[2];
-                }
-                else if (selected[2]) {
-                    plain.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
-                    oneSelected = false;
-                    selected[2] = !selected[2];
-                }
-                break;
-
-            case R.id.coast_icon:
-                if (!selected[3] && !oneSelected) {
-                    coast.setColorFilter(null);
-                    oneSelected = true;
-                    selected[3] = !selected[3];
-                }
-                else if (selected[3]) {
-                    coast.setColorFilter(grigio_trasparente, PorterDuff.Mode.SRC_ATOP);
-                    oneSelected = false;
-                    selected[3] = !selected[3];
-                }
-                break;*/
-
             case R.id.mountain_icon:
                 if (!selected[0]) {
                     if (oneSelected) {

@@ -264,6 +264,7 @@ public class EventCreationActivity extends ActionBarActivity implements View.OnC
         Log.v(TAG, "result: " + result);
 
         try{
+            Log.v(TAG, "reusult: " + result);
             JSONArray array = new JSONArray(crypter.decrypt(new JSONObject(result).getString("users")));
             Log.v(TAG, "array di users: " + array.toString());
             for (int i = 0; i < array.length(); i++) {

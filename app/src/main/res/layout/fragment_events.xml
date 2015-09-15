@@ -1,62 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-<LinearLayout
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:orientation="vertical">
 
-<!--    <Spinner
-        android:id="@+id/event_types"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/colorAccent" /> -->
+            <!--    <Spinner
+                    android:id="@+id/event_types"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipe_refresh_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:background="@color/colorAccent" /> -->
 
-    <ListView
-        android:id="@+id/list_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="9"
-        android:cacheColorHint="#00000000"
-        android:divider="@null"/>
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/swipe_refresh_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    </android.support.v4.widget.SwipeRefreshLayout>
-    <!-- android:divider="@drawable/list_divider"
-        android:dividerHeight="0.5dp" -->
+                <ListView
+                    android:id="@+id/list_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="9"
+                    android:cacheColorHint="#00000000"
+                    android:divider="@null" />
 
-</LinearLayout>
+            </android.support.v4.widget.SwipeRefreshLayout>
+            <!-- android:divider="@drawable/list_divider"
+                android:dividerHeight="0.5dp" -->
+
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/create_event"
             android:layout_width="@dimen/fab_size"
             android:layout_height="@dimen/fab_size"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_plus_white_24dp"
-            android:background="@drawable/oval_button"
-            android:layout_marginRight="@dimen/fab_margin"
-            android:layout_marginEnd="@dimen/fab_margin"
+            android:layout_alignParentRight="true"
             android:layout_marginBottom="@dimen/fab_margin"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:background="@drawable/oval_button"
             android:elevation="@dimen/fab_elevation"
-            android:stateListAnimator="@anim/fab_animation"/>
+            android:src="@drawable/ic_plus_white_24dp"
+            android:stateListAnimator="@anim/fab_animation" />
         <!-- app:cb_color="@color/colorAccent"
             app:cb_pressedRingWidth="5dip" -->
 

@@ -55,10 +55,10 @@ public class AccountDetailsActivity extends ActionBarActivity {
         ((TextView) findViewById(R.id.nickname)).setText(nickname);
         ((TextView) findViewById(R.id.email)).setText(email);
 
-        downoadDetails();
+        downloadDetails();
     }
 
-    private void downoadDetails() {
+    private void downloadDetails() {
         String user = "";
         SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
         int id = sharedPreferences.getInt(LoginActivity.ID, 0);

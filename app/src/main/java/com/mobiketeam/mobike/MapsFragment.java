@@ -237,7 +237,7 @@ public class MapsFragment extends android.support.v4.app.Fragment implements
     }
 
     /**
-     * This method updates the map, making it center on the last plocation known.
+     * This method updates the map, making it center on the last location known.
      *
      * @param location the last location known.
      */

@@ -160,5 +160,6 @@
     <string name="first_time_welcome_title">Benvenuto/a!</string>
     <string name="first_time_welcome_message">Benvenuto/a!\nGrazie per aver scelto MoBike, l\'applicazione \è ancora sotto sviluppo e ci scusiamo per eventuali bug e/o errori.\nGrazie e buon divertimento!</string>
     <string name="change_account_button">CAMBIA ACCOUNT</string>
+    <string name="no_route_description">Nessuna descrizione disponibile</string>
 
 </resources>

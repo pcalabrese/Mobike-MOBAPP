@@ -234,8 +234,11 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             jsonRoute = new JSONObject(crypter.decrypt(resultJSON.getString("route")));
             Log.v(TAG, "jsonRoute: " + jsonRoute.toString());
             name = jsonRoute.getString("name");
-            name = name.substring(0,1).toUpperCase() + name.substring(1);
+            if (name.length() > 0)
+                name = name.substring(0,1).toUpperCase() + name.substring(1);
             description = jsonRoute.getString("description");
+            if (description.length() == 0)
+                description = getString(R.string.no_route_description);
             creator = jsonRoute.getJSONObject("owner").getString("nickname");
             length = jsonRoute.getDouble("length") + "";
             duration = jsonRoute.getInt("duration") + "";

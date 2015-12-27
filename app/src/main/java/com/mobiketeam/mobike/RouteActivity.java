@@ -1,9 +1,11 @@
 package com.mobiketeam.mobike;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.MenuItem;
@@ -48,6 +50,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
     public static final String USER_RATE = "com.mobike.mobike.RouteActivity.user_rate";
     public static final String USER_MESSAGE = "com.mobike.mobike.RouteActivity.user_message";
     public static final String POI_LIST = "com.mobike.mobike.RouteActivity.poi_list";
+
     public static final int EDIT_REVIEW_REQUEST = 1;
     public static final int NEW_REVIEW_REQUEST = 2;
     public static final String GPX = "com.mobike.mobike.gpx";
@@ -58,9 +61,12 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
     private Polyline routePoly; // the polyline of the route
     private ArrayList<LatLng> points; // the points of the route
 
-    private TextView mName, mDescription, mCreator, mLength, mDuration, mDifficulty, mBends, mType, mRating, mRatingNumber, mStartLocation, mEndLocation;
+    private TextView mName, mDescription, mCreator, mLength, mDuration, mDifficulty, mBends, mType,
+            mRating, mRatingNumber, mStartLocation, mEndLocation;
     private RatingBar mRatingBar;
-    private String routeID, userRate, userMessage, gpx;
+    private FloatingActionButton mUpdateRouteButton, mDeleteRouteButton;
+
+    private String routeID, userRate, userMessage, gpx, creator, currentUser;
     private boolean pickingRoute;
     private String poiList;
 
@@ -99,7 +105,22 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
         mRating = (TextView) findViewById(R.id.rating);
         mRatingNumber = (TextView) findViewById(R.id.rating_number);
 
+        mUpdateRouteButton = (FloatingActionButton) findViewById(R.id.update_route_button);
+        mDeleteRouteButton = (FloatingActionButton) findViewById(R.id.delete_route_button);
+
         routeID = bundle.getString(SearchFragment.ROUTE_ID);
+        creator = bundle.getString(SearchFragment.ROUTE_CREATOR);
+        SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
+        //currentUser = sharedPreferences.getString(LoginActivity.NICKNAME, "");
+        currentUser = "paolocalabrese";
+
+        if (!creator.equals(currentUser)) {
+            mUpdateRouteButton.setVisibility(View.GONE);
+            mDeleteRouteButton.setVisibility(View.GONE);
+        } else {
+            mUpdateRouteButton.setOnClickListener(this);
+            mDeleteRouteButton.setOnClickListener(this);
+        }
 
         ((ImageButton) findViewById(R.id.fullscreen_button)).setOnClickListener(this);
 
@@ -464,12 +485,22 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             case R.id.fullscreen_button:
                 Log.v(TAG, "fullscreen_button pressed");
                 Intent intent1 = new Intent(this, FullScreenMapActivity.class);
-                /*Bundle bun = new Bundle();
-                bun.putString(GPX, gpx);
-                intent1.putExtras(bun); */
                 RouteActivity.currentGpx = gpx;
                 intent1.putExtra(POI_LIST, poiList);
                 startActivity(intent1);
+                break;
+            case R.id.update_route_button:
+                //start activity to modify the route
+                Intent intent2 = new Intent(this, UpdateRouteActivity.class);
+                intent2.putExtra(SearchFragment.ROUTE_NAME, mName.getText());
+                intent2.putExtra(SearchFragment.ROUTE_DESCRIPTION, mDescription.getText());
+                intent2.putExtra(SearchFragment.ROUTE_DIFFICULTY, mDifficulty.getText());
+                intent2.putExtra(SearchFragment.ROUTE_BENDS, mBends.getText());
+                intent2.putExtra(SearchFragment.ROUTE_TYPE, mType.getText());
+                startActivity(intent2);
+                break;
+            case R.id.delete_route_button:
+                //start async task to remove the route
                 break;
         }
     }

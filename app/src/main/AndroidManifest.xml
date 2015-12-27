@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mobiketeam.mobike" >
+    package="com.mobiketeam.mobike">
 
     <!-- da rivedere i permessi, forse ce n'è qualcuno di troppo -->
 
@@ -29,11 +29,17 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
-        android:theme="@style/AppTheme.Base" >
+        android:theme="@style/AppTheme.Base">
+
+        <!-- Include the AdActivity configChanges and theme. -->
         <activity
-            android:name="com.mobiketeam.mobike.LoginActivity"
+            android:name="com.google.android.gms.ads.AdActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:theme="@android:style/Theme.Translucent" />
+        <activity
+            android:name=".LoginActivity"
             android:label="@string/app_name"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,9 +53,12 @@
             android:value="@integer/google_play_services_version" />
 
         <!-- metadata required to use GoogleMap -->
-        <!--<meta-data
+        <!--
+            <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/google_maps_key" />-->
+            android:value="@string/google_maps_key" />
+        -->
+
 
         <!-- metadata required to use facebook share dialog -->
         <meta-data
@@ -59,99 +68,95 @@
         <!-- metadata required to use Places API -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key"/>
-
+            android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.mobiketeam.mobike.SummaryActivity"
+            android:name=".SummaryActivity"
             android:label="@string/title_activity_summary"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.ActionBarShadow" >
-        </activity>
+            android:theme="@style/AppTheme.ActionBarShadow"></activity>
         <activity
-            android:name="com.mobiketeam.mobike.ShareActivity"
+            android:name=".ShareActivity"
             android:label="@string/title_activity_share"
-            android:theme="@style/AppTheme.ActionBarShadow" >
-        </activity>
+            android:theme="@style/AppTheme.ActionBarShadow"></activity>
 
         <service
-            android:name="com.mobiketeam.mobike.GPSService"
+            android:name=".GPSService"
             android:enabled="true"
-            android:exported="true" >
-        </service>
+            android:exported="true"></service>
 
         <activity
-            android:name="com.mobiketeam.mobike.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name="com.mobiketeam.mobike.EventActivity"
-            android:label="@string/title_activity_event" >
+            android:name=".EventActivity"
+            android:label="@string/title_activity_event">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobiketeam.mobike.MainActivity" />
         </activity>
         <activity
-            android:name="com.mobiketeam.mobike.RouteActivity"
+            android:name=".RouteActivity"
             android:label="@string/title_activity_route"
-            android:theme="@style/AppTheme.ActionBarShadow" >
+            android:theme="@style/AppTheme.ActionBarShadow">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobiketeam.mobike.MainActivity" />
         </activity>
         <activity
-            android:name="com.mobiketeam.mobike.EventCreationActivity"
-            android:label="@string/title_activity_event_creation" >
+            android:name=".EventCreationActivity"
+            android:label="@string/title_activity_event_creation">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobiketeam.mobike.MainActivity" />
         </activity>
         <activity
-            android:name="com.mobiketeam.mobike.ReviewCreationActivity"
+            android:name=".ReviewCreationActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_review_creation"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" >
+            android:theme="@style/AppTheme.NoActionBar.Dialog">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobiketeam.mobike.RouteActivity" />
         </activity>
         <activity
-            android:name="com.mobiketeam.mobike.NicknameActivity"
+            android:name=".NicknameActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_nickname"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar.Dialog"></activity>
         <activity
-            android:name="com.mobiketeam.mobike.AccountDetailsActivity"
-            android:label="@string/title_activity_account_details" >
-            <!--<meta-data
+            android:name=".AccountDetailsActivity"
+            android:label="@string/title_activity_account_details">
+
+            <!--
+                <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mobike.mobike.MainActivity" />-->
+                android:value="com.mobike.mobike.MainActivity" />
+            -->
         </activity>
         <activity
-            android:name="com.mobiketeam.mobike.RouteSearchActivity"
+            android:name=".RouteSearchActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_route_search"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar.Dialog"></activity>
         <activity
-            android:name="com.mobiketeam.mobike.FragmentActivity"
-            android:label="@string/title_activity_fragment" >
-        </activity>
+            android:name=".FragmentActivity"
+            android:label="@string/title_activity_fragment"></activity>
         <activity
-            android:name="com.mobiketeam.mobike.FullScreenMapActivity"
-            android:label="@string/title_activity_full_screen_map" >
-        </activity>
+            android:name=".FullScreenMapActivity"
+            android:label="@string/title_activity_full_screen_map"></activity>
         <activity
-            android:name="com.mobiketeam.mobike.POICreationActivity"
+            android:name=".POICreationActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_poicreation"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" >
+            android:theme="@style/AppTheme.NoActionBar.Dialog">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobiketeam.mobike.MainActivity" />
         </activity>
+        <activity android:name=".UpdateRouteActivity"></activity>
     </application>
 
 </manifest>

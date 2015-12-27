@@ -27,7 +27,7 @@ public class NicknameActivity extends ActionBarActivity implements View.OnClickL
 
         setFinishOnTouchOutside(false);
 
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         ((Button) findViewById(R.id.send)).setOnClickListener(this);

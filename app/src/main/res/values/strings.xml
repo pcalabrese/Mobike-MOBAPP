@@ -2,6 +2,9 @@
 <resources>
     <string name="facebook_app_id">613824922094851</string>
 
+    <!-- admob key to display the banner -->
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
     <string name="app_name">MoBike</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">MoBike</string>
@@ -161,5 +164,13 @@
     <string name="first_time_welcome_message">Welcome to MoBike!\nThe application is still under development and we are sorry for any bugs/errors that may occur.\Thank you and have fun!</string>
     <string name="change_account_button">CHANGE ACCOUNT</string>
     <string name="no_route_description">No description available</string>
+    <string name="route_name_label">Name</string>
+    <string name="route_description_label">Description</string>
+    <string name="route_difficulty_label">Difficulty (number between 1 and 10)</string>
+    <string name="route_bends_label">Bends (number between 1 and 10)</string>
+    <string name="route_type_label">Type:</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 
 </resources>

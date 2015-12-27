@@ -24,6 +24,11 @@ import com.mobiketeam.mobike.utils.Route;
 public class RouteSearchActivity extends ActionBarActivity implements View.OnClickListener {
     private static final String TAG = "RouteSearchActivity";
     public static final String ROUTE_SEARCH_URL = "com.mobike.mobike.route_search_url";
+    public static final String ROUTE_SEARCH_START = "com.mobike.mobike.route_search_start";
+    public static final String ROUTE_SEARCH_DESTINATION = "com.mobike.mobike.route_search_destination";
+    public static final String ROUTE_SEARCH_MIN_LENGTH = "com.mobike.mobike.route_search_min_length";
+    public static final String ROUTE_SEARCH_MAX_LENGTH = "com.mobike.mobike.route_search_max_length";
+    public static final String ROUTE_SEARCH_TYPE = "com.mobike.mobike.route_search_type";
 
     private ImageView mountain, hill, plain, coast;
     private Boolean[] selected = new Boolean[4];
@@ -37,7 +42,7 @@ public class RouteSearchActivity extends ActionBarActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route_search);
 
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         mountain = (ImageView) findViewById(R.id.mountain_icon);
@@ -61,7 +66,7 @@ public class RouteSearchActivity extends ActionBarActivity implements View.OnCli
         for (int i = 0; i < 4; i++) selected[i] = false;
 
         //range seekbar
-        seekBar = new RangeSeekBar<>(100f, 500f, this);
+        seekBar = new RangeSeekBar<>(0f, 1000f, this);
         seekBar.setOnRangeSeekBarChangeListener(new RangeSeekBar.OnRangeSeekBarChangeListener<Float>() {
             @Override
             public void onRangeSeekBarValuesChanged(RangeSeekBar<?> bar, Float minValue, Float maxValue) {
@@ -188,30 +193,36 @@ public class RouteSearchActivity extends ActionBarActivity implements View.OnCli
             case R.id.send:
                 String start = ((EditText) findViewById(R.id.start)).getText().toString();
                 String destination = ((EditText) findViewById(R.id.destination)).getText().toString();
-                String url = "http://mobike.ddns.net/SRV/routes/retrievefiltered?";
+                float minLength, maxLength;
+                String type = null;
+                //String url = "http://mobike.ddns.net/SRV/routes/retrievefiltered?";
 
-                if (start.length() != 0) {
+                /*
+                if (start.length() == 0) {
                     Toast.makeText(this, "Please insert the start location", Toast.LENGTH_SHORT).show();
-                    url += "startLocation=" + start + "&";
+                    break;
                 }
-                if (destination.length() != 0) {
+                if (destination.length() == 0) {
                     Toast.makeText(this, "Please insert the destination", Toast.LENGTH_SHORT).show();
-                    url += "endLocation=" + destination + "&";
+                    break;
                 }
-                //build url and returns it to SearchFragment
+                */
 
-                url += "minLength=" + String.format("%.0f", seekBar.getSelectedMinValue()*1000);
-                url += "&maxLength=" + String.format("%.0f", seekBar.getSelectedMaxValue()*1000);
-                if (oneSelected) url += "&type=";
+                minLength = seekBar.getSelectedMinValue()*1000;
+                maxLength = seekBar.getSelectedMaxValue()*1000;
 
-                if (selected[0]) url += Route.MOUNTAIN;
-                if (selected[1]) url += Route.HILL;
-                if (selected[2]) url += Route.PLAIN;
-                if (selected[3]) url += Route.COAST;
+                if (selected[0]) type = Route.MOUNTAIN;
+                if (selected[1]) type = Route.HILL;
+                if (selected[2]) type = Route.PLAIN;
+                if (selected[3]) type = Route.COAST;
 
                 Intent intent = new Intent();
                 Bundle bundle = new Bundle();
-                bundle.putString(ROUTE_SEARCH_URL, url);
+                bundle.putString(ROUTE_SEARCH_START, start);
+                bundle.putString(ROUTE_SEARCH_DESTINATION, destination);
+                bundle.putFloat(ROUTE_SEARCH_MIN_LENGTH, minLength);
+                bundle.putFloat(ROUTE_SEARCH_MAX_LENGTH, maxLength);
+                bundle.putString(ROUTE_SEARCH_TYPE, type);
                 intent.putExtras(bundle);
                 setResult(RESULT_OK, intent);
                 finish();

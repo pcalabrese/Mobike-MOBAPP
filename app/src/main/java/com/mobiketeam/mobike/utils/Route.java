@@ -1,6 +1,7 @@
 package com.mobiketeam.mobike.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.mobiketeam.mobike.R;
 
@@ -57,11 +58,11 @@ public class Route {
 
         if (t.equals(MOUNTAIN) || t.equals(array[0]) || t.equals("Montagna"))
             return R.color.routeMountain;
-        else if (t.equals(PLAIN) || t.equals(array[1]))
+        else if (t.equals(PLAIN) || t.equals(array[3]))
             return R.color.routePlain;
-        else if (t.equals(HILL) || t.equals(array[2]))
+        else if (t.equals(HILL) || t.equals(array[1]))
             return R.color.routeHill;
-        else if (t.equals(COAST) || t.equals(array[3]))
+        else if (t.equals(COAST) || t.equals(array[2]))
             return R.color.routeCoast;
         else if (t.equals(MIXED) || t.equals(array[4]))
             return R.color.routeMixed;
@@ -85,15 +86,27 @@ public class Route {
 
         if (t.equals(MOUNTAIN) || t.equals(array[0]))
             return R.color.routeMountain;
-        else if (t.equals(PLAIN) || t.equals(array[1]))
+        else if (t.equals(PLAIN) || t.equals(array[3]))
             return R.color.routePlain;
-        else if (t.equals(HILL) || t.equals(array[2]))
+        else if (t.equals(HILL) || t.equals(array[1]))
             return R.color.routeHill;
-        else if (t.equals(COAST) || t.equals(array[3]))
+        else if (t.equals(COAST) || t.equals(array[2]))
             return R.color.routeCoast;
         else if (t.equals(MIXED) || t.equals(array[4]))
             return R.color.routeMixed;
 
         return R.color.routeMixed;
+    }
+
+    public boolean satisfiesFilter(String startLocation, String destination, float minLength, float maxLength, String type) {
+        boolean result = this.startLocation.toLowerCase().contains(startLocation.toLowerCase());
+        result &= this.endLocation.toLowerCase().contains(destination.toLowerCase());
+        result &= Float.parseFloat(length) >= minLength;
+        result &= Float.parseFloat(length) <= maxLength;
+        if (type != null)
+            result &= this.type.equals(type);
+
+        //Log.v("Route", "satidfiesFilters(): " + result);
+        return result;
     }
 }

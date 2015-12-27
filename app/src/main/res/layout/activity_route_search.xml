@@ -68,7 +68,7 @@
             android:layout_marginBottom="5dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:text="500 km"
+            android:text="1000 km"
             android:textStyle="bold"/>
 
     </RelativeLayout>

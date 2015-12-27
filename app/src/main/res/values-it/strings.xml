@@ -162,4 +162,12 @@
     <string name="change_account_button">CAMBIA ACCOUNT</string>
     <string name="no_route_description">Nessuna descrizione disponibile</string>
 
+    <string name="navigation_drawer_open">Apri menu a scomparsa</string>
+    <string name="navigation_drawer_close">Chiudi menu a scomparsa</string>
+    <string name="route_bends_label">Curve (numero compreso tra 1 e 10)</string>
+    <string name="route_description_label">Descrizione</string>
+    <string name="route_difficulty_label">Difficoltà (numero compreso tra 1 e 10)</string>
+    <string name="route_name_label">Nome</string>
+    <string name="route_type_label">Tipo:</string>
+
 </resources>

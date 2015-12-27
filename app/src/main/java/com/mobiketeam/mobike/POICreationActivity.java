@@ -35,7 +35,7 @@ public class POICreationActivity extends ActionBarActivity implements View.OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poicreation);
 
-        getSupportActionBar().hide();
+        //getSupportActionBar().hide();
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         ((Button) findViewById(R.id.create_button)).setOnClickListener(this);

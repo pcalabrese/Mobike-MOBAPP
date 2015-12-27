@@ -61,6 +61,8 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     private Boolean initialSpinner = true, firstTime;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private boolean pickingRoute;
+    private ArrayList<Route> routesList;
+    private ListView listView;
 
     public static final int SEARCH_REQUEST = 3;
 
@@ -138,7 +140,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
 
         ((ImageButton) getView().findViewById(R.id.route_search)).setOnClickListener(this);
 
-        ListView listView = (ListView) getView().findViewById(R.id.list_view);
+        listView = (ListView) getView().findViewById(R.id.list_view);
 
         if (firstTime) {
             View header = View.inflate(getActivity(), R.layout.spinner, null);
@@ -289,10 +291,7 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
     }
 
     public void setResult(String result) {
-        // grid view
-        ListView listView = (ListView) getView().findViewById(R.id.list_view);
-        ArrayList<Route> arrayList = new ArrayList<>();
-        // TODO popolo l'arrayList con i dati presi dal json
+        routesList = new ArrayList<>();
 
         JSONObject jsonRoute;
         JSONArray json;
@@ -323,15 +322,34 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                     startLocation = jsonRoute.getString("startlocation");
                     endLocation = jsonRoute.getString("endlocation");
 
-                    arrayList.add(new Route(name, id, description, creator, length, duration, "0", "0", type, thumbnailURL, startLocation, endLocation, rating, ratingNumber));
+                    routesList.add(new Route(name, id, description, creator, length, duration, "0", "0", type, thumbnailURL, startLocation, endLocation, rating, ratingNumber));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
 
-        // creo il gridAdapter
-        RouteAdapter routeAdapter = new RouteAdapter(getActivity(), R.layout.route_list_row, arrayList);
+        setAdapter(routesList);
+        mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+
+
+    private void filterRoutes(String startLocation, String destination, float minLength, float maxLength, String type) {
+        ArrayList<Route> filteredRoutes = new ArrayList<>();
+
+        for (Route route: routesList) {
+            if (route.satisfiesFilter(startLocation, destination, minLength, maxLength, type))
+                filteredRoutes.add(route);
+        }
+
+        Log.v(TAG, "filterRoutes(), filteredRoutes: " + filteredRoutes.size() + ", routesList: " + routesList.size());
+        setAdapter(filteredRoutes);
+    }
+
+
+    private void setAdapter(ArrayList<Route> list) {
+        RouteAdapter routeAdapter = new RouteAdapter(getActivity(), R.layout.route_list_row, list);
         // imposto l'adapter
         listView.setAdapter(routeAdapter);
         // imposto il listener
@@ -360,8 +378,6 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
                 }
             }
         });
-
-        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     public void onClick(View view) {
@@ -382,7 +398,18 @@ public class SearchFragment extends android.support.v4.app.Fragment implements A
             }
         } else if (requestCode == SearchFragment.SEARCH_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
-                downloadRoutes(intent.getExtras().getString(RouteSearchActivity.ROUTE_SEARCH_URL));
+                //downloadRoutes(intent.getExtras().getString(RouteSearchActivity.ROUTE_SEARCH_URL));
+                Bundle bundle = intent.getExtras();
+                String startLocation = bundle.getString(RouteSearchActivity.ROUTE_SEARCH_START);
+                String destination = bundle.getString(RouteSearchActivity.ROUTE_SEARCH_DESTINATION);
+                float minLength = bundle.getFloat(RouteSearchActivity.ROUTE_SEARCH_MIN_LENGTH);
+                float maxLength = bundle.getFloat(RouteSearchActivity.ROUTE_SEARCH_MAX_LENGTH);
+                String type = bundle.getString(RouteSearchActivity.ROUTE_SEARCH_TYPE);
+
+                Log.v(TAG, String.format("onActivityResult() filters: %s, %s, %f, %f, %s",
+                        startLocation, destination, minLength, maxLength, type));
+
+                filterRoutes(startLocation, destination, minLength, maxLength, type);
             }
 
         }
@@ -426,11 +453,9 @@ class RouteAdapter extends ArrayAdapter<Route> {
         View v = convertView;
 
         if (v == null) {
-
             LayoutInflater vi;
             vi = LayoutInflater.from(getContext());
             v = vi.inflate(R.layout.route_list_row, null);
-
         }
 
         Route p = getItem(position);

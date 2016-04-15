@@ -64,7 +64,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
     private TextView mName, mDescription, mCreator, mLength, mDuration, mDifficulty, mBends, mType,
             mRating, mRatingNumber, mStartLocation, mEndLocation;
     private RatingBar mRatingBar;
-    private FloatingActionButton mUpdateRouteButton, mDeleteRouteButton;
+    private FloatingActionButton mUpdateRouteButton, mDeleteRouteButton, mDownloadRouteButton;
 
     private String routeID, userRate, userMessage, gpx, creator, currentUser;
     private boolean pickingRoute;
@@ -107,11 +107,13 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
 
         mUpdateRouteButton = (FloatingActionButton) findViewById(R.id.update_route_button);
         mDeleteRouteButton = (FloatingActionButton) findViewById(R.id.delete_route_button);
+        mDownloadRouteButton = (FloatingActionButton) findViewById(R.id.download_route_button);
 
         routeID = bundle.getString(SearchFragment.ROUTE_ID);
         creator = bundle.getString(SearchFragment.ROUTE_CREATOR);
         SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
         //currentUser = sharedPreferences.getString(LoginActivity.NICKNAME, "");
+        //TODO: change to actual user
         currentUser = "paolocalabrese";
 
         if (!creator.equals(currentUser)) {
@@ -121,6 +123,7 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
             mUpdateRouteButton.setOnClickListener(this);
             mDeleteRouteButton.setOnClickListener(this);
         }
+        mDownloadRouteButton.setOnClickListener(this);
 
         ((ImageButton) findViewById(R.id.fullscreen_button)).setOnClickListener(this);
 
@@ -501,6 +504,9 @@ public class RouteActivity extends ActionBarActivity implements View.OnClickList
                 break;
             case R.id.delete_route_button:
                 //start async task to remove the route
+                break;
+            case R.id.download_route_button:
+                //save the gpx
                 break;
         }
     }

@@ -169,5 +169,7 @@
     <string name="route_difficulty_label">Difficoltà (numero compreso tra 1 e 10)</string>
     <string name="route_name_label">Nome</string>
     <string name="route_type_label">Tipo:</string>
+    <string name="account_bikemodel_label">Modello della moto</string>
+    <string name="account_nickname_label">Nickname</string>
 
 </resources>

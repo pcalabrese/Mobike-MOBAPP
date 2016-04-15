@@ -172,5 +172,7 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="account_nickname_label">Nickname</string>
+    <string name="account_bikemodel_label">Bike model</string>
 
 </resources>

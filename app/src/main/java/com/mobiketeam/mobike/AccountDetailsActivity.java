@@ -1,10 +1,13 @@
 package com.mobiketeam.mobike;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -26,10 +29,16 @@ import java.net.URLEncoder;
 /**
  * This is the activity where are displayed details of user's account like image, name, email, nickname and bike model
  */
-public class AccountDetailsActivity extends ActionBarActivity {
+public class AccountDetailsActivity extends ActionBarActivity implements View.OnClickListener {
 
     private static final String TAG = "AccountDetailsActivity";
     public final static String ACCOUNT_URL = "http://mobike.ddns.net/SRV/users/getDetails?token=";
+    public static final String ACCOUNT_NICKNAME = "com.mobiketeam.mobike.account_nickname";
+    public static final String ACCOUNT_BIKEMODEL = "com.mobiketeam.mobike.account_bikemodel";
+
+    private FloatingActionButton mEditDetailsButton;
+
+    private String name, nickname, email, bike, imageUrl;
 
     /**
      * Activity lifecycle method, initializes the UI
@@ -43,10 +52,10 @@ public class AccountDetailsActivity extends ActionBarActivity {
         ImageView imageView = (ImageView) findViewById(R.id.image);
 
         SharedPreferences preferences = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
-        String imageUrl = preferences.getString(LoginActivity.IMAGEURL, "");
-        String name = preferences.getString(LoginActivity.NAME, "") + " " + preferences.getString(LoginActivity.SURNAME, "");
-        String nickname = preferences.getString(LoginActivity.NICKNAME, "");
-        String email = preferences.getString(LoginActivity.EMAIL, "");
+        imageUrl = preferences.getString(LoginActivity.IMAGEURL, "");
+        name = preferences.getString(LoginActivity.NAME, "") + " " + preferences.getString(LoginActivity.SURNAME, "");
+        nickname = preferences.getString(LoginActivity.NICKNAME, "");
+        email = preferences.getString(LoginActivity.EMAIL, "");
 
         imageUrl = imageUrl.split("sz=")[0] + "sz=500";
 
@@ -55,6 +64,9 @@ public class AccountDetailsActivity extends ActionBarActivity {
         ((TextView) findViewById(R.id.nickname)).setText(nickname);
         ((TextView) findViewById(R.id.email)).setText(email);
 
+        mEditDetailsButton = (FloatingActionButton) findViewById(R.id.edit_details_button);
+        mEditDetailsButton.setOnClickListener(this);
+
         downloadDetails();
     }
 
@@ -62,7 +74,7 @@ public class AccountDetailsActivity extends ActionBarActivity {
         String user = "";
         SharedPreferences sharedPreferences = getSharedPreferences(LoginActivity.USER, Context.MODE_PRIVATE);
         int id = sharedPreferences.getInt(LoginActivity.ID, 0);
-        String nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
+        nickname = sharedPreferences.getString(LoginActivity.NICKNAME, "");
         Crypter crypter = new Crypter();
 
         try {
@@ -102,7 +114,6 @@ public class AccountDetailsActivity extends ActionBarActivity {
 
     private void setDetails(String result) {
         JSONObject user;
-        String name = "", nickname = "", email = "", bike = "", imageUrl = "";
         Crypter crypter = new Crypter();
 
         try {
@@ -123,5 +134,17 @@ public class AccountDetailsActivity extends ActionBarActivity {
         ((TextView) findViewById(R.id.nickname)).setText(nickname);
         ((TextView) findViewById(R.id.email)).setText(email);
         ((TextView) findViewById(R.id.bike)).setText(bike);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.edit_details_button:
+                Intent intent = new Intent(this, UpdateAccountActivity.class);
+                intent.putExtra(ACCOUNT_NICKNAME, nickname);
+                intent.putExtra(ACCOUNT_BIKEMODEL, bike);
+                startActivity(intent);
+                break;
+        }
     }
 }

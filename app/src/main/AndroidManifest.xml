@@ -74,22 +74,22 @@
             android:name=".SummaryActivity"
             android:label="@string/title_activity_summary"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.ActionBarShadow"></activity>
+            android:theme="@style/AppTheme.ActionBarShadow" />
         <activity
             android:name=".ShareActivity"
             android:label="@string/title_activity_share"
-            android:theme="@style/AppTheme.ActionBarShadow"></activity>
+            android:theme="@style/AppTheme.ActionBarShadow" />
 
         <service
             android:name=".GPSService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
 
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".EventActivity"
             android:label="@string/title_activity_event">
@@ -125,7 +125,7 @@
             android:name=".NicknameActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_nickname"
-            android:theme="@style/AppTheme.NoActionBar.Dialog"></activity>
+            android:theme="@style/AppTheme.NoActionBar.Dialog" />
         <activity
             android:name=".AccountDetailsActivity"
             android:label="@string/title_activity_account_details">
@@ -140,13 +140,13 @@
             android:name=".RouteSearchActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_route_search"
-            android:theme="@style/AppTheme.NoActionBar.Dialog"></activity>
+            android:theme="@style/AppTheme.NoActionBar.Dialog" />
         <activity
             android:name=".FragmentActivity"
-            android:label="@string/title_activity_fragment"></activity>
+            android:label="@string/title_activity_fragment" />
         <activity
             android:name=".FullScreenMapActivity"
-            android:label="@string/title_activity_full_screen_map"></activity>
+            android:label="@string/title_activity_full_screen_map" />
         <activity
             android:name=".POICreationActivity"
             android:excludeFromRecents="true"
@@ -156,7 +156,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mobiketeam.mobike.MainActivity" />
         </activity>
-        <activity android:name=".UpdateRouteActivity"></activity>
+        <activity android:name=".UpdateRouteActivity" />
+        <activity android:name=".UpdateAccountActivity"></activity>
     </application>
 
 </manifest>

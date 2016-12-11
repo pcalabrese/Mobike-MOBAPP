@@ -1,5 +1,7 @@
 # MoBike
-Mobike Repository for Mobile App (ANDROID)
+This is the repository for the MoBike Android application.
+
+Mobike is meant for all the motorbike enthusiasts who want to find the most beatiful tracks in an area. They can also share their own tracks by the app live recording of their trip.
 
 link to our webpage
 http://mobike.ddns.net/WAPP/landing
